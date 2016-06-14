@@ -64,3 +64,10 @@ target/
 
 # IDE
 .idea
+.gitignore
+server/.gitignore
+smartshark/migrations/0015_auto_20160609_1438.py
+smartshark/migrations/0016_auto_20160610_1438.py
+smartshark/migrations/0017_auto_20160613_0914.py
+smartshark/static/
+smartshark/templates/
