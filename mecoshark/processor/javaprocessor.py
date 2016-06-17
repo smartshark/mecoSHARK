@@ -30,15 +30,19 @@ class JavaProcessor(BaseProcessor):
         # Clean output directory
         shutil.rmtree(os.path.join(self.output_path, self.projectname), True)
         template_path = os.path.dirname(os.path.realpath(__file__))+'/../../templates'
-        failure_happened = False
+        failure_happened = True
 
+        '''
         # try maven
         if os.path.exists(os.path.join(self.input_path, 'pom.xml')):
             self.logger.info("Trying out maven...")
             self.prepare_template(os.path.join(template_path, 'build-maven.sh'))
             self.prepare_template(os.path.join(template_path, 'analyze-maven.sh'))
 
-            subprocess.run(os.path.join(self.output_path, 'analyze-maven.sh'), shell=True)
+            try:
+                subprocess.run(os.path.join(self.output_path, 'analyze-maven.sh'), shell=True)
+            except Exception:
+                pass
 
             if not self.is_output_produced():
                 shutil.rmtree(os.path.join(self.output_path, self.projectname), True)
@@ -49,15 +53,29 @@ class JavaProcessor(BaseProcessor):
             self.prepare_template(os.path.join(template_path, 'build-ant.sh'))
             self.prepare_template(os.path.join(template_path, 'analyze-ant.sh'))
 
-            subprocess.run(os.path.join(self.output_path, 'analyze-ant.sh'), shell=True)
+            try:
+                subprocess.run(os.path.join(self.output_path, 'analyze-ant.sh'), shell=True)
+            except Exception:
+                pass
 
             if not self.is_output_produced():
                 shutil.rmtree(os.path.join(self.output_path, self.projectname), True)
                 failure_happened = True
-
+        '''
         if failure_happened:
             self.logger.info("Trying out directory analysis for java...")
-            subprocess.run(os.path.join(self.output_path, 'analyze-dir.sh'), shell=True)
+            self.prepare_template(os.path.join(template_path, 'analyze-dir.sh'))
+
+            if self.input_path.endswith("/"):
+                self.input_path = self.input_path[:-1]
+
+            if self.output_path.endswith("/"):
+                self.output_path = self.output_path[:-1]
+
+            try:
+                subprocess.run(os.path.join(self.output_path, 'analyze-dir.sh'), shell=True)
+            except Exception:
+                pass
 
         if not self.is_output_produced():
             self.logger.error('Problem in using mecoshark! No output was produced!')

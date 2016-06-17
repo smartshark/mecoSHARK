@@ -1,3 +1,3 @@
 #!/bin/sh
 
-ant -f $antbuild clean jar
+$ant -f $antbuild clean jar

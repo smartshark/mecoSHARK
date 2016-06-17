@@ -4,7 +4,7 @@ import os
 import csv
 import copy
 from mecoshark.resultparser.mongomodels import ClazzState, Clazz, Interface, InterfaceState, Enum, EnumState, Method, \
-    MethodState
+    MethodState, Annotation, AnnotationState
 
 
 class SourcemeterJavaParser(SourcemeterParser):
@@ -35,20 +35,25 @@ class SourcemeterJavaParser(SourcemeterParser):
     def get_parent_type(self, parent, artifact_type):
         mongo_names = {'class': {'stored_packages': 'packageId', 'stored_classes': 'parentClazzId',
                                  'stored_methods': 'methodId', 'stored_interfaces': 'interfaceId',
-                                 'stored_enums': 'enumId'},
+                                 'stored_enums': 'enumId','stored_annotations': 'annotationId'},
                        'interface': {'stored_packages': 'packageId', 'stored_classes': 'clazzId',
                                      'stored_methods': 'methodId', 'stored_interfaces': 'parentInterfaceId',
-                                     'stored_enums': 'enumId'},
+                                     'stored_enums': 'enumId', 'stored_annotations': 'annotationId'},
                        'enum': {'stored_packages': 'packageId', 'stored_classes': 'clazzId',
                                 'stored_methods': 'methodId', 'stored_interfaces': 'interfaceId',
-                                'stored_enums': 'parentEnumId'},
+                                'stored_enums': 'parentEnumId', 'stored_annotations': 'annotationId'},
                        'method': {'stored_packages': 'packageId', 'stored_classes': 'clazzId',
                                   'stored_methods': 'parentMethodId', 'stored_interfaces': 'interfaceId',
-                                  'stored_enums': 'enumId'}}
+                                  'stored_enums': 'enumId', 'stored_annotations': 'annotationId'},
+                       'annotation': {'stored_packages': 'packageId', 'stored_classes': 'clazzId',
+                                      'stored_methods': 'methodId', 'stored_interfaces': 'interfaceId',
+                                      'stored_enums': 'enumId', 'stored_annotations': 'parentAnnotationId'},
+                       }
         rdata = False
         name = False
 
-        for d in ['stored_packages', 'stored_classes', 'stored_methods', 'stored_interfaces', 'stored_enums']:
+        for d in ['stored_packages', 'stored_classes', 'stored_methods', 'stored_interfaces', 'stored_enums',
+                  'stored_annotations']:
             if parent in getattr(self, d):
                 rdata = getattr(self, d)[parent]
                 name = mongo_names[artifact_type][d]
@@ -136,11 +141,30 @@ class SourcemeterJavaParser(SourcemeterParser):
                     except Exception as e:
                         self.logger.error(e)
 
+                elif row['type'] == 'annotation':
+                    annotation = Annotation.objects(projectId=self.projectid, fileId=self.stored_files[long_name],
+                                            longName=row['LongName'])\
+                                .upsert_one(projectId=self.projectid, fileId=self.stored_files[long_name],
+                                            name=row['Name'], longName=row['LongName'])
+                    self.stored_annotations[row['ID']] = annotation.id
+                    dat['annotationId'] = annotation.id
+
+                    try:
+                        name, data = self.get_parent_type(row['Parent'], row['type'])
+                        dat[name] = data
+                        AnnotationState.objects(annotationId=annotation.id, revisionHash=self.revisionHash)\
+                            .upsert_one(**dat)
+                    except Exception as e:
+                        self.logger.error(e)
+
+
+
     def prepare_csv_files(self):
         all_csv_paths = {'class': glob.glob(os.path.join(self.output_path, "*-Class.csv"))[0],
                          'enum': glob.glob(os.path.join(self.output_path, "*-Enum.csv"))[0],
                          'interface':  glob.glob(os.path.join(self.output_path, "*-Interface.csv"))[0],
-                         'method': glob.glob(os.path.join(self.output_path, "*-Method.csv"))[0]}
+                         'method': glob.glob(os.path.join(self.output_path, "*-Method.csv"))[0],
+                         'annotation': glob.glob(os.path.join(self.output_path, "*-Annotation.csv"))[0]}
 
         all_csvs_together = []
         for name, path in all_csv_paths.items():
@@ -165,6 +189,7 @@ class SourcemeterJavaParser(SourcemeterParser):
             writer.writeheader()
             not_finished = True
             written_ids = []
+
             while not_finished:
                 for row in sorted_csvs:
                     if row['Parent'] in self.stored_packages and row['ID'] not in written_ids:
@@ -175,5 +200,5 @@ class SourcemeterJavaParser(SourcemeterParser):
                         written_ids.append(row['ID'])
                         writer.writerow(row)
 
-                    if len(written_ids) == len(sorted_csvs):
+                    if len(sorted_csvs) == len(written_ids):
                         not_finished = False

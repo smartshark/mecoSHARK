@@ -5,19 +5,28 @@ import sys
 import os
 import timeit
 
+from mongoengine import connect
+
 from mecoshark.utils import find_correct_processor
 
 
 class MecoSHARK(object):
 
-    def __init__(self, input, output, revision, url, options):
+    def __init__(self, input, output, revision, url, options, db_name, db_host, db_port, db_user, db_password,
+                 db_authentication):
+        home_folder = os.path.expanduser('~')+"/"
         self.logger = logging.getLogger("mecoshark_main")
-        self.input_path = input
-        self.output_path = output
+        self.input_path = input.replace("~", home_folder)
+        self.output_path = output.replace("~", home_folder)
         self.options = options
         self.revision = revision
         self.url = url
         self.projectname = os.path.basename(os.path.normpath(input))
+
+
+        # connect to mongodb
+        connect(db_name, host=db_host, port=db_port, authentication_source=db_authentication, username=db_user,
+                password=db_password, connect=False)
 
     def process_revision(self):
         languages = self.detect_languages()
@@ -35,11 +44,8 @@ class MecoSHARK(object):
         self.logger.info("Execution time: %0.5f s" % elapsed)
 
     def detect_languages(self):
-        sloccount_path = shutil.which('sloccount')
-
-        if sloccount_path is None:
-            self.logger.error("Command sloccount must be installed!")
-            sys.exit(1)
+        external_path = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'external')
+        sloccount_path = os.path.join(external_path, 'sloccount2.26', 'sloccount')
 
         command = sloccount_path+" --details "+self.input_path+" | awk -F '\t' '{print $2}'"
         self.logger.info('Calling command: %s' % command)

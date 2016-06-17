@@ -25,10 +25,7 @@ class SourcemeterParser(object):
         self.stored_methods = {}
         self.stored_interfaces = {}
         self.stored_enums = {}
-
-        # connect
-        connect('vcsshark', host='localhost', port=27017,
-                connect=False)  # , authentication_source='admin', username=user, password='root')
+        self.stored_annotations = {}
 
         # find projectid
         try:

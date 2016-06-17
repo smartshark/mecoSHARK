@@ -36,9 +36,10 @@ class BaseProcessor(metaclass=abc.ABCMeta):
         python_sourcemeter = os.path.join(sourcemeter_path, 'Python/SourceMeterPython')
         c_sourcemeter = os.path.join(sourcemeter_path, 'CPP/SourceMeterCPP')
         maven_path = os.path.join(sourcemeter_path, 'maven3.2.5/bin/mvn')
+        ant = os.path.join(sourcemeter_path, 'ant1.9.7/bin/ant')
+
         maven_pom = os.path.join(self.input_path, 'pom.xml')
         ant_build = os.path.join(self.input_path, 'build.xml')
-
 
         with open(template, 'r') as myTemplate:
             data = myTemplate.read()
@@ -48,7 +49,7 @@ class BaseProcessor(metaclass=abc.ABCMeta):
                                             javaSourcemeter=java_sourcemeter,
                                             results=self.output_path, projectname=self.projectname, input=self.input_path,
                                             pythonSourcemeter=python_sourcemeter,
-                                            cSourcemeter=c_sourcemeter)
+                                            cSourcemeter=c_sourcemeter, ant=ant)
 
         output_path = os.path.join(self.output_path, os.path.basename(os.path.normpath(template)))
         with open(output_path, 'w') as myTemplate:
