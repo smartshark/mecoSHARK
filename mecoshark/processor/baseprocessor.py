@@ -4,7 +4,15 @@ import string
 import stat
 
 class BaseProcessor(metaclass=abc.ABCMeta):
+    """ Main app for the mecoshark plugin
 
+    :param output_path: path to an output directory, where files can be stored
+    :param input_path: path to the revision that is used as input
+
+    :property input_path: path to the revisionn that is used as input
+    :property output_path: path to an output directory, where files can be stored
+    :property projectname: name of the project (last part of input path)
+    """
     @abc.abstractproperty
     def enabled(self):
         return False

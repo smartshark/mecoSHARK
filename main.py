@@ -55,6 +55,10 @@ def readable_dir(prospective_dir):
 
 
 def start():
+    """
+    Starts the application. First parses the different command line arguments and then it gives these to the mecoApp
+    :return:
+    """
     setup_logging()
     logger = logging.getLogger("mecoshark_main")
     logger.info("Starting mecoSHARK...")
