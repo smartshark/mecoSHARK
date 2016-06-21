@@ -5,35 +5,49 @@ import logging
 import os
 import sys
 
-from mongoengine import connect, DoesNotExist
+from mongoengine import DoesNotExist
 
-from mecoshark.resultparser.mongomodels import Project, File, FileState, Package, PackageState, Clazz, ClazzState, \
-    Component, ComponentState, Method, MethodState, CloneInstance
+from mecoshark.resultparser.mongomodels import Project, File, FileState, CloneInstance, MetaPackageState
 
 
 class SourcemeterParser(object):
     def __init__(self, output_path, input_path, url, revisionHash):
+        # Set variables
         self.output_path = output_path
         self.input_path = input_path
         self.url = url
         self.revisionHash = revisionHash
-        self.logger = logging.getLogger("sourcemeter_parser")
-        self.stored_functions = {}
-        self.stored_packages = {}
-        self.stored_classes = {}
-        self.stored_components = {}
-        self.stored_methods = {}
-        self.stored_interfaces = {}
-        self.stored_enums = {}
-        self.stored_annotations = {}
 
+        # Default dictionaries and lists
+        self.ordered_file_states = {}
+        self.stored_file_states = {}
+        self.stored_meta_package_states = {}
+        self.input_files = []
+
+        # Get logger
+        self.logger = logging.getLogger("sourcemeter_parser")
+
+        # Get project id and find all stored files in the current input path (needed for java projects)
+        self.projectid = self.get_project_id(url)
+        self.stored_files = self.find_stored_files()
+
+        # Prepare csv files
+        self.prepare_csv_files()
+
+    def get_project_id(self, url):
         # find projectid
         try:
-            self.projectid = Project.objects(url=url).get().id
+            return Project.objects(url=url).get().id
         except DoesNotExist:
             self.logger.error("Project with the url %s does not exist in the database! Execute vcsSHARK first!" % url)
             sys.exit(1)
 
+    def find_stored_files(self):
+        """
+        We need to find all files that are stored in the input path. This is needed to link the files that were parsed
+        with the files that are already stored via vcsSHARK.
+        :return:
+        """
         # get list of files in input_path
         self.input_files = []
         for root, dirs, files in os.walk(self.input_path, topdown=True):
@@ -45,12 +59,162 @@ class SourcemeterParser(object):
                     self.input_files.append(full_file_path)
 
         # get all stored files of the project
-        self.stored_files = {}
+        stored_files = {}
         for file in File.objects(projectId=self.projectid):
-            self.stored_files[file.path] = file.id
+            stored_files[file.path] = file.id
+
+        return stored_files
+
+    @staticmethod
+    def get_csv_file(path):
+        """
+        Returns a filepath or none if nothing is found
+        :param path: path to file (regex)
+        :return: filepath or none
+        """
+        result = glob.glob(path)
+        if len(result) > 0:
+            return result[0]
+
+        return None
+
+    def prepare_csv_files(self):
+        all_csv_paths = {
+            'class': self.get_csv_file(os.path.join(self.output_path, "*-Class.csv")),
+            'enum': self.get_csv_file(os.path.join(self.output_path, "*-Enum.csv")),
+            'interface':  self.get_csv_file(os.path.join(self.output_path, "*-Interface.csv")),
+            'method': self.get_csv_file(os.path.join(self.output_path, "*-Method.csv")),
+            'annotation': self.get_csv_file(os.path.join(self.output_path, "*-Annotation.csv")),
+            'attribute': self.get_csv_file(os.path.join(self.output_path, "*-Attribute.csv")),
+            'component': self.get_csv_file(os.path.join(self.output_path, "*-Component.csv")),
+            'file': self.get_csv_file(os.path.join(self.output_path, "*-File.csv")),
+            'function': self.get_csv_file(os.path.join(self.output_path, "*-Function.csv")),
+            'module': self.get_csv_file(os.path.join(self.output_path, "*-Module.csv")),
+            'package': self.get_csv_file(os.path.join(self.output_path, "*-Package.csv")),
+            'namespace': self.get_csv_file(os.path.join(self.output_path, "*-Namespace.csv")),
+            'structure': self.get_csv_file(os.path.join(self.output_path, "*-Structure.csv")),
+            'union': self.get_csv_file(os.path.join(self.output_path, "*-Union.csv")),
+        }
+
+        file_states = []
+        for name, path in all_csv_paths.items():
+            if path is not None:
+                self.logger.info("Open path: "+path)
+                with open(path) as csvfile:
+                    reader = csv.DictReader(csvfile)
+                    for row in reader:
+                        row['type'] = name
+
+                        if name == 'file':
+                            row['sortKey'] = '2'
+                            row['Path'] = row['LongName']
+                            file_states.append(row)
+                            continue
+
+                        if 'Parent' in row:
+                            if row['Parent'] == '__LogicalRoot__':
+                                row['sortKey'] = '1'
+                                file_states.append(row)
+                            else:
+                                row['sortKey'] = row['Parent'].strip('L')
+                                file_states.append(row)
+                        else:
+                            row['sortKey'] = '0'
+                            file_states.append(row)
+        file_states = sorted(file_states, key=lambda k: int(k['sortKey']))
+        self.ordered_file_states = self.sort_for_parent(file_states)
+
+    @staticmethod
+    def sort_for_parent(state_dict):
+        not_finished = True
+        new_dict = []
+        written_ids = []
+
+        while not_finished:
+            for row in state_dict:
+                if 'Parent' not in row and row['ID'] not in written_ids:
+                    written_ids.append(row['ID'])
+                    new_dict.append(row)
+
+                if 'Parent' in row and row['ID'] not in written_ids and (row['Parent'] in written_ids
+                                                                         or row['Parent'] == '__LogicalRoot__'
+                                                                         or row['type'] == 'file'):
+                    written_ids.append(row['ID'])
+                    new_dict.append(row)
+
+                if len(state_dict) == len(written_ids):
+                    not_finished = False
+
+        return new_dict
 
     def store_data(self):
-        raise NotImplementedError('This method must be implemented by sub-classes!')
+        for row in self.ordered_file_states:
+            if 'Path' in row:
+                self.store_file_states_data(row)
+            else:
+                self.store_meta_package_data(row)
+
+        self.store_clone_data()
+
+
+    def get_component_ids(self, row_component_ids):
+        # get list of objectids for all components in the csv file
+        row_component_ids = row_component_ids.split(",")
+        component_object_ids = []
+        for row_component_id in row_component_ids:
+            component_object_ids.append(self.stored_meta_package_states[row_component_id.strip()])
+        return component_object_ids
+
+    def store_meta_package_data(self, row):
+        long_name = self.sanitize_long_name(row['LongName'])
+        metrics_dict = self.sanitize_metrics_dictionary(copy.deepcopy(row))
+        name = self.sanitize_long_name(row.get('Name', None))
+
+        parent_state = None
+        components = None
+        if 'Parent' in row and row['Parent'] in self.stored_meta_package_states:
+            parent_state = self.stored_meta_package_states[row['Parent']]
+
+        if 'Component' in row:
+            components = self.get_component_ids(row['Component'])
+
+        state = MetaPackageState.objects(project_id=self.projectid, long_name=long_name, revision_hash=self.revisionHash)\
+            .upsert_one(project_id=self.projectid, long_name=long_name, revision_hash=self.revisionHash, metrics=metrics_dict,
+                        parent_state=parent_state, name=name, component_ids=components)
+
+        self.stored_meta_package_states[row['ID']] = state.id
+
+    def store_file_states_data(self, row):
+        path_name = self.sanitize_long_name(row['Path'])
+        long_name = self.sanitize_long_name(row['LongName'])
+        metrics_dict = self.sanitize_metrics_dictionary(copy.deepcopy(row))
+
+        parent_state = None
+        components = None
+
+        if 'Parent' in row and row['Parent'] in self.stored_meta_package_states:
+            parent_state = self.stored_meta_package_states[row['Parent']]
+        elif 'Parent' in row and row['Parent'] in self.stored_file_states:
+            parent_state = self.stored_file_states[row['Parent']]
+        elif 'Parent' in row and row['type'] != 'file':
+            self.logger.error("ERROR! Parent not found for %s!" % row)
+
+        if 'Component' in row:
+            components = self.get_component_ids(row['Component'])
+
+        state = FileState.objects(file_id=self.stored_files[path_name], revision_hash=self.revisionHash, long_name=long_name)\
+            .upsert_one(
+                file_id=self.stored_files[path_name],
+                revision_hash=self.revisionHash,
+                long_name=long_name,
+                name=row.get('Name', None),
+                file_type=row['type'],
+                parent=parent_state,
+                metrics=metrics_dict,
+                component_ids = components
+            )
+
+        self.stored_file_states[row['ID']] = state.id
 
     def store_clone_data(self):
         self.logger.info("Parsing & storing clone data...")
@@ -71,129 +235,12 @@ class SourcemeterParser(object):
 
                 CloneInstance.objects(projectId=self.projectid, name=row['ID'], revisionHash=self.revisionHash)\
                     .upsert_one(projectId=self.projectid, name=row['ID'], revisionHash=self.revisionHash,
-                                componentId=self.stored_components[row['Component']],
                                 fileId=self.stored_files[long_name], cloneClass=row['Parent'],
                                 cloneClassMetrics=clone_classes[row['Parent']], cloneInstanceMetrics=metrics_dict,
                                 startLine=row['Line'], startColumn=row['Column'], endLine=row['EndLine'],
                                 endColumn=row['EndColumn'])
         self.logger.info("Finished parsing & storing clone data!")
 
-    def store_file_csv(self):
-        file_csv_path = glob.glob(os.path.join(self.output_path, "*-File.csv"))[0]
-
-        with open(file_csv_path) as csvfile:
-            reader = csv.DictReader(csvfile)
-            for row in reader:
-                # first, we need to match the longname to the path of the file in the mongodb
-                long_name = self.sanitize_long_name(row['LongName'])
-                if long_name is not None and long_name in self.stored_files:
-
-                    metrics_dict = self.sanitize_metrics_dictionary(copy.deepcopy(row))
-
-                    # save the file state to the gathered file id
-                    FileState.objects(fileId=self.stored_files[long_name], revisionHash=self.revisionHash) \
-                        .upsert_one(fileId=self.stored_files[long_name], revisionHash=self.revisionHash,
-                                    metrics=metrics_dict)
-
-                else:
-                    # Sometime files get generated by makefiles, which are then part of the metrics, but are not
-                    # listed in git (as they are never committed). Thats why we check here and continue on if we
-                    # have such a file).
-                    self.logger.debug("Problem in retrieving correct file "
-                                      "id for file %s!" % row['LongName'])
-                    continue
-
-    def store_components_csv(self):
-        components_csv_path = glob.glob(os.path.join(self.output_path, "*-Component.csv"))[0]
-
-        with open(components_csv_path) as csvfile:
-            reader = csv.DictReader(csvfile)
-            for row in reader:
-                # first, we need to match the longname to the path of the file in the mongodb
-                long_name = row['LongName']
-                if long_name.startswith("/"):
-                    long_name = self.sanitize_long_name(row['LongName'])
-
-                component = Component.objects(projectId=self.projectid, longName=long_name) \
-                    .upsert_one(projectId=self.projectid, longName=long_name)
-                self.stored_components[row['ID']] = component.id
-
-                metrics_dict = self.sanitize_metrics_dictionary(copy.deepcopy(row))
-
-                ComponentState.objects(componentId=component.id, revisionHash=self.revisionHash) \
-                    .upsert_one(componentId=component.id, revisionHash=self.revisionHash, metrics=metrics_dict)
-
-    def get_component_ids(self, row_component_ids):
-        # get list of objectids for all components in the csv file
-        row_component_ids = row_component_ids.split(",")
-        component_object_ids = []
-        for row_component_id in row_component_ids:
-            component_object_ids.append(self.stored_components[row_component_id.strip()])
-        return component_object_ids
-
-    def store_packages_csv(self):
-        package_csv_path = glob.glob(os.path.join(self.output_path, "*-Package.csv"))[0]
-        with open(package_csv_path) as csvfile:
-            reader = csv.DictReader(csvfile)
-
-            for row in reader:
-                package = Package.objects(projectId=self.projectid, longName=row['LongName']) \
-                    .upsert_one(projectId=self.projectid, name=row["Name"], longName=row['LongName'])
-                self.stored_packages[row['ID']] = package.id
-
-                metrics_dict = self.sanitize_metrics_dictionary(copy.deepcopy(row))
-
-                if row['Parent'] and row['Parent'] in self.stored_packages:
-                    PackageState.objects(packageId=package.id, revisionHash=self.revisionHash) \
-                        .upsert_one(packageId=package.id, revisionHash=self.revisionHash, metrics=metrics_dict,
-                                    componentId=self.stored_components[row['Component']],
-                                    parentPackage=self.stored_packages[row['Parent']])
-                else:
-                    PackageState.objects(packageId=package.id, revisionHash=self.revisionHash) \
-                        .upsert_one(packageId=package.id, revisionHash=self.revisionHash, metrics=metrics_dict,
-                                    componentId=self.stored_components[row['Component']])
-
-    def store_classes_csv(self):
-        classes_csv_path = glob.glob(os.path.join(self.output_path, "*-Class.csv"))[0]
-        with open(classes_csv_path) as csvfile:
-            reader = csv.DictReader(csvfile)
-
-            for row in reader:
-                long_name = self.sanitize_long_name(row['Path'])
-
-                clazz = Clazz.objects(projectId=self.projectid, fileId=self.stored_files[long_name],
-                                      longName=row['LongName'])\
-                    .upsert_one(projectId=self.projectid, fileId=self.stored_files[long_name], name=row['Name'],
-                                longName=row['LongName'])
-                self.stored_classes[row['ID']] = clazz.id
-
-                metrics_dict = self.sanitize_metrics_dictionary(copy.deepcopy(row))
-
-                ClazzState.objects(clazzId=clazz.id, revisionHash=self.revisionHash)\
-                        .upsert_one(clazzId=clazz.id, revisionHash=self.revisionHash, moduleId=self.stored_modules[row['Parent']],
-                                    startLine=row['Line'], endLine=row['EndLine'], startColumn=row['Column'],
-                                    endColumn=row['EndColumn'], metrics=metrics_dict,
-                                    componentIds=self.get_component_ids(row['Component']))
-
-    def store_methods_csv(self):
-        methods_csv_path = glob.glob(os.path.join(self.output_path, "*-Method.csv"))[0]
-        with open(methods_csv_path) as csvfile:
-            reader = csv.DictReader(csvfile)
-
-            for row in reader:
-                long_name = self.sanitize_long_name(row['Path'])
-                method = Method.objects(projectId=self.projectid, fileId=self.stored_files[long_name],
-                                        longName=row['LongName'])\
-                    .upsert_one(projectId=self.projectid, fileId=self.stored_files[long_name], name=row['Name'],
-                                longName=row['LongName'])
-                self.stored_methods[row['ID']] = method.id
-
-                metrics_dict = self.sanitize_metrics_dictionary(copy.deepcopy(row))
-                MethodState.objects(methodId=method.id, revisionHash=self.revisionHash)\
-                    .upsert_one(methodId=method.id, revisionHash=self.revisionHash, clazzId=self.stored_classes[row['Parent']],
-                                startLine=row['Line'], endLine=row['EndLine'], startColumn=row['Column'],
-                                endColumn=row['EndColumn'], metrics=metrics_dict,
-                                componentIds=self.get_component_ids(row['Component']))
 
 
     def sanitize_metrics_dictionary(self, metrics):
@@ -208,18 +255,6 @@ class SourcemeterParser(object):
 
         if 'sortKey' in metrics:
             del metrics['sortKey']
-
-        if 'Line' in metrics:
-            del metrics['Line']
-
-        if 'Column' in metrics:
-            del metrics['Column']
-
-        if 'EndLine' in metrics:
-            del metrics['EndLine']
-
-        if 'EndColumn' in metrics:
-            del metrics['EndColumn']
 
         if 'Component' in metrics:
             del metrics['Component']
@@ -256,26 +291,27 @@ class SourcemeterParser(object):
 
         return metrics
 
-    def sanitize_long_name(self, long_name):
-        # special case: longname is <System>, so return it this way
-        if '<System>' == long_name:
-            return long_name
-
-        if self.input_path in long_name:
-            return long_name.replace(self.input_path + "/", "")
-        elif self.output_path in long_name:
-            return long_name.replace(self.output_path + "/", "")
+    def sanitize_long_name(self, orig_long_name):
+        if self.input_path in orig_long_name:
+            long_name = orig_long_name.replace(self.input_path + "/", "")
+        elif self.output_path in orig_long_name:
+            long_name = orig_long_name.replace(self.output_path + "/", "")
         else:
-            long_name = "/".join(long_name.strip("/").split('/')[1:])
+            long_name = "/".join(orig_long_name.strip("/").split('/')[1:])
 
             # if long_name is not an empty string
             if long_name:
-                return self.get_fullpath(long_name)
+                long_name = self.get_fullpath(long_name)
             else:
-                return None
+                long_name = orig_long_name
+
+        if long_name is not None and long_name.startswith("/"):
+            long_name = long_name.strip("/")
+
+        return long_name
 
     def get_fullpath(self, long_name):
         for file_name in self.input_files:
             if file_name.endswith(long_name):
                 return file_name
-        return None
+        return long_name

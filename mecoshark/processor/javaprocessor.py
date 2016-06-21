@@ -3,8 +3,9 @@ import os
 import shutil
 import subprocess
 
+import sys
+
 from mecoshark.processor.baseprocessor import BaseProcessor
-from mecoshark.resultparser.sourcemeterjavaparser import SourcemeterJavaParser
 from mecoshark.resultparser.sourcemeterparser import SourcemeterParser
 
 
@@ -42,9 +43,11 @@ class JavaProcessor(BaseProcessor):
             try:
                 subprocess.run(os.path.join(self.output_path, 'analyze-maven.sh'), shell=True)
             except Exception:
+                sys.exit(1)
                 pass
 
             if not self.is_output_produced():
+                sys.exit(1)
                 shutil.rmtree(os.path.join(self.output_path, self.projectname), True)
                 failure_happened = True
 
@@ -62,6 +65,7 @@ class JavaProcessor(BaseProcessor):
                 shutil.rmtree(os.path.join(self.output_path, self.projectname), True)
                 failure_happened = True
         '''
+
         if failure_happened:
             self.logger.info("Trying out directory analysis for java...")
             self.prepare_template(os.path.join(template_path, 'analyze-dir.sh'))
@@ -102,9 +106,11 @@ class JavaProcessor(BaseProcessor):
         output_path = os.path.join(self.output_path, self.projectname, 'java')
         output_path = os.path.join(output_path, os.listdir(output_path)[0])
 
-        parser = SourcemeterJavaParser(output_path, self.input_path, url, revision)
+        parser = SourcemeterParser(output_path, self.input_path, url, revision)
         parser.store_data()
-        parser.store_clone_data()
+
+        # delete directory
+        shutil.rmtree(os.path.join(self.output_path, self.projectname), True)
 
 
 

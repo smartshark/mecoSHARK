@@ -156,259 +156,28 @@ class Commit(Document):
     committerOffset = IntField()
     message = StringField()
     fileActionIds = ListField(ObjectIdField())
-
     
     def __str__(self):
         return ""
     
 class FileState(Document):
-    #PK: fileid, revisionHash
-    fileId = ObjectIdField(required=True,unique_with=['revisionHash'] )
-    revisionHash = StringField(max_length=50, required=True, unique_with=['fileId'])
+    #PK: fileid, revisionHash, longname
+    file_id = ObjectIdField(required=True,unique_with=['revision_hash', 'long_name'])
+    revision_hash = StringField(max_length=50, required=True, unique_with=['file_id', 'long_name'])
+    long_name = StringField(required=True, unique_with=['file_id', 'revision_hash'])
+    component_ids = ListField(ObjectIdField())
+    name = StringField()
+    file_type = StringField(required=True)
+    parent = ObjectIdField()
     metrics = DictField()
 
-class Package(Document):
-    projectId = ObjectIdField(required=True, unique_with=['longName'])
-    name = StringField(required=True)
-    longName = StringField(require=True, unique_with=['projectId'])
-
-class PackageState(Document):
-    packageId = ObjectIdField(required=True,unique_with=['revisionHash'])
-    revisionHash = StringField(max_length=50, required=True, unique_with=['packageId'])
-    componentId = ObjectIdField(required=True)
-    parentPackage = ObjectIdField()
-    metrics = DictField()
-
-
-class Namespace(Document):
-    projectId = ObjectIdField(required=True, unique_with=['longName'])
-    name = StringField(required=True)
-    longName = StringField(require=True, unique_with=['projectId'])
-
-class NamespaceState(Document):
-    namespaceId = ObjectIdField(required=True,unique_with=['revisionHash'])
-    revisionHash = StringField(max_length=50, required=True, unique_with=['namespaceId'])
-    componentIds = ListField(ObjectIdField())
-    parentNamespace = ObjectIdField()
-    metrics = DictField()
-
-class Component(Document):
-    projectId = ObjectIdField(required=True, unique_with=['longName'])
-    longName = StringField(require=True, unique_with=['projectId'])
-
-class ComponentState(Document):
-    componentId = ObjectIdField(required=True,unique_with=['revisionHash'])
-    revisionHash = StringField(max_length=50, required=True, unique_with=['componentId'])
-    metrics = DictField()
-
-class Module(Document):
-    projectId = ObjectIdField(required=True, unique_with=['fileId', 'name'])
-    fileId = ObjectIdField(required=True, unique_with=['projectId', 'name'])
-    name = StringField(required=True, unique_with=['projectId', 'fileId'])
-
-class ModuleState(Document):
-    moduleId = ObjectIdField(required=True,unique_with=['revisionHash'])
-    revisionHash = StringField(max_length=50, required=True, unique_with=['moduleId'])
-    packageId = ObjectIdField(required=True)
-    componentId = ObjectIdField(required=True)
-    startLine = IntField()
-    endLine = IntField()
-    startColumn = IntField()
-    endColumn = IntField()
-    metrics = DictField()
-
-class Function(Document):
-    projectId = ObjectIdField(required=True, unique_with=['fileId', 'longName'])
-    fileId = ObjectIdField(required=True, unique_with=['projectId', 'longName'])
-    name = StringField(required=True)
-    longName = StringField(required=True, unique_with=['projectId', 'fileId'])
-
-class FunctionState(Document):
-    functionId = ObjectIdField(required=True,unique_with=['revisionHash'])
-    revisionHash = StringField(max_length=50, required=True, unique_with=['functionId'])
-    moduleId = ObjectIdField()
-    parentFunctionId = ObjectIdField()
-    namespaceId= ObjectIdField()
-    componentIds = ListField(ObjectIdField())
-    methodId = ObjectIdField()
-    startLine = IntField()
-    endLine = IntField()
-    startColumn = IntField()
-    endColumn = IntField()
-    metrics = DictField()
-
-
-class Clazz(Document):
-    projectId = ObjectIdField(required=True, unique_with=['fileId', 'longName'])
-    fileId = ObjectIdField(required=True, unique_with=['projectId', 'longName'])
-    name = StringField(required=True)
-    longName = StringField(required=True, unique_with=['projectId', 'fileId'])
-
-class ClazzState(Document):
-    clazzId = ObjectIdField(required=True,unique_with=['revisionHash'] )
-    revisionHash = StringField(max_length=50, required=True, unique_with=['clazzId'])
-    moduleId = ObjectIdField()
-    packageId = ObjectIdField()
-    structureId = ObjectIdField()
-    namespaceId = ObjectIdField()
-    unionId = ObjectIdField()
-    parentClazzId = ObjectIdField()
-    annotationId = ObjectIdField()
-    enumId = ObjectIdField()
-    interfaceId = ObjectIdField()
-    methodId = ObjectIdField()
-    componentIds = ListField(ObjectIdField())
-    startLine = IntField()
-    endLine = IntField()
-    startColumn = IntField()
-    endColumn = IntField()
-    metrics = DictField()
-
-class Enum(Document):
-    projectId = ObjectIdField(required=True, unique_with=['fileId', 'longName'])
-    fileId = ObjectIdField(required=True, unique_with=['projectId', 'longName'])
-    name = StringField(required=True)
-    longName = StringField(required=True, unique_with=['projectId', 'fileId'])
-
-class EnumState(Document):
-    enumId = ObjectIdField(required=True,unique_with=['revisionHash'] )
-    revisionHash = StringField(max_length=50, required=True, unique_with=['enumId'])
-    packageId = ObjectIdField()
-    clazzId = ObjectIdField()
-    parentEnumId = ObjectIdField()
-    interfaceId = ObjectIdField()
-    structureId = ObjectIdField()
-    namespaceId = ObjectIdField()
-    annotationId = ObjectIdField()
-    unionId = ObjectIdField()
-    componentIds = ListField(ObjectIdField())
-    methodId = ObjectIdField()
-    startLine = IntField()
-    endLine = IntField()
-    startColumn = IntField()
-    endColumn = IntField()
-    metrics = DictField()
-
-class Interface(Document):
-    projectId = ObjectIdField(required=True, unique_with=['fileId', 'longName'])
-    fileId = ObjectIdField(required=True, unique_with=['projectId', 'longName'])
-    name = StringField(required=True)
-    longName = StringField(required=True, unique_with=['projectId', 'fileId'])
-
-class InterfaceState(Document):
-    interfaceId = ObjectIdField(required=True,unique_with=['revisionHash'] )
-    revisionHash = StringField(max_length=50, required=True, unique_with=['interfaceId'])
-    packageId = ObjectIdField()
-    clazzId = ObjectIdField()
-    enumId = ObjectIdField()
-    structureId = ObjectIdField()
-    namespaceId = ObjectIdField()
-    annotationId = ObjectIdField()
-    unionId = ObjectIdField()
-    parentInterfaceId = ObjectIdField()
-    componentIds = ListField(ObjectIdField())
-    methodId = ObjectIdField()
-    startLine = IntField()
-    endLine = IntField()
-    startColumn = IntField()
-    endColumn = IntField()
-    metrics = DictField()
-
-
-
-class Method(Document):
-    projectId = ObjectIdField(required=True, unique_with=['fileId', 'longName'])
-    fileId = ObjectIdField(required=True, unique_with=['projectId', 'longName'])
-    name = StringField(required=True)
-    longName = StringField(required=True, unique_with=['projectId', 'fileId'])
-
-class MethodState(Document):
-    methodId = ObjectIdField(required=True,unique_with=['revisionHash'] )
-    revisionHash = StringField(max_length=50, required=True, unique_with=['methodId'])
-    clazzId = ObjectIdField()
-    enumId = ObjectIdField()
-    interfaceId = ObjectIdField()
-    parentMethodId = ObjectIdField()
-    structureId = ObjectIdField()
-    namespaceId = ObjectIdField()
-    annotationId = ObjectIdField()
-    unionId = ObjectIdField()
-    componentIds = ListField(ObjectIdField())
-    startLine = IntField()
-    endLine = IntField()
-    startColumn = IntField()
-    endColumn = IntField()
-    metrics = DictField()
-
-class Annotation(Document):
-    projectId = ObjectIdField(required=True, unique_with=['fileId', 'longName'])
-    fileId = ObjectIdField(required=True, unique_with=['projectId', 'longName'])
-    name = StringField(required=True)
-    longName = StringField(required=True, unique_with=['projectId', 'fileId'])
-
-class AnnotationState(Document):
-    annotationId = ObjectIdField(required=True,unique_with=['revisionHash'] )
-    revisionHash = StringField(max_length=50, required=True, unique_with=['annotationId'])
-    clazzId = ObjectIdField()
-    enumId = ObjectIdField()
-    interfaceId = ObjectIdField()
-    packageId = ObjectIdField()
-    methodId = ObjectIdField()
-    parentAnnotationId = ObjectIdField()
-    structureId = ObjectIdField()
-    namespaceId = ObjectIdField()
-    unionId = ObjectIdField()
-    componentIds = ListField(ObjectIdField())
-    startLine = IntField()
-    endLine = IntField()
-    startColumn = IntField()
-    endColumn = IntField()
-    metrics = DictField()
-
-class Structure(Document):
-    projectId = ObjectIdField(required=True, unique_with=['fileId', 'longName'])
-    fileId = ObjectIdField(required=True, unique_with=['projectId', 'longName'])
-    name = StringField(required=True)
-    longName = StringField(required=True, unique_with=['projectId', 'fileId'])
-
-class StructureState(Document):
-    structureId = ObjectIdField(required=True,unique_with=['revisionHash'] )
-    revisionHash = StringField(max_length=50, required=True, unique_with=['structureId'])
-    clazzId = ObjectIdField()
-    enumId = ObjectIdField()
-    interfaceId = ObjectIdField()
-    methodId = ObjectIdField()
-    parentStructureId = ObjectIdField()
-    namespaceId = ObjectIdField()
-    unionId = ObjectIdField()
-    componentIds = ListField(ObjectIdField())
-    startLine = IntField()
-    endLine = IntField()
-    startColumn = IntField()
-    endColumn = IntField()
-    metrics = DictField()
-
-class Union(Document):
-    projectId = ObjectIdField(required=True, unique_with=['fileId', 'longName'])
-    fileId = ObjectIdField(required=True, unique_with=['projectId', 'longName'])
-    name = StringField(required=True)
-    longName = StringField(required=True, unique_with=['projectId', 'fileId'])
-
-class UnionState(Document):
-    unionId = ObjectIdField(required=True,unique_with=['revisionHash'] )
-    revisionHash = StringField(max_length=50, required=True, unique_with=['unionId'])
-    clazzId = ObjectIdField()
-    enumId = ObjectIdField()
-    interfaceId = ObjectIdField()
-    methodId = ObjectIdField()
-    structureId = ObjectIdField()
-    namespaceId = ObjectIdField()
-    parentUnionId = ObjectIdField()
-    componentIds = ListField(ObjectIdField())
-    startLine = IntField()
-    endLine = IntField()
-    startColumn = IntField()
-    endColumn = IntField()
+class MetaPackageState(Document):
+    project_id = ObjectIdField(required=True, unique_with=['long_name', 'revision_hash'])
+    long_name = StringField(require=True, unique_with=['project_id', 'revision_hash'])
+    revision_hash = StringField(max_length=50, required=True, unique_with=['project_id', 'long_name'])
+    name = StringField()
+    component_ids = ListField(ObjectIdField())
+    parent_state = ObjectIdField()
     metrics = DictField()
 
 class CloneInstance(Document):

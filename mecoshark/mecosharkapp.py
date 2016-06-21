@@ -23,7 +23,6 @@ class MecoSHARK(object):
         self.url = url
         self.projectname = os.path.basename(os.path.normpath(input))
 
-
         # connect to mongodb
         connect(db_name, host=db_host, port=db_port, authentication_source=db_authentication, username=db_user,
                 password=db_password, connect=False)

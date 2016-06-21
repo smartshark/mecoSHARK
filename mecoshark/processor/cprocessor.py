@@ -4,7 +4,6 @@ import shutil
 import subprocess
 
 from mecoshark.processor.baseprocessor import BaseProcessor
-from mecoshark.resultparser.sourcemetercparser import SourcemeterCParser
 from mecoshark.resultparser.sourcemeterparser import SourcemeterParser
 
 
@@ -70,9 +69,10 @@ class CProcessor(BaseProcessor):
         output_path = os.path.join(self.output_path, self.projectname, 'cpp')
         output_path = os.path.join(output_path, os.listdir(output_path)[0])
 
-        parser = SourcemeterCParser(output_path, self.input_path, url, revision)
+        parser = SourcemeterParser(output_path, self.input_path, url, revision)
         parser.store_data()
-        parser.store_clone_data()
+
+        shutil.rmtree(os.path.join(self.output_path, self.projectname), True)
 
 
 

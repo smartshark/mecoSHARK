@@ -6,7 +6,7 @@ from mecoshark.processor.baseprocessor import BaseProcessor
 
 def find_plugins(pluginDir):
     """Finds all python files in the specified path and imports them. This is needed, if we want to
-    detect automatically, which datastore and parser we can apply
+    detect automatically, which processor
 
     :param pluginDir: path to the plugin directory"""
     plugin_files = [x[:-3] for x in os.listdir(pluginDir) if x.endswith(".py")]

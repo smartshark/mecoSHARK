@@ -5,7 +5,6 @@ import subprocess
 
 from mecoshark.processor.baseprocessor import BaseProcessor
 from mecoshark.resultparser.sourcemeterparser import SourcemeterParser
-from mecoshark.resultparser.sourcemeterpythonparser import SourcemeterPythonParser
 
 
 class PythonProcessor(BaseProcessor):
@@ -59,9 +58,10 @@ class PythonProcessor(BaseProcessor):
         output_path = os.path.join(self.output_path, self.projectname, 'python')
         output_path = os.path.join(output_path, os.listdir(output_path)[0])
 
-        parser = SourcemeterPythonParser(output_path, self.input_path, url, revision)
+        parser = SourcemeterParser(output_path, self.input_path, url, revision)
         parser.store_data()
-        parser.store_clone_data()
+
+        shutil.rmtree(os.path.join(self.output_path, self.projectname), True)
 
 
 
