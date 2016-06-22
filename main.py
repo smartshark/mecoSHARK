@@ -6,7 +6,8 @@ import sys
 import argparse
 from mecoshark.mecosharkapp import MecoSHARK
 
-def setup_logging(default_path=os.path.dirname(os.path.realpath(__file__))+"/loggerConfiguration.json",
+
+def setup_logging(default_path=os.path.dirname(os.path.realpath(__file__))+"/mecoshark/loggerConfiguration.json",
                   default_level=logging.INFO):
         """
         Setup logging configuration
