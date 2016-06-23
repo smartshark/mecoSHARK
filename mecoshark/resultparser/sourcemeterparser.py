@@ -11,6 +11,28 @@ from mecoshark.resultparser.mongomodels import Project, File, FileState, CloneIn
 
 
 class SourcemeterParser(object):
+    """
+    Parser that parses the results from sourcemeter
+
+    :param output_path: path to an output directory, where files were stored
+    :param input_path: path to the revision that is used as input
+    :param url: url to the repository of the project that is analyzed
+    :param revisionHash: hash of the revision, which is analyzed
+
+
+    :property output_path: path to an output directory, where files can be stored
+    :property input_path: path to the revisionn that is used as input
+    :property url: url to the repository of the project that is analyzed
+    :property revisionHash: hash of the revision, which is analyzed
+    :property logger: logger that is used for the project
+    :property projectid: id of the project with the given url
+    :property stored_files: list of files that are stored at the input path
+    :property ordered_file_states: dictionary that have all results in an ordered manner (a state that have another as parent must be after this parent state)
+    :property stored_file_states: states that were stored in the mongodb
+    :property stored_meta_package_states: meta package states that were stored in the mongodb
+    :property input_files: list of input files
+    :property projectname: name of the project (last part of input path)
+    """
     def __init__(self, output_path, input_path, url, revisionHash):
         # Set variables
         self.output_path = output_path
@@ -35,6 +57,11 @@ class SourcemeterParser(object):
         self.prepare_csv_files()
 
     def get_project_id(self, url):
+        """
+        Gets the project id for the given url
+        :param url: url of the project
+        :return: project id (ObjectId)
+        """
         # find projectid
         try:
             return Project.objects(url=url).get().id
@@ -46,7 +73,7 @@ class SourcemeterParser(object):
         """
         We need to find all files that are stored in the input path. This is needed to link the files that were parsed
         with the files that are already stored via vcsSHARK.
-        :return:
+        :return: dictionary with file path as key and id as value (from vcsshark results)
         """
         # get list of files in input_path
         self.input_files = []
@@ -126,6 +153,17 @@ class SourcemeterParser(object):
 
     @staticmethod
     def sort_for_parent(state_dict):
+        """
+        Sorts the given dictionary in a way, that the parent states of the states must be before it.
+        Special rules apply for file states, as they do not have any parents.
+
+
+        :param state_dict: dictionary of states that should be ordered
+        :return: ordered dictionary
+
+        .. NOTE:: Example: X has parent Y, Y has parent Z. Therefore, it would be ordered:\
+        Z -> Y -> X
+        """
         not_finished = True
         new_dict = []
         written_ids = []
@@ -148,6 +186,11 @@ class SourcemeterParser(object):
         return new_dict
 
     def store_data(self):
+        """
+        Call to store data: If they have 'Path' in the row, file states data is stored. Otherwise, meta package data
+
+        :return:
+        """
         for row in self.ordered_file_states:
             if 'Path' in row:
                 self.store_file_states_data(row)
@@ -156,8 +199,13 @@ class SourcemeterParser(object):
 
         self.store_clone_data()
 
-
     def get_component_ids(self, row_component_ids):
+        """
+        Function that gets the component ids from the component ids string.
+
+        :param row_component_ids: component ids string
+        :return: ObjectIds of all components as list
+        """
         # get list of objectids for all components in the csv file
         row_component_ids = row_component_ids.split(",")
         component_object_ids = []
@@ -166,6 +214,14 @@ class SourcemeterParser(object):
         return component_object_ids
 
     def store_meta_package_data(self, row):
+        """
+        Stores the meta package data.
+        Fills the stored_meta_package_states property for less database communication.
+
+        :param row: row that is processed
+
+        .. NOTE:: Meta packages do not have a direct connection to files from a revision. It consists of a set of states.
+        """
         long_name = self.sanitize_long_name(row['LongName'])
         metrics_dict = self.sanitize_metrics_dictionary(copy.deepcopy(row))
         name = self.sanitize_long_name(row.get('Name', None))
@@ -185,6 +241,14 @@ class SourcemeterParser(object):
         self.stored_meta_package_states[row['ID']] = state.id
 
     def store_file_states_data(self, row):
+        """
+        Stores the file states data.
+        Fills the stored_file_states property for less database communication.
+
+        :param row: row that is processed:
+
+        .. NOTE:: File states have a direct connection to a file from a revision.
+        """
         path_name = self.sanitize_long_name(row['Path'])
         long_name = self.sanitize_long_name(row['LongName'])
         metrics_dict = self.sanitize_metrics_dictionary(copy.deepcopy(row))
@@ -217,6 +281,9 @@ class SourcemeterParser(object):
         self.stored_file_states[row['ID']] = state.id
 
     def store_clone_data(self):
+        """
+        Parses and stores the cloning data that was generated by sourcemeter.
+        """
         self.logger.info("Parsing & storing clone data...")
         clone_class_csv_path = glob.glob(os.path.join(self.output_path, "*-CloneClass.csv"))[0]
         clone_instance_csv_path = glob.glob(os.path.join(self.output_path, "*-CloneInstance.csv"))[0]
@@ -241,9 +308,14 @@ class SourcemeterParser(object):
                                 endColumn=row['EndColumn'])
         self.logger.info("Finished parsing & storing clone data!")
 
+    @staticmethod
+    def sanitize_metrics_dictionary(metrics):
+        """
+        Helper function, which sanitizes the csv reader row so that it only contains the metrics of it.
 
-
-    def sanitize_metrics_dictionary(self, metrics):
+        :param metrics: csv reader row
+        :return: dictionary of metrics
+        """
         del metrics['Name']
         del metrics['ID']
 
@@ -292,6 +364,18 @@ class SourcemeterParser(object):
         return metrics
 
     def sanitize_long_name(self, orig_long_name):
+        """
+        Sanitizes the long_name of the row.
+        1) If the long_name has the input path in it: just strip it
+        2) If the long_name has the output path in it: just strip it
+        3) Otherwise: The long_name will be separated by "/" and joined together after the first part was split.
+
+        :param orig_long_name: long_name of the row
+        :return: sanitized long_name
+
+
+        .. NOTE:: This is necessary, as the output of sourcemeter can be different based on which processor is used.
+        """
         if self.input_path in orig_long_name:
             long_name = orig_long_name.replace(self.input_path + "/", "")
         elif self.output_path in orig_long_name:
@@ -311,6 +395,12 @@ class SourcemeterParser(object):
         return long_name
 
     def get_fullpath(self, long_name):
+        """
+        If the long_name is in the input files of the input path, it will return the corresponding file name
+
+        :param long_name: long_name of the row
+        :return: new long_name
+        """
         for file_name in self.input_files:
             if file_name.endswith(long_name):
                 return file_name

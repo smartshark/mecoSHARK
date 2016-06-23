@@ -34,6 +34,9 @@ class MecoSHARK(object):
     :property revision: string of the revision hash
     :property url: url of the project that is analyzed
     :property projectname: name of the project (last part of input path)
+
+
+    .. WARNING:: URL must be the same as the url that was stored in the mongodb by vcsSHARK!
     """
 
 

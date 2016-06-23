@@ -15,16 +15,28 @@ class BaseProcessor(metaclass=abc.ABCMeta):
     """
     @abc.abstractproperty
     def enabled(self):
+        """
+        Trigger to enable/disable plugins
+
+        :return: boolean
+        """
         return False
 
     @abc.abstractproperty
     def threshold(self):
+        """
+        Threshold on which the processor should be executed
+
+        :example: If threshold is 0.4, then the processor is executed if more than 40% of all files have the supported file type.
+
+        :return: threshold
+        """
         return
 
     @abc.abstractproperty
     def supported_languages(self):
         """
-        Currently: java, c, cs, cpp, python, sh, etc.
+        Currently: java, c, cs, cpp, python
         :return:
         """
         return
@@ -36,9 +48,25 @@ class BaseProcessor(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def process(self, revision, url, options):
+        """
+        Is called if a revision with hash "revision" should be processed.
+
+        :param revision: revision_hash of the revision
+        :param url: url of the project that is analyzed
+        :param options: possible options (e.g. for CProcessor)
+        :return:
+        """
         return
 
     def prepare_template(self, template):
+        """
+        Copies the template from the template folder to the output_path and sets access rights.
+
+        Several variables (marked with $<name>) are substituted, so that the template can be used right away
+
+        :param template: path to the template
+        :return:
+        """
         sourcemeter_path = os.path.dirname(os.path.realpath(__file__))+'/../../external/sourcemeter/'
         java_sourcemeter = os.path.join(sourcemeter_path, 'Java/SourceMeterJava')
         python_sourcemeter = os.path.join(sourcemeter_path, 'Python/SourceMeterPython')
