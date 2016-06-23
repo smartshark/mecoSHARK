@@ -5,7 +5,7 @@ Introduction
 This introduction will show how to use **mecoSHARK**. Furthermore, we list all requirements for this tool here, so that an
 easy installation is possible.
 
-.. WARNING:: This software is highly experimental and still in development.
+**This software is highly experimental and still in development.**
 
 
 
@@ -38,94 +38,20 @@ There are several requirements for **mecoSHARK**:
 *   Ant (1.9.7) - available here: http://archive.apache.org/dist/ant/binaries/
 *   Maven (3.2.5) - available here: https://archive.apache.org/dist/maven/maven-3/
 
-.. NOTE:: It may be possible, that **mecoSHARK** also works with other versions of the named libraries. But we only tested the versions, which are given in brackets.
+
+It may be possible, that **mecoSHARK** also works with other versions of the named libraries. But we only tested the versions, which are given in brackets.
 
 
 How to Use
 ==========
-In this chapter, we explain how you can install **mecoSHARK** or use it directly from the command line.
-
-
-Installation
-------------
-The installation process is a little bit complicated, as sourcemeter can not be publicly distributed. Thats why you need
-to clone **mecoSHARK** and create the following structure:
-
-Overall structure:
-
-.. image:: images/folder_structure.png
-
-Sloccount structure:
-
-.. image:: images/sloccount.png
-
-
-
-.. WARNING:: Make sure, that your $JAVA_HOME is set correctly!
-
-.. WARNING:: If you want to use the java parser, download :download:`this script <./_downloads/installMavenWrapper.sh>`, put it into /external/sourcemeter/Java/ and execute it.
-
-.. WARNING:: Make sure, that /external/sloccount2.25 is in your $PATH.
+The installation of mecoSHARK is described in the offical documentation (see above).
 
 .. _usage:
 
 Usage
 -----
 
-.. WARNING:: vcsSHARK must be executed **BEFORE** mecoSHARK, as it uses information gathered by vcsSHARK.
-
-**mecoSHARK** is easy to use. Nevertheless, you need to checkout/clone the repository you want to analyze first. Which means, that the repository at the given **input** path must have the desired revision.
-
-**mecoSHARK** supports different commandline arguments:
-
-.. option:: --help, -h
-
-	shows the help page for this command
-
-.. option:: --version, -v
-
-	shows the version
-
-.. option:: --input <PATH>, -i <PATH>
-
-	path to the repository, which already has the desired revision.
-
-.. option:: --output <PATH>, -o <PATH>
-
-	path to a directory, which can be used as output.
-
-.. option:: --rev <REV>, -r <REV>
-
-	hash of the revision that the project in the given directory has
-
-.. option:: --url <URL>, -u <URL>
-
-	hash of the revision that the project in the given directory has
-
-.. option:: --db-user <USER>, -U <USER>
-
-	mongodb user name
-
-.. option:: --db-password <PASSWORD>, -P <PASSWORD>
-
-	mongodb password
-
-.. option:: --db-database <DATABASENAME>, -DB <DATABASENAME>
-
-	mongodb database name that should be used
-
-.. option:: --db-hostname <HOSTNAME>, -H <HOSTNAME>
-
-	hostname, where the mongodb runs on
-
-.. option:: --db-port <PORT>, -p <PORT>
-
-	port, where the mongodb runs on
-
-.. option:: --db-authentication <DB_AUTHENTICATION> -a <DB_AUTHENTICATION>
-
-	name of the authentication database
-
+**vcsSHARK must be executed BEFORE mecoSHARK, as it uses information gathered by vcsSHARK.**
 
 Example:
 
