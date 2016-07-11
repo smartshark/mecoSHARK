@@ -86,7 +86,11 @@ class MecoSHARK(object):
         external_path = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'external')
         sloccount_path = os.path.join(external_path, 'sloccount2.26', 'sloccount')
 
-        command = sloccount_path+" --details "+self.input_path+" | awk -F '\t' '{print $2}'"
+        sloccount_temp = os.path.join(self.input_path, '.sloccount')
+        os.makedirs(sloccount_temp, mode=0o777, exist_ok=True)
+
+        command = "%s --datadir %s --details %s | awk -F '\t' '{print $2}'" % (sloccount_path, sloccount_temp,
+                                                                               self.input_path)
         self.logger.info('Calling command: %s' % command)
         output = subprocess.check_output(command, shell=True)
 
@@ -100,6 +104,7 @@ class MecoSHARK(object):
             self.logger.debug('Language %s part: %f' % (language, language_part))
 
         self.logger.info("Found the following languages: "+','.join(languages))
+        shutil.rmtree(sloccount_temp)
 
         return languages
 

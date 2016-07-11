@@ -5,9 +5,10 @@ import logging
 import os
 import sys
 
-from mongoengine import DoesNotExist
+from mongoengine import DoesNotExist, NotUniqueError
+from pymongo.errors import DuplicateKeyError
 
-from mecoshark.resultparser.mongomodels import Project, File, FileState, CloneInstance, MetaPackageState
+from mecoshark.resultparser.mongomodels import Project, File, FileState, CloneInstance, MetaPackageState, Commit
 
 
 class SourcemeterParser(object):
@@ -38,7 +39,6 @@ class SourcemeterParser(object):
         self.output_path = output_path
         self.input_path = input_path
         self.url = url
-        self.revisionHash = revisionHash
 
         # Default dictionaries and lists
         self.ordered_file_states = {}
@@ -51,10 +51,25 @@ class SourcemeterParser(object):
 
         # Get project id and find all stored files in the current input path (needed for java projects)
         self.projectid = self.get_project_id(url)
+        self.commit_id = self.get_commit_id(self.projectid, revisionHash)
+
         self.stored_files = self.find_stored_files()
 
         # Prepare csv files
         self.prepare_csv_files()
+
+    def get_commit_id(self, project_id, revision_hash):
+        """
+        Gets the commit id for the corresponding projectid and revision
+        :param project_id: id of the project
+        :param revision_hash: revision hash that is analyzed
+        :return: commit id (ObjectId)
+        """
+        try:
+            return Commit.objects(projectId=project_id, revisionHash=revision_hash).get().id
+        except DoesNotExist:
+            self.logger.error("Commit with project_id %s and revision %s does not exist" % (project_id, revision_hash))
+            sys.exit(1)
 
     def get_project_id(self, url):
         """
@@ -234,11 +249,13 @@ class SourcemeterParser(object):
         if 'Component' in row:
             components = self.get_component_ids(row['Component'])
 
-        state = MetaPackageState.objects(project_id=self.projectid, long_name=long_name, revision_hash=self.revisionHash)\
-            .upsert_one(project_id=self.projectid, long_name=long_name, revision_hash=self.revisionHash, metrics=metrics_dict,
-                        parent_state=parent_state, name=name, component_ids=components)
+        try:
+            state_id = MetaPackageState(commit_id=self.commit_id, long_name=long_name, metrics=metrics_dict,
+                                        parent_state=parent_state, name=name, component_ids=components).save().id
+        except (DuplicateKeyError, NotUniqueError):
+            state_id = MetaPackageState.objects(commit_id=self.commit_id, long_name=long_name).get().id
 
-        self.stored_meta_package_states[row['ID']] = state.id
+        self.stored_meta_package_states[row['ID']] = state_id
 
     def store_file_states_data(self, row):
         """
@@ -266,19 +283,20 @@ class SourcemeterParser(object):
         if 'Component' in row:
             components = self.get_component_ids(row['Component'])
 
-        state = FileState.objects(file_id=self.stored_files[path_name], revision_hash=self.revisionHash, long_name=long_name)\
-            .upsert_one(
+        try:
+            state_id = FileState(
                 file_id=self.stored_files[path_name],
-                revision_hash=self.revisionHash,
+                commit_id=self.commit_id,
                 long_name=long_name,
                 name=row.get('Name', None),
                 file_type=row['type'],
                 parent=parent_state,
                 metrics=metrics_dict,
-                component_ids = components
-            )
+                component_ids = components).save().id
+        except (DuplicateKeyError, NotUniqueError):
+            state_id = FileState.objects(file_id=self.stored_files[path_name], commit_id=self.commit_id).get().id
 
-        self.stored_file_states[row['ID']] = state.id
+        self.stored_file_states[row['ID']] = state_id
 
     def store_clone_data(self):
         """
@@ -300,12 +318,16 @@ class SourcemeterParser(object):
                 metrics_dict = self.sanitize_metrics_dictionary(copy.deepcopy(row))
                 long_name = self.sanitize_long_name(row['Path'])
 
-                CloneInstance.objects(projectId=self.projectid, name=row['ID'], revisionHash=self.revisionHash)\
-                    .upsert_one(projectId=self.projectid, name=row['ID'], revisionHash=self.revisionHash,
-                                fileId=self.stored_files[long_name], cloneClass=row['Parent'],
-                                cloneClassMetrics=clone_classes[row['Parent']], cloneInstanceMetrics=metrics_dict,
-                                startLine=row['Line'], startColumn=row['Column'], endLine=row['EndLine'],
-                                endColumn=row['EndColumn'])
+                try:
+                    CloneInstance(
+                        commit_id=self.commit_id, name=row['ID'], fileId=self.stored_files[long_name],
+                        cloneClass=row['Parent'], cloneClassMetrics=clone_classes[row['Parent']],
+                        cloneInstanceMetrics=metrics_dict, startLine=row['Line'], startColumn=row['Column'],
+                        endLine=row['EndLine'], endColumn=row['EndColumn']
+                    ).save()
+                except (DuplicateKeyError, NotUniqueError):
+                    pass
+
         self.logger.info("Finished parsing & storing clone data!")
 
     @staticmethod
