@@ -132,9 +132,8 @@ class JavaProcessor(BaseProcessor):
         """
 
         self.execute_sourcemeter()
-
-        output_path = os.path.join(self.output_path, self.projectname, 'java')
-        output_path = os.path.join(output_path, os.listdir(output_path)[0])
+        meco_path = os.path.join(self.output_path, self.projectname, 'java')
+        output_path = os.path.join(meco_path, os.listdir(meco_path)[0])
 
         parser = SourcemeterParser(output_path, self.input_path, url, revision)
         parser.store_data()
