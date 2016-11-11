@@ -239,19 +239,25 @@ class SourcemeterParser(object):
         """
         long_name = self.sanitize_long_name(row['LongName'])
         metrics_dict = self.sanitize_metrics_dictionary(copy.deepcopy(row))
-        name = self.sanitize_long_name(row.get('Name', None))
 
-        parent_state = None
-        components = None
+        new_state = MetaPackageState(
+            commit_id=self.commit_id,
+            long_name=long_name,
+            metrics=metrics_dict,
+            file_type=row['type']
+        )
+
+        if 'Name' in row:
+            new_state.name = row['Name']
+
         if 'Parent' in row and row['Parent'] in self.stored_meta_package_states:
-            parent_state = self.stored_meta_package_states[row['Parent']]
+            new_state.parent_state = self.stored_meta_package_states[row['Parent']]
 
         if 'Component' in row:
-            components = self.get_component_ids(row['Component'])
+            new_state.component_ids = self.get_component_ids(row['Component'])
 
         try:
-            state_id = MetaPackageState(commit_id=self.commit_id, long_name=long_name, metrics=metrics_dict,
-                                        parent_state=parent_state, name=name, component_ids=components).save().id
+            state_id = new_state.save().id
         except (DuplicateKeyError, NotUniqueError):
             state_id = MetaPackageState.objects(commit_id=self.commit_id, long_name=long_name).get().id
 
@@ -268,33 +274,40 @@ class SourcemeterParser(object):
         """
         path_name = self.sanitize_long_name(row['Path'])
         long_name = self.sanitize_long_name(row['LongName'])
-        metrics_dict = self.sanitize_metrics_dictionary(copy.deepcopy(row))
 
-        parent_state = None
-        components = None
+        new_state = FileState(
+            file_id=self.stored_files[path_name],
+            commit_id=self.commit_id,
+            long_name=long_name,
+            file_type=row['type'],
+        )
+
+        if 'Name' in row:
+            new_state.name = row['Name']
 
         if 'Parent' in row and row['Parent'] in self.stored_meta_package_states:
-            parent_state = self.stored_meta_package_states[row['Parent']]
+            new_state.parent = self.stored_meta_package_states[row['Parent']]
         elif 'Parent' in row and row['Parent'] in self.stored_file_states:
-            parent_state = self.stored_file_states[row['Parent']]
+            new_state.parent = self.stored_file_states[row['Parent']]
         elif 'Parent' in row and row['type'] != 'file':
             self.logger.error("ERROR! Parent not found for %s!" % row)
 
         if 'Component' in row:
-            components = self.get_component_ids(row['Component'])
+            new_state.component_ids = self.get_component_ids(row['Component'])
+
+        if 'Line' in row and 'EndLine' in row and 'Column' in row and 'EndColumn' in row:
+            new_state.startLine = row['Line']
+            new_state.endLine = row['EndLine']
+            new_state.startColumn = row['Column']
+            new_state.endColumn = row['EndColumn']
+
+        new_state.metrics = self.sanitize_metrics_dictionary(copy.deepcopy(row))
 
         try:
-            state_id = FileState(
-                file_id=self.stored_files[path_name],
-                commit_id=self.commit_id,
-                long_name=long_name,
-                name=row.get('Name', None),
-                file_type=row['type'],
-                parent=parent_state,
-                metrics=metrics_dict,
-                component_ids = components).save().id
+            state_id = new_state.save().id
         except (DuplicateKeyError, NotUniqueError):
-            state_id = FileState.objects(file_id=self.stored_files[path_name], commit_id=self.commit_id).get().id
+            state_id = FileState.objects(file_id=self.stored_files[path_name], commit_id=self.commit_id,
+                                         long_name=long_name).get().id
 
         self.stored_file_states[row['ID']] = state_id
 
@@ -373,6 +386,18 @@ class SourcemeterParser(object):
 
         if 'WarningMinor' in metrics:
             del metrics['WarningMinor']
+
+        if 'Line' in metrics:
+            del metrics['Line']
+
+        if 'EndLine' in metrics:
+            del metrics['EndLine']
+
+        if 'Column' in metrics:
+            del metrics['Column']
+
+        if 'EndColumn' in metrics:
+            del metrics['EndColumn']
 
         for name, value in metrics.items():
             if not value:

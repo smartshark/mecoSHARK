@@ -48,6 +48,7 @@ class JavaProcessor(BaseProcessor):
         template_path = os.path.dirname(os.path.realpath(__file__))+'/../../templates'
         failure_happened = False
 
+        '''
         # try maven
         if os.path.exists(os.path.join(self.input_path, 'pom.xml')):
             self.logger.info("Trying out maven...")
@@ -78,6 +79,9 @@ class JavaProcessor(BaseProcessor):
             if not self.is_output_produced():
                 shutil.rmtree(os.path.join(self.output_path, self.projectname), True)
                 failure_happened = True
+        '''
+        # Currently, we only use directory-based analysis
+        failure_happened = True
 
         # use directory based analysis otherwise
         if failure_happened:
@@ -97,6 +101,7 @@ class JavaProcessor(BaseProcessor):
 
         if not self.is_output_produced():
             self.logger.error('Problem in using mecoshark! No output was produced!')
+            sys.exit(1)
 
     def is_output_produced(self):
         """

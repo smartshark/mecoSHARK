@@ -49,11 +49,15 @@ class FileState(Document):
     """
     file_id = ObjectIdField(required=True,unique_with=['commit_id', 'long_name'])
     commit_id = ObjectIdField(required=True, unique_with=['file_id', 'long_name'])
-    long_name = StringField(required=True, unique_with=['file_id', 'commit_id'])
+    parent = ObjectIdField()
     component_ids = ListField(ObjectIdField())
+    long_name = StringField(required=True, unique_with=['file_id', 'commit_id'])
     name = StringField()
     file_type = StringField()
-    parent = ObjectIdField()
+    startLine = IntField()
+    endLine = IntField()
+    startColumn = IntField()
+    endColumn = IntField()
     metrics = DictField()
 
 
@@ -72,10 +76,11 @@ class MetaPackageState(Document):
     .. NOTE:: Unique (or primary keys) are the fields commit_id and long_name.
     """
     commit_id = ObjectIdField(required=True, unique_with=['long_name'])
+    parent_state = ObjectIdField()
+    component_ids = ListField(ObjectIdField())
     long_name = StringField(require=True, unique_with=['commit_id'])
     name = StringField()
-    component_ids = ListField(ObjectIdField())
-    parent_state = ObjectIdField()
+    file_type = StringField()
     metrics = DictField()
 
 
@@ -97,15 +102,15 @@ class CloneInstance(Document):
     """
 
     commit_id = ObjectIdField(required=True, unique_with=['name', 'fileId'])
-    name = StringField(required=True, unique_with=['commit_id', 'fileId'])
     fileId = ObjectIdField(required=True, unique_with=['commit_id', 'name'])
-    cloneClass = StringField(required=True)
-    cloneClassMetrics = DictField(required=True)
-    cloneInstanceMetrics = DictField(required=True)
+    name = StringField(required=True, unique_with=['commit_id', 'fileId'])
     startLine = IntField(required=True)
     endLine = IntField(required=True)
     startColumn = IntField(required=True)
     endColumn = IntField(required=True)
+    cloneInstanceMetrics = DictField(required=True)
+    cloneClass = StringField(required=True)
+    cloneClassMetrics = DictField(required=True)
 
 
 class Commit(Document):

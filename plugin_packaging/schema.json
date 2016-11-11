@@ -1,0 +1,860 @@
+{
+"plugin": "mecoSHARK_0.10",
+"collections":[  
+      {  
+         "fields":[  
+            {  
+               "type":"ObjectIdType",
+               "logical_type":"OID",
+               "field_name":"_id"
+            },
+            {  
+               "type":"ObjectIdType",
+               "logical_type":"RID",
+               "field_name":"commit_id"
+            },
+            {  
+               "type":"ObjectIdType",
+               "logical_type":"RID",
+               "field_name":"file_id"
+            },
+            {  
+               "type":"StringType",
+               "logical_type":"Name",
+               "field_name":"name"
+            },
+            {  
+               "type":"StringType",
+               "logical_type":"Name",
+               "field_name":"cloneClass"
+            },
+            {  
+               "type":"IntegerType",
+               "logical_type":"ProductMetric",
+               "field_name":"startLine"
+            },
+            {  
+               "type":"IntegerType",
+               "logical_type":"ProductMetric",
+               "field_name":"endLine"
+            },
+            {  
+               "type":"IntegerType",
+               "logical_type":"ProductMetric",
+               "field_name":"startColumn"
+            },
+            {  
+               "type":"IntegerType",
+               "logical_type":"ProductMetric",
+               "field_name":"endColumn"
+            },
+            {  
+               "type":"StructType",
+               "logical_type":"Nested",
+               "field_name":"cloneInstanceMetrics",
+               "fields": [
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "Python", "Java"],
+                     "field_name":"CA"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "Python", "Java"],
+                     "field_name":"CCO"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "Python", "Java"],
+                     "field_name":"CE"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "Python", "Java"],
+                     "field_name":"CLLOC"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "Python", "Java"],
+                     "field_name":"CV"
+                  }
+               ]
+            },
+            {  
+               "type":"StructType",
+               "logical_type":"ProductMetric",
+               "field_name":"cloneClassMetrics",
+               "fields": [ 
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "Python", "Java"],
+                     "field_name":"CA"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "Python", "Java"],
+                     "field_name":"CCO"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "Python", "Java"],
+                     "field_name":"CE"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "Python", "Java"],
+                     "field_name":"CEE"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "Python", "Java"],
+                     "field_name":"CEG"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "Python", "Java"],
+                     "field_name":"CI"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "Python", "Java"],
+                     "field_name":"CLLOC"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "Python", "Java"],
+                     "field_name":"CR"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "Python", "Java"],
+                     "field_name":"CV"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "Python", "Java"],
+                     "field_name":"NCR"
+                  }
+               ]
+            }
+         ],
+         "collection_name":"clone_instance"
+      },
+      {  
+         "fields":[  
+            {  
+               "type":"ObjectIdType",
+               "logical_type":"OID",
+               "field_name":"_id"
+            },
+            {  
+               "type":"ObjectIdType",
+               "logical_type":"RID",
+               "field_name":"commit_id"
+            },
+            {  
+               "type":"ObjectIdType",
+               "logical_type":"RID",
+               "field_name":"file_id"
+            },
+            {  
+               "type":"StringType",
+               "logical_type":"ProductMetric",
+               "field_name":"file_type"
+            },
+            {  
+               "type":"ObjectIdType",
+               "logical_type":"RID",
+               "field_name":"parent"
+            },
+            {  
+               "type":"StringType",
+               "logical_type":"Name",
+               "field_name":"long_name"
+            },
+            {  
+               "type":"StringType",
+               "logical_type":"Name",
+               "field_name":"name"
+            },
+            {
+               "type":"IntegerType",
+               "logical_type":["ProductMetric", "JavaAnnotation", "JavaAttribute", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonAttribute", "PythonClass", "PythonFunction", "PythonMethod", "PythonModule"],
+               "field_name":"Line"
+            },
+            {
+               "type":"IntegerType",
+               "logical_type": ["ProductMetric", "JavaAnnotation", "JavaAttribute", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonAttribute", "PythonClass", "PythonFunction", "PythonMethod", "PythonModule"],
+               "field_name":"EndLine"
+            },
+            {
+               "type":"IntegerType",
+               "logical_type": ["ProductMetric", "JavaAnnotation", "JavaAttribute", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonAttribute", "PythonClass", "PythonFunction", "PythonMethod", "PythonModule"],
+               "field_name":"Column"
+            },
+            {
+               "type":"IntegerType",
+               "logical_type":["ProductMetric", "JavaAnnotation", "JavaAttribute", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonAttribute", "PythonClass", "PythonFunction", "PythonMethod", "PythonModule"],
+               "field_name":"EndColumn"
+            },
+            {  
+               "type":"StructType",
+               "logical_type":"Nested",
+               "field_name":"metrics",
+               "fields": [
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "PythonClass"],
+                     "field_name":"LCOM5"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaFile", "JavaMethod", "PythonFile", "PythonFunction", "PythonMethod"],
+                     "field_name":"McCC"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonClass", "PythonFunction", "PythonMethod"],
+                     "field_name":"NL"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonClass", "PythonFunction", "PythonMethod"],
+                     "field_name":"NLE"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "PythonClass"],
+                     "field_name":"WMC"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "PythonClass"],
+                     "field_name":"CBO"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "PythonClass"],
+                     "field_name":"CBOI"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonClass", "PythonFunction", "PythonMethod"],
+                     "field_name":"NII"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonClass", "PythonFunction", "PythonMethod"],
+                     "field_name":"NOI"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "PythonClass"],
+                     "field_name":"RFC"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface"],
+                     "field_name":"AD"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonClass", "PythonFunction", "PythonMethod", "PythonModule"],
+                     "field_name":"CD"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "JavaFile", "PythonClass", "PythonFile", "PythonFunction", "PythonMethod", "PythonModule"],
+                     "field_name":"CLOC"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonClass", "PythonFunction", "PythonMethod"],
+                     "field_name":"DLOC"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaFile"],
+                     "field_name":"PDA"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaFile"],
+                     "field_name":"PUA"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonClass", "PythonFunction", "PythonMethod", "PythonModule"],
+                     "field_name":"TCD"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonClass", "PythonFunction", "PythonMethod", "PythonModule"],
+                     "field_name":"TCLOC"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "PythonClass"],
+                     "field_name":"DIT"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "PythonClass"],
+                     "field_name":"NOA"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "PythonClass"],
+                     "field_name":"NOC"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "PythonClass"],
+                     "field_name":"NOD"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "PythonClass"],
+                     "field_name":"NOP"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "JavaFile", "PythonClass", "PythonFile", "PythonFunction", "PythonMethod", "PythonModule"],
+                     "field_name":"LOC"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "JavaFile", "PythonClass", "PythonFile", "PythonFunction", "PythonMethod", "PythonModule"],
+                     "field_name":"LLOC"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "PythonClass", "PythonModule"],
+                     "field_name":"NA"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "PythonModule"],
+                     "field_name":"NCL"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface"],
+                     "field_name":"NG"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "PythonClass"],
+                     "field_name":"NLA"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface"],
+                     "field_name":"NLG"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "PythonClass"],
+                     "field_name":"NLM"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface"],
+                     "field_name":"NLPA"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface"],
+                     "field_name":"NLPM"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface"],
+                     "field_name":"NLS"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "PythonClass", "PythonModule"],
+                     "field_name":"NM"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonClass", "PythonFile", "PythonFunction", "PythonMethod"],
+                     "field_name":"NOS"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaMethod", "PythonFunction", "PythonMethod"],
+                     "field_name":"NUMPAR"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface"],
+                     "field_name":"NPA"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface"],
+                     "field_name":"NPM"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface"],
+                     "field_name":"NS"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonClass", "PythonFunction", "PythonMethod", "PythonModule"],
+                     "field_name":"TLOC"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonClass", "PythonFunction", "PythonMethod", "PythonModule"],
+                     "field_name":"TLLOC"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "PythonClass", "PythonModule"],
+                     "field_name":"TNA"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface"],
+                     "field_name":"TNG"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "PythonModule"],
+                     "field_name":"TNCL"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "PythonClass"],
+                     "field_name":"TNLA"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface"],
+                     "field_name":"TNLG"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "PythonClass"],
+                     "field_name":"TNLM"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface"],
+                     "field_name":"TNLPA"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface"],
+                     "field_name":"TNLPM"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface"],
+                     "field_name":"TNLS"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "PythonClass", "PythonModule"],
+                     "field_name":"TNM"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonClass", "PythonFunction", "PythonMethod", "PythonModule"],
+                     "field_name":"TNOS"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface"],
+                     "field_name":"TNPA"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface"],
+                     "field_name":"TNPM"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface"],
+                     "field_name":"TNS"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonClass", "PythonFunction", "PythonMethod", "PythonModule"],
+                     "field_name":"CCL"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonClass", "PythonFunction", "PythonMethod", "PythonModule"],
+                     "field_name":"CCO"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonClass", "PythonFunction", "PythonMethod", "PythonModule"],
+                     "field_name":"CC"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonClass", "PythonFunction", "PythonMethod", "PythonModule"],
+                     "field_name":"CI"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonClass", "PythonFunction", "PythonMethod", "PythonModule"],
+                     "field_name":"CLC"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonClass", "PythonFunction", "PythonMethod", "PythonModule"],
+                     "field_name":"CLLC"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonClass", "PythonFunction", "PythonMethod", "PythonModule"],
+                     "field_name":"LDC"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonClass", "PythonFunction", "PythonMethod", "PythonModule"],
+                     "field_name":"LLDC"
+                  }
+               ]
+            },
+            {  
+               "sub_type":"ObjectIdType",
+               "type":"ArrayType",
+               "logical_type":"RID",
+               "field_name":"component_ids"
+            }
+         ],
+         "collection_name":"file_state"
+      },
+      {  
+         "fields":[  
+            {  
+               "type":"ObjectIdType",
+               "logical_type":"OID",
+               "field_name":"_id"
+            },
+            {  
+               "type":"ObjectIdType",
+               "logical_type":"RID",
+               "field_name":"commit_id"
+            },
+            {  
+               "type":"StringType",
+               "logical_type":"Name",
+               "field_name":"long_name"
+            },
+            {  
+               "type":"StringType",
+               "logical_type":"Name",
+               "field_name":"name"
+            },
+            {  
+               "type":"StructType",
+               "logical_type":"ProductMetric",
+               "field_name":"metrics",
+               "fields": [ 
+                  {
+                     "type":"DoubleType",
+                     "logical_type":"ProductMetric",
+                     "field_name":"Line"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":"ProductMetric",
+                     "field_name":"EndLine"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":"ProductMetric",
+                     "field_name":"Column"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":"ProductMetric",
+                     "field_name":"EndColumn"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaPackage"],
+                     "field_name":"AD"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaPackage", "PythonPackage"],
+                     "field_name":"CD"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaPackage", "PythonPackage"],
+                     "field_name":"CLOC"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaPackage"],
+                     "field_name":"PDA"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaPackage"],
+                     "field_name":"PUA"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaComponent", "JavaPackage"],
+                     "field_name":"TAD"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaComponent", "JavaPackage", "PythonComponent", "PythonPackage"],
+                     "field_name":"TCD"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaComponent", "JavaPackage", "PythonComponent", "PythonPackage"],
+                     "field_name":"TCLOC"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaComponent", "JavaPackage"],
+                     "field_name":"TPDA"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaComponent", "JavaPackage"],
+                     "field_name":"TPUA"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaPackage", "PythonPackage"],
+                     "field_name":"LOC"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaPackage", "PythonPackage"],
+                     "field_name":"LLOC"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaPackage", "PythonPackage"],
+                     "field_name":"NA"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaPackage", "PythonPackage"],
+                     "field_name":"NCL"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaPackage"],
+                     "field_name":"NEN"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaPackage"],
+                     "field_name":"NG"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaPackage"],
+                     "field_name":"NIN"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaPackage", "PythonPackage"],
+                     "field_name":"NM"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaPackage"],
+                     "field_name":"NPA"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaPackage", "PythonPackage"],
+                     "field_name":"NPKG"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaPackage"],
+                     "field_name":"NPM"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaPackage"],
+                     "field_name":"NS"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaComponent", "JavaPackage", "PythonComponent", "PythonPackage"],
+                     "field_name":"TLOC"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaComponent", "JavaPackage", "PythonComponent", "PythonPackage"],
+                     "field_name":"TLLOC"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaComponent", "JavaPackage", "PythonComponent", "PythonPackage"],
+                     "field_name":"TNA"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaComponent", "JavaPackage", "PythonComponent", "PythonPackage"],
+                     "field_name":"TNCL"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaComponent", "JavaPackage", "PythonComponent", "PythonPackage"],
+                     "field_name":"TNDI"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaComponent", "JavaPackage"],
+                     "field_name":"TNEN"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaComponent", "JavaPackage", "PythonComponent", "PythonPackage"],
+                     "field_name":"TNFI"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaComponent", "JavaPackage"],
+                     "field_name":"TNG"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaComponent", "JavaPackage"],
+                     "field_name":"TNIN"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaComponent", "JavaPackage", "PythonComponent", "PythonPackage"],
+                     "field_name":"TNM"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaComponent", "JavaPackage", "PythonComponent", "PythonPackage"],
+                     "field_name":"TNOS"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaComponent", "JavaPackage"],
+                     "field_name":"TNPA"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaComponent", "JavaPackage"],
+                     "field_name":"TNPCL"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaComponent", "JavaPackage"],
+                     "field_name":"TNPEN"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaComponent", "JavaPackage"],
+                     "field_name":"TNPIN"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaComponent", "JavaPackage", "PythonComponent", "PythonPackage"],
+                     "field_name":"TNPKG"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaComponent", "JavaPackage"],
+                     "field_name":"TNPM"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaComponent", "JavaPackage"],
+                     "field_name":"TNS"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaComponent", "JavaPackage", "PythonComponent", "PythonPackage"],
+                     "field_name":"CCL"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaComponent", "JavaPackage", "PythonComponent", "PythonPackage"],
+                     "field_name":"CCO"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaComponent", "JavaPackage", "PythonComponent", "PythonPackage"],
+                     "field_name":"CC"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaComponent", "PythonComponent"],
+                     "field_name":"CEE"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaComponent", "PythonComponent"],
+                     "field_name":"CEG"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaComponent", "JavaPackage", "PythonComponent", "PythonPackage"],
+                     "field_name":"CI"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaComponent", "JavaPackage", "PythonComponent", "PythonPackage"],
+                     "field_name":"CLC"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaComponent", "JavaPackage", "PythonComponent", "PythonPackage"],
+                     "field_name":"CLLC"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaComponent", "PythonComponent"],
+                     "field_name":"CR"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaComponent", "JavaPackage", "PythonComponent", "PythonPackage"],
+                     "field_name":"LDC"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaComponent", "JavaPackage", "PythonComponent", "PythonPackage"],
+                     "field_name":"LLDC"
+                  },
+                  {
+                     "type":"DoubleType",
+                     "logical_type":["ProductMetric", "JavaComponent", "PythonComponent"],
+                     "field_name":"NCR"
+                  }
+               ]
+            },
+            {  
+               "sub_type":"ObjectIdType",
+               "type":"ArrayType",
+               "logical_type":"RID",
+               "field_name":"component_ids"
+            },
+            {  
+               "type":"ObjectIdType",
+               "logical_type":"RID",
+               "field_name":"parent_state"
+            }
+         ],
+         "collection_name":"meta_package_state"
+      }
+   ]
+}
