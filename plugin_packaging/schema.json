@@ -159,7 +159,7 @@
             },
             {  
                "type":"StringType",
-               "logical_type":"ProductMetric",
+               "logical_type":"AbstractionLevel",
                "field_name":"file_type"
             },
             {  

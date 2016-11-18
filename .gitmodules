@@ -1,0 +1,3 @@
+[submodule "mecoshark/helpers"]
+	path = mecoshark/helpers
+	url = git@github.com:smartshark/helpers.git

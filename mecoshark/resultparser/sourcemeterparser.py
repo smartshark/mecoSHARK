@@ -7,8 +7,7 @@ import sys
 
 from mongoengine import DoesNotExist, NotUniqueError
 from pymongo.errors import DuplicateKeyError
-
-from mecoshark.resultparser.mongomodels import Project, File, FileState, CloneInstance, MetaPackageState, Commit
+from mecoshark.helpers.mongomodels import *
 
 
 class SourcemeterParser(object):
