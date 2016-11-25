@@ -7,7 +7,9 @@ import sys
 
 from mongoengine import DoesNotExist, NotUniqueError
 from pymongo.errors import DuplicateKeyError
-from mecoshark.helpers.mongomodels import *
+from mecoshark.resultparser.mongomodels import VCSSystem, Commit, File, CodeGroupState, CodeEntityState, CloneInstance
+
+logger = logging.getLogger("sourcemeter_parser")
 
 
 class SourcemeterParser(object):
@@ -33,7 +35,7 @@ class SourcemeterParser(object):
     :property input_files: list of input files
     :property projectname: name of the project (last part of input path)
     """
-    def __init__(self, output_path, input_path, url, revisionHash):
+    def __init__(self, output_path, input_path, url, revision_hash, debug_level):
         # Set variables
         self.output_path = output_path
         self.input_path = input_path
@@ -46,18 +48,18 @@ class SourcemeterParser(object):
         self.input_files = []
 
         # Get logger
-        self.logger = logging.getLogger("sourcemeter_parser")
+        logger.setLevel(debug_level)
 
         # Get project id and find all stored files in the current input path (needed for java projects)
-        self.projectid = self.get_project_id(url)
-        self.commit_id = self.get_commit_id(self.projectid, revisionHash)
+        self.vcs_system_id = self.get_vcs_system_id(url)
+        self.commit_id = self.get_commit_id(self.vcs_system_id, revision_hash)
 
         self.stored_files = self.find_stored_files()
 
         # Prepare csv files
         self.prepare_csv_files()
 
-    def get_commit_id(self, project_id, revision_hash):
+    def get_commit_id(self, vcs_system_id, revision_hash):
         """
         Gets the commit id for the corresponding projectid and revision
         :param project_id: id of the project
@@ -65,22 +67,22 @@ class SourcemeterParser(object):
         :return: commit id (ObjectId)
         """
         try:
-            return Commit.objects(projectId=project_id, revisionHash=revision_hash).get().id
+            return Commit.objects(vcs_system_id=vcs_system_id, revision_hash=revision_hash).get().id
         except DoesNotExist:
-            self.logger.error("Commit with project_id %s and revision %s does not exist" % (project_id, revision_hash))
+            logger.error("Commit with vcs_system_id %s and revision %s does not exist" %
+                              (vcs_system_id, revision_hash))
             sys.exit(1)
 
-    def get_project_id(self, url):
+    def get_vcs_system_id(self, url):
         """
         Gets the project id for the given url
-        :param url: url of the project
-        :return: project id (ObjectId)
+        :param url: url of the vcs_system
+        :return: vcs_system_id (ObjectId)
         """
-        # find projectid
         try:
-            return Project.objects(url=url).get().id
+            return VCSSystem.objects(url=url).get().id
         except DoesNotExist:
-            self.logger.error("Project with the url %s does not exist in the database! Execute vcsSHARK first!" % url)
+            logger.error("VCSSystem with the url %s does not exist in the database! Execute vcsSHARK first!" % url)
             sys.exit(1)
 
     def find_stored_files(self):
@@ -101,7 +103,7 @@ class SourcemeterParser(object):
 
         # get all stored files of the project
         stored_files = {}
-        for file in File.objects(projectId=self.projectid):
+        for file in File.objects(vcs_system_id=self.vcs_system_id):
             stored_files[file.path] = file.id
 
         return stored_files
@@ -140,7 +142,7 @@ class SourcemeterParser(object):
         file_states = []
         for name, path in all_csv_paths.items():
             if path is not None:
-                self.logger.info("Open path: "+path)
+                logger.info("Open path: "+path)
                 with open(path) as csvfile:
                     reader = csv.DictReader(csvfile)
                     for row in reader:
@@ -239,26 +241,23 @@ class SourcemeterParser(object):
         long_name = self.sanitize_long_name(row['LongName'])
         metrics_dict = self.sanitize_metrics_dictionary(copy.deepcopy(row))
 
-        new_state = MetaPackageState(
-            commit_id=self.commit_id,
+        new_state = CodeGroupState(
             long_name=long_name,
+            commit_id=self.commit_id,
             metrics=metrics_dict,
-            file_type=row['type']
+            cg_type=row['type']
         )
 
-        if 'Name' in row:
-            new_state.name = row['Name']
-
         if 'Parent' in row and row['Parent'] in self.stored_meta_package_states:
-            new_state.parent_state = self.stored_meta_package_states[row['Parent']]
+            new_state.cg_parent_ids.append(self.stored_meta_package_states[row['Parent']])
 
         if 'Component' in row:
-            new_state.component_ids = self.get_component_ids(row['Component'])
+            new_state.cg_parent_ids.extend(self.get_component_ids(row['Component']))
 
         try:
             state_id = new_state.save().id
         except (DuplicateKeyError, NotUniqueError):
-            state_id = MetaPackageState.objects(commit_id=self.commit_id, long_name=long_name).get().id
+            state_id = CodeGroupState.objects(commit_id=self.commit_id, long_name=long_name).get().id
 
         self.stored_meta_package_states[row['ID']] = state_id
 
@@ -272,41 +271,43 @@ class SourcemeterParser(object):
         .. NOTE:: File states have a direct connection to a file from a revision.
         """
         path_name = self.sanitize_long_name(row['Path'])
-        long_name = self.sanitize_long_name(row['LongName'])
 
-        new_state = FileState(
+        # We only need to sanitize the long name for files, Otherwise we store it like it comes out of sourcemeter
+        if row['type'] == 'file':
+            long_name = self.sanitize_long_name(row['LongName'])
+        else:
+            long_name = row['LongName']
+
+        new_state = CodeEntityState(
             file_id=self.stored_files[path_name],
             commit_id=self.commit_id,
             long_name=long_name,
-            file_type=row['type'],
+            ce_type=row['type'],
         )
 
-        if 'Name' in row:
-            new_state.name = row['Name']
-
         if 'Parent' in row and row['Parent'] in self.stored_meta_package_states:
-            new_state.parent = self.stored_meta_package_states[row['Parent']]
+            new_state.cg_ids.append(self.stored_meta_package_states[row['Parent']])
         elif 'Parent' in row and row['Parent'] in self.stored_file_states:
-            new_state.parent = self.stored_file_states[row['Parent']]
+            new_state.ce_parent_id = self.stored_file_states[row['Parent']]
         elif 'Parent' in row and row['type'] != 'file':
-            self.logger.error("ERROR! Parent not found for %s!" % row)
+            logger.warning("ERROR! Parent not found for %s!" % row)
 
         if 'Component' in row:
-            new_state.component_ids = self.get_component_ids(row['Component'])
+            new_state.cg_ids.extend(self.get_component_ids(row['Component']))
 
         if 'Line' in row and 'EndLine' in row and 'Column' in row and 'EndColumn' in row:
-            new_state.startLine = row['Line']
-            new_state.endLine = row['EndLine']
-            new_state.startColumn = row['Column']
-            new_state.endColumn = row['EndColumn']
+            new_state.start_line = row['Line']
+            new_state.end_line = row['EndLine']
+            new_state.start_column = row['Column']
+            new_state.end_column = row['EndColumn']
 
         new_state.metrics = self.sanitize_metrics_dictionary(copy.deepcopy(row))
 
         try:
             state_id = new_state.save().id
         except (DuplicateKeyError, NotUniqueError):
-            state_id = FileState.objects(file_id=self.stored_files[path_name], commit_id=self.commit_id,
-                                         long_name=long_name).get().id
+            state_id = CodeEntityState.objects(file_id=self.stored_files[path_name], commit_id=self.commit_id,
+                                               long_name=long_name).get().id
 
         self.stored_file_states[row['ID']] = state_id
 
@@ -314,7 +315,7 @@ class SourcemeterParser(object):
         """
         Parses and stores the cloning data that was generated by sourcemeter.
         """
-        self.logger.info("Parsing & storing clone data...")
+        logger.info("Parsing & storing clone data...")
         clone_class_csv_path = glob.glob(os.path.join(self.output_path, "*-CloneClass.csv"))[0]
         clone_instance_csv_path = glob.glob(os.path.join(self.output_path, "*-CloneInstance.csv"))[0]
 
@@ -332,15 +333,15 @@ class SourcemeterParser(object):
 
                 try:
                     CloneInstance(
-                        commit_id=self.commit_id, name=row['ID'], fileId=self.stored_files[long_name],
-                        cloneClass=row['Parent'], cloneClassMetrics=clone_classes[row['Parent']],
-                        cloneInstanceMetrics=metrics_dict, startLine=row['Line'], startColumn=row['Column'],
-                        endLine=row['EndLine'], endColumn=row['EndColumn']
+                        commit_id=self.commit_id, name=row['ID'], file_id=self.stored_files[long_name],
+                        clone_class=row['Parent'], clone_class_metrics=clone_classes[row['Parent']],
+                        clone_instance_metrics=metrics_dict, start_line=row['Line'], start_column=row['Column'],
+                        end_line=row['EndLine'], end_column=row['EndColumn']
                     ).save()
                 except (DuplicateKeyError, NotUniqueError):
                     pass
 
-        self.logger.info("Finished parsing & storing clone data!")
+        logger.info("Finished parsing & storing clone data!")
 
     @staticmethod
     def sanitize_metrics_dictionary(metrics):

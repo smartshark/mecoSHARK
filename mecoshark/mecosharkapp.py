@@ -9,6 +9,7 @@ from mongoengine import connect
 
 from mecoshark.utils import find_correct_processor
 
+logger = logging.getLogger('mecoshark_main')
 
 class MecoSHARK(object):
     """ Main app for the mecoshark plugin
@@ -41,12 +42,13 @@ class MecoSHARK(object):
 
 
     def __init__(self, input, output, revision, url, options, db_name, db_host, db_port, db_user, db_password,
-                 db_authentication):
+                 db_authentication, debug_level):
         """
         Main runner of the mecoshark app
         """
         home_folder = os.path.expanduser('~')+"/"
-        self.logger = logging.getLogger("mecoshark_main")
+        logger.setLevel(debug_level)
+        self.debug_level = debug_level
         self.input_path = input.replace("~", home_folder)
         self.output_path = output.replace("~", home_folder)
         self.options = options
@@ -71,11 +73,11 @@ class MecoSHARK(object):
         processors = find_correct_processor(languages, self.output_path, self.input_path)
 
         for processor in processors:
-            self.logger.info("Executing: %s" % processor.__class__.__name__)
-            processor.process(self.revision, self.url, self.options)
+            logger.info("Executing: %s" % processor.__class__.__name__)
+            processor.process(self.revision, self.url, self.options, self.debug_level)
 
         elapsed = timeit.default_timer() - start_time
-        self.logger.info("Execution time: %0.5f s" % elapsed)
+        logger.info("Execution time: %0.5f s" % elapsed)
 
     def detect_languages(self):
         """
@@ -91,19 +93,19 @@ class MecoSHARK(object):
 
         command = "%s --datadir %s --details %s | awk -F '\t' '{print $2}'" % (sloccount_path, sloccount_temp,
                                                                                self.input_path)
-        self.logger.info('Calling command: %s' % command)
+        logger.info('Calling command: %s' % command)
         output = subprocess.check_output(command, shell=True)
 
         languages = self.sanitize_sloccount_output(output)
-        self.logger.debug('Found the following languages: %s' % languages)
+        logger.debug('Found the following languages: %s' % languages)
 
         all_files = sum(languages.values())
         for language in languages:
             language_part = int(languages[language]) / all_files
             languages[language] = language_part
-            self.logger.debug('Language %s part: %f' % (language, language_part))
+            logger.debug('Language %s part: %f' % (language, language_part))
 
-        self.logger.info("Found the following languages: "+','.join(languages))
+        logger.info("Found the following languages: "+','.join(languages))
         shutil.rmtree(sloccount_temp)
 
         return languages

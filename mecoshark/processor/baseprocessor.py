@@ -47,13 +47,14 @@ class BaseProcessor(metaclass=abc.ABCMeta):
         self.projectname = os.path.basename(os.path.normpath(input_path))
 
     @abc.abstractmethod
-    def process(self, revision, url, options):
+    def process(self, revision, url, options, debug_level):
         """
         Is called if a revision with hash "revision" should be processed.
 
         :param revision: revision_hash of the revision
         :param url: url of the project that is analyzed
         :param options: possible options (e.g. for CProcessor)
+        :param debug_level: debugging_level
         :return:
         """
         return

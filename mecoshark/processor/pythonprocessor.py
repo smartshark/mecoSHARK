@@ -6,6 +6,7 @@ import subprocess
 from mecoshark.processor.baseprocessor import BaseProcessor
 from mecoshark.resultparser.sourcemeterparser import SourcemeterParser
 
+logger = logging.getLogger("processor")
 
 class PythonProcessor(BaseProcessor):
     """
@@ -34,7 +35,6 @@ class PythonProcessor(BaseProcessor):
 
     def __init__(self, output_path, input_path):
         super().__init__(output_path, input_path)
-        self.logger = logging.getLogger("processor")
         return
 
     def execute_sourcemeter(self):
@@ -45,12 +45,12 @@ class PythonProcessor(BaseProcessor):
         shutil.rmtree(os.path.join(self.output_path, self.projectname), True)
         template_path = os.path.dirname(os.path.realpath(__file__))+'/../../templates'
 
-        self.logger.info("Trying out directory analysis for python...")
+        logger.info("Trying out directory analysis for python...")
         self.prepare_template(os.path.join(template_path, 'analyze_python.sh'))
         subprocess.run(os.path.join(self.output_path, 'analyze_python.sh'), shell=True)
 
         if not self.is_output_produced():
-            self.logger.error('Problem in using mecoshark! No output was produced!')
+            logger.error('Problem in using mecoshark! No output was produced!')
 
     def is_output_produced(self):
         """
@@ -73,7 +73,7 @@ class PythonProcessor(BaseProcessor):
 
         return False
 
-    def process(self, revision, url, options):
+    def process(self, revision, url, options, debug_level):
         """
         See: :func:`~mecoshark.processor.baseprocessor.BaseProcessor.process`
 
@@ -83,14 +83,15 @@ class PythonProcessor(BaseProcessor):
         :param revision: revision
         :param url: url of the project that is analyzed
         :param options: options for execution
+        :param debug_level: debugging_level
         """
-
+        logger.setLevel(debug_level)
         self.execute_sourcemeter()
         meco_path = os.path.join(self.output_path, self.projectname, 'python')
 
         output_path = os.path.join(meco_path, os.listdir(meco_path)[0])
 
-        parser = SourcemeterParser(output_path, self.input_path, url, revision)
+        parser = SourcemeterParser(output_path, self.input_path, url, revision, debug_level)
         parser.store_data()
 
         shutil.rmtree(os.path.join(self.output_path, self.projectname), True)

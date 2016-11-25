@@ -74,9 +74,12 @@ def start():
     parser.add_argument('-U', '--db-user', help='Database user name', default=None)
     parser.add_argument('-P', '--db-password', help='Database user password', default=None)
     parser.add_argument('-DB', '--db-database', help='Database name', default='smartshark')
-    parser.add_argument('-H', '--db-hostname', help='Name of the host, where the database server is running', default='localhost')
+    parser.add_argument('-H', '--db-hostname', help='Name of the host, where the database server is running',
+                        default='localhost')
     parser.add_argument('-p', '--db-port', help='Port, where the database server is listening', default=27017, type=int)
     parser.add_argument('-a', '--db-authentication', help='Name of the authentication database')
+    parser.add_argument('--debug', help='Specifies the debug level', choices=['INFO', 'DEBUG', 'WARNING', 'ERROR'],
+                        default='DEBUG')
     parser.add_argument('--options', help='Optionstring in the form "option1=value1,option2=value2".')
 
     try:
@@ -98,7 +101,8 @@ def start():
                  (args.input, args.output, args.rev, args.url, parsed_options))
 
     mecoshark = MecoSHARK(args.input, args.output, args.rev, args.url, parsed_options, args.db_database,
-                          args.db_hostname, args.db_port, args.db_user, args.db_password, args.db_authentication)
+                          args.db_hostname, args.db_port, args.db_user, args.db_password, args.db_authentication,
+                          args.debug)
     mecoshark.process_revision()
 
 if __name__ == "__main__":

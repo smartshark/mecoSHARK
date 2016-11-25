@@ -8,6 +8,7 @@ import sys
 from mecoshark.processor.baseprocessor import BaseProcessor
 from mecoshark.resultparser.sourcemeterparser import SourcemeterParser
 
+logger = logging.getLogger('processor')
 
 class JavaProcessor(BaseProcessor):
     """
@@ -36,7 +37,6 @@ class JavaProcessor(BaseProcessor):
 
     def __init__(self, output_path, input_path):
         super().__init__(output_path, input_path)
-        self.logger = logging.getLogger("processor")
         return
 
     def execute_sourcemeter(self):
@@ -85,7 +85,7 @@ class JavaProcessor(BaseProcessor):
 
         # use directory based analysis otherwise
         if failure_happened:
-            self.logger.info("Trying out directory analysis for java...")
+            logger.info("Trying out directory analysis for java...")
             self.prepare_template(os.path.join(template_path, 'analyze-dir.sh'))
 
             if self.input_path.endswith("/"):
@@ -100,7 +100,7 @@ class JavaProcessor(BaseProcessor):
                 pass
 
         if not self.is_output_produced():
-            self.logger.error('Problem in using mecoshark! No output was produced!')
+            logger.error('Problem in using mecoshark! No output was produced!')
             sys.exit(1)
 
     def is_output_produced(self):
@@ -124,7 +124,7 @@ class JavaProcessor(BaseProcessor):
 
         return False
 
-    def process(self, revision, url, options):
+    def process(self, revision, url, options, debug_level):
         """
         See: :func:`~mecoshark.processor.baseprocessor.BaseProcessor.process`
 
@@ -134,13 +134,15 @@ class JavaProcessor(BaseProcessor):
         :param revision: revision
         :param url: url of the project that is analyzed
         :param options: options for execution
+        :param debug_level: debugging_level
         """
 
+        logger.setLevel(debug_level)
         self.execute_sourcemeter()
         meco_path = os.path.join(self.output_path, self.projectname, 'java')
         output_path = os.path.join(meco_path, os.listdir(meco_path)[0])
 
-        parser = SourcemeterParser(output_path, self.input_path, url, revision)
+        parser = SourcemeterParser(output_path, self.input_path, url, revision, debug_level)
         parser.store_data()
 
         # delete directory
