@@ -97,6 +97,13 @@
             "position": 11,
             "type": "execute",
             "description": "possible options string"
+        },
+        {
+            "name": "debug",
+            "required": false,
+            "position": 12,
+            "type": "execute",
+            "description": "debug choices (INFO, DEBUG, WARNING, ERROR)"
         }
     ]
 }
