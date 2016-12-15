@@ -8,17 +8,17 @@
     "created_collections": [
 		{
 			"name": "code_entity_state",
-			"shard_key": {"long_name": 1, "commit_id": 1, "file_id": 1},
+			"shard_key": [{"long_name": 1}, {"commit_id": 1}, {"file_id": 1}],
             "unique": true
 		},
         {
 			"name": "code_group_state",
-			"shard_key": {"long_name": 1, "commit_id": 1},
+			"shard_key": [{"long_name": 1}, {"commit_id": 1}],
 			"unique": true
 		},
         {
 			"name": "clone_instance",
-			"shard_key": {"name": 1, "commit_id": 1, "file_id": 1},
+			"shard_key": [{"name": 1}, {"commit_id": 1}, {"file_id": 1}],
 			"unique": true
 		}
 	],
