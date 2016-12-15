@@ -1,84 +1,98 @@
 {
-"plugin": "mecoSHARK_0.10",
 "collections":[  
       {  
          "fields":[  
             {  
                "type":"ObjectIdType",
                "logical_type":"OID",
-               "field_name":"_id"
+               "field_name":"_id",
+               "desc": "Identifier of the document"
             },
             {  
                "type":"ObjectIdType",
                "logical_type":"RID",
                "reference_to": "commit",
-               "field_name":"commit_id"
+               "field_name":"commit_id",
+               "desc": "ObjectID of the commit at which the clone was detected"
             },
             {  
                "type":"ObjectIdType",
                "logical_type":"RID",
                "reference_to": "file",
-               "field_name":"file_id"
+               "field_name":"file_id",
+               "desc": "ObjectID of the file in which the clone was detected"
             },
             {  
                "type":"StringType",
                "logical_type":"Name",
-               "field_name":"name"
+               "field_name":"name",
+               "desc": "Name of the clone (e.g. C42)"
             },
             {  
                "type":"StringType",
                "logical_type":"Name",
-               "field_name":"clone_class"
+               "field_name":"clone_class",
+               "desc": "Class to which the clone belongs. All clones in one class are copies of each other (at a certain commit!)"
             },
             {  
                "type":"IntegerType",
                "logical_type":"ProductMetric",
-               "field_name":"start_line"
+               "field_name":"start_line",
+               "desc": "Line at which the clone starts"
             },
             {  
                "type":"IntegerType",
                "logical_type":"ProductMetric",
-               "field_name":"end_line"
+               "field_name":"end_line",
+               "desc": "Line at which the clone ends"
             },
             {  
                "type":"IntegerType",
                "logical_type":"ProductMetric",
-               "field_name":"start_column"
+               "field_name":"start_column",
+               "desc": "Column at which the clone starts"
             },
             {  
                "type":"IntegerType",
                "logical_type":"ProductMetric",
-               "field_name":"end_column"
+               "field_name":"end_column",
+               "desc": "Column at which the clone ends"
             },
             {  
                "type":"StructType",
                "logical_type":"Nested",
                "field_name":"clone_instance_metrics",
+               "desc": "Metrics for the clone at hand",
                "fields": [
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "Python", "Java"],
-                     "field_name":"CA"
+                     "field_name":"CA",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "Python", "Java"],
-                     "field_name":"CCO"
+                     "field_name":"CCO",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "Python", "Java"],
-                     "field_name":"CE"
+                     "field_name":"CE",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "Python", "Java"],
-                     "field_name":"CLLOC"
+                     "field_name":"CLLOC",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "Python", "Java"],
-                     "field_name":"CV"
+                     "field_name":"CV",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   }
                ]
             },
@@ -86,772 +100,924 @@
                "type":"StructType",
                "logical_type":"ProductMetric",
                "field_name":"clone_class_metrics",
+               "desc": "Metrics for the clone class to which this clone belongs",
                "fields": [ 
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "Python", "Java"],
-                     "field_name":"CA"
+                     "field_name":"CA",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "Python", "Java"],
-                     "field_name":"CCO"
+                     "field_name":"CCO",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "Python", "Java"],
-                     "field_name":"CE"
+                     "field_name":"CE",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "Python", "Java"],
-                     "field_name":"CEE"
+                     "field_name":"CEE",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "Python", "Java"],
-                     "field_name":"CEG"
+                     "field_name":"CEG",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "Python", "Java"],
-                     "field_name":"CI"
+                     "field_name":"CI",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "Python", "Java"],
-                     "field_name":"CLLOC"
+                     "field_name":"CLLOC",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "Python", "Java"],
-                     "field_name":"CR"
+                     "field_name":"CR",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "Python", "Java"],
-                     "field_name":"CV"
+                     "field_name":"CV",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "Python", "Java"],
-                     "field_name":"NCR"
+                     "field_name":"NCR",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   }
                ]
             }
          ],
-         "collection_name":"clone_instance"
+         "collection_name":"clone_instance",
+         "desc": "Collection that contains information about different clones detected in the files of a project"
       },
       {  
          "fields":[  
             {  
                "type":"ObjectIdType",
                "logical_type":"OID",
-               "field_name":"_id"
+               "field_name":"_id",
+               "desc": "Identifier of the document"
             },
             {
                "type":"StringType",
                "logical_type":"Name",
-               "field_name":"long_name"
+               "field_name":"long_name",
+               "desc": "long name of the code entity (e.g., file path or class name or method name with arguments"
             },
             {  
                "type":"ObjectIdType",
                "logical_type":"RID",
                "reference_to": "commit",
-               "field_name":"commit_id"
+               "field_name":"commit_id",
+               "desc": "ObjectID of the commit to which this specific state is related to"
             },
             {  
                "type":"ObjectIdType",
                "logical_type":"RID",
                "reference_to": "file",
-               "field_name":"file_id"
+               "field_name":"file_id",
+               "desc": "ObjectID of the file to which this specific state is related to"
             },
             {
                "type":"ObjectIdType",
                "logical_type":"RID",
                "reference_to": "code_entity_state",
-               "field_name":"ce_parent_id"
+               "field_name":"ce_parent_id",
+               "desc": "ObjectID of the parent entity state to which this state relates to (e.g. a method state has a class state as parent)"
             },
             {
                "sub_type":"ObjectIdType",
                "type":"ArrayType",
                "logical_type":"RID",
                "reference_to": "code_group_state",
-               "field_name":"cg_ids"
+               "field_name":"cg_ids",
+               "desc": "List of ObjectIds of code group states that are related to the entity state (e.g., a class state has a package state)"
             },
             {  
                "type":"StringType",
                "logical_type":"AbstractionLevel",
-               "field_name":"ce_type"
+               "field_name":"ce_type",
+               "desc": "Abstraction level of the entity (e.g., class, attribute, enum, interface, method, function, annotation, module)"
             },
             {
                "type":"IntegerType",
                "logical_type":["ProductMetric", "JavaAnnotation", "JavaAttribute", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonAttribute", "PythonClass", "PythonFunction", "PythonMethod", "PythonModule"],
-               "field_name":"start_line"
+               "field_name":"start_line",
+               "desc": "Line in which the entity starts in the specified file (e.g., start of the method)"
             },
             {
                "type":"IntegerType",
                "logical_type": ["ProductMetric", "JavaAnnotation", "JavaAttribute", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonAttribute", "PythonClass", "PythonFunction", "PythonMethod", "PythonModule"],
-               "field_name":"end_line"
+               "field_name":"end_line",
+               "desc": "Line in which the entity ends in the specified file (e.g. end of the method)"
             },
             {
                "type":"IntegerType",
                "logical_type": ["ProductMetric", "JavaAnnotation", "JavaAttribute", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonAttribute", "PythonClass", "PythonFunction", "PythonMethod", "PythonModule"],
-               "field_name":"start_column"
+               "field_name":"start_column",
+               "desc": "Column in which the entity starts in the specified file"
             },
             {
                "type":"IntegerType",
                "logical_type":["ProductMetric", "JavaAnnotation", "JavaAttribute", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonAttribute", "PythonClass", "PythonFunction", "PythonMethod", "PythonModule"],
-               "field_name":"end_column"
+               "field_name":"end_column",
+               "desc": "Column in which the entity ends in the specified file"
             },
             {  
                "type":"StructType",
                "logical_type":"Nested",
                "field_name":"metrics",
+               "desc": "Metrics of the code entity. See user guides at: https://www.sourcemeter.com/resources/",
                "fields": [
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "PythonClass"],
-                     "field_name":"LCOM5"
+                     "field_name":"LCOM5",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaFile", "JavaMethod", "PythonFile", "PythonFunction", "PythonMethod"],
-                     "field_name":"McCC"
+                     "field_name":"McCC",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonClass", "PythonFunction", "PythonMethod"],
-                     "field_name":"NL"
+                     "field_name":"NL",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonClass", "PythonFunction", "PythonMethod"],
-                     "field_name":"NLE"
+                     "field_name":"NLE",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "PythonClass"],
-                     "field_name":"WMC"
+                     "field_name":"WMC",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "PythonClass"],
-                     "field_name":"CBO"
+                     "field_name":"CBO",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "PythonClass"],
-                     "field_name":"CBOI"
+                     "field_name":"CBOI",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonClass", "PythonFunction", "PythonMethod"],
-                     "field_name":"NII"
+                     "field_name":"NII",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonClass", "PythonFunction", "PythonMethod"],
-                     "field_name":"NOI"
+                     "field_name":"NOI",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "PythonClass"],
-                     "field_name":"RFC"
+                     "field_name":"RFC",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface"],
-                     "field_name":"AD"
+                     "field_name":"AD",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonClass", "PythonFunction", "PythonMethod", "PythonModule"],
-                     "field_name":"CD"
+                     "field_name":"CD",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "JavaFile", "PythonClass", "PythonFile", "PythonFunction", "PythonMethod", "PythonModule"],
-                     "field_name":"CLOC"
+                     "field_name":"CLOC",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonClass", "PythonFunction", "PythonMethod"],
-                     "field_name":"DLOC"
+                     "field_name":"DLOC",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaFile"],
-                     "field_name":"PDA"
+                     "field_name":"PDA",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaFile"],
-                     "field_name":"PUA"
+                     "field_name":"PUA",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonClass", "PythonFunction", "PythonMethod", "PythonModule"],
-                     "field_name":"TCD"
+                     "field_name":"TCD",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonClass", "PythonFunction", "PythonMethod", "PythonModule"],
-                     "field_name":"TCLOC"
+                     "field_name":"TCLOC",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "PythonClass"],
-                     "field_name":"DIT"
+                     "field_name":"DIT",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "PythonClass"],
-                     "field_name":"NOA"
+                     "field_name":"NOA",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "PythonClass"],
-                     "field_name":"NOC"
+                     "field_name":"NOC",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "PythonClass"],
-                     "field_name":"NOD"
+                     "field_name":"NOD",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "PythonClass"],
-                     "field_name":"NOP"
+                     "field_name":"NOP",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "JavaFile", "PythonClass", "PythonFile", "PythonFunction", "PythonMethod", "PythonModule"],
-                     "field_name":"LOC"
+                     "field_name":"LOC",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "JavaFile", "PythonClass", "PythonFile", "PythonFunction", "PythonMethod", "PythonModule"],
-                     "field_name":"LLOC"
+                     "field_name":"LLOC",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "PythonClass", "PythonModule"],
-                     "field_name":"NA"
+                     "field_name":"NA",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "PythonModule"],
-                     "field_name":"NCL"
+                     "field_name":"NCL",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface"],
-                     "field_name":"NG"
+                     "field_name":"NG",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "PythonClass"],
-                     "field_name":"NLA"
+                     "field_name":"NLA",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface"],
-                     "field_name":"NLG"
+                     "field_name":"NLG",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "PythonClass"],
-                     "field_name":"NLM"
+                     "field_name":"NLM",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface"],
-                     "field_name":"NLPA"
+                     "field_name":"NLPA",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface"],
-                     "field_name":"NLPM"
+                     "field_name":"NLPM",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface"],
-                     "field_name":"NLS"
+                     "field_name":"NLS",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "PythonClass", "PythonModule"],
-                     "field_name":"NM"
+                     "field_name":"NM",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonClass", "PythonFile", "PythonFunction", "PythonMethod"],
-                     "field_name":"NOS"
+                     "field_name":"NOS",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaMethod", "PythonFunction", "PythonMethod"],
-                     "field_name":"NUMPAR"
+                     "field_name":"NUMPAR",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface"],
-                     "field_name":"NPA"
+                     "field_name":"NPA",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface"],
-                     "field_name":"NPM"
+                     "field_name":"NPM",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface"],
-                     "field_name":"NS"
+                     "field_name":"NS",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonClass", "PythonFunction", "PythonMethod", "PythonModule"],
-                     "field_name":"TLOC"
+                     "field_name":"TLOC",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonClass", "PythonFunction", "PythonMethod", "PythonModule"],
-                     "field_name":"TLLOC"
+                     "field_name":"TLLOC",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "PythonClass", "PythonModule"],
-                     "field_name":"TNA"
+                     "field_name":"TNA",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface"],
-                     "field_name":"TNG"
+                     "field_name":"TNG",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "PythonModule"],
-                     "field_name":"TNCL"
+                     "field_name":"TNCL",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "PythonClass"],
-                     "field_name":"TNLA"
+                     "field_name":"TNLA",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface"],
-                     "field_name":"TNLG"
+                     "field_name":"TNLG",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "PythonClass"],
-                     "field_name":"TNLM"
+                     "field_name":"TNLM",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface"],
-                     "field_name":"TNLPA"
+                     "field_name":"TNLPA",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface"],
-                     "field_name":"TNLPM"
+                     "field_name":"TNLPM",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface"],
-                     "field_name":"TNLS"
+                     "field_name":"TNLS",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "PythonClass", "PythonModule"],
-                     "field_name":"TNM"
+                     "field_name":"TNM",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonClass", "PythonFunction", "PythonMethod", "PythonModule"],
-                     "field_name":"TNOS"
+                     "field_name":"TNOS",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface"],
-                     "field_name":"TNPA"
+                     "field_name":"TNPA",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface"],
-                     "field_name":"TNPM"
+                     "field_name":"TNPM",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface"],
-                     "field_name":"TNS"
+                     "field_name":"TNS",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonClass", "PythonFunction", "PythonMethod", "PythonModule"],
-                     "field_name":"CCL"
+                     "field_name":"CCL",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonClass", "PythonFunction", "PythonMethod", "PythonModule"],
-                     "field_name":"CCO"
+                     "field_name":"CCO",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonClass", "PythonFunction", "PythonMethod", "PythonModule"],
-                     "field_name":"CC"
+                     "field_name":"CC",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonClass", "PythonFunction", "PythonMethod", "PythonModule"],
-                     "field_name":"CI"
+                     "field_name":"CI",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonClass", "PythonFunction", "PythonMethod", "PythonModule"],
-                     "field_name":"CLC"
+                     "field_name":"CLC",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonClass", "PythonFunction", "PythonMethod", "PythonModule"],
-                     "field_name":"CLLC"
+                     "field_name":"CLLC",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonClass", "PythonFunction", "PythonMethod", "PythonModule"],
-                     "field_name":"LDC"
+                     "field_name":"LDC",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaAnnotation", "JavaClass", "JavaEnum", "JavaInterface", "JavaMethod", "PythonClass", "PythonFunction", "PythonMethod", "PythonModule"],
-                     "field_name":"LLDC"
+                     "field_name":"LLDC",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   }
                ]
             }
          ],
-         "collection_name":"code_entity_state"
+         "collection_name":"code_entity_state",
+         "desc": "Collection that contains for each commit of the project all code entity states (e.g., all methods of the project at each commit)"
       },
       {  
          "fields":[  
             {  
                "type":"ObjectIdType",
                "logical_type":"OID",
-               "field_name":"_id"
+               "field_name":"_id",
+               "desc": "Identifier of the document"
             },
             {
                "type":"StringType",
                "logical_type":"Name",
-               "field_name":"long_name"
+               "field_name":"long_name",
+               "desc": "Name of the code group (e.g., de.shark.package1 for packages)"
             },
             {  
                "type":"ObjectIdType",
                "logical_type":"RID",
                "reference_to": "commit",
-               "field_name":"commit_id"
+               "field_name":"commit_id",
+               "desc": "ObjectID that relates to the commit to which this state belongs"
             },
             {
                "sub_type":"ObjectIdType",
                "type":"ArrayType",
                "logical_type":"RID",
                "reference_to":"code_group_state",
-               "field_name":"cg_parent_ids"
+               "field_name":"cg_parent_ids",
+               "desc": "List of ObjectIDs of code group states that are parents of this state (e.g., de.shark is a parent of de.shark.package1)"
             },
             {
                "type":"StringType",
                "logical_type":"Name",
-               "field_name":"cg_type"
+               "field_name":"cg_type",
+               "desc": "Code group type. E.g., Package or Component"
             },
             {  
                "type":"StructType",
                "logical_type":"ProductMetric",
                "field_name":"metrics",
+               "desc": "Metrics of the code group state. See user guides at: https://www.sourcemeter.com/resources/",
                "fields": [ 
                   {
                      "type":"DoubleType",
                      "logical_type":"ProductMetric",
-                     "field_name":"Line"
+                     "field_name":"Line",
+                     "desc": "Line at which the code group starts (if available)"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":"ProductMetric",
-                     "field_name":"EndLine"
+                     "field_name":"EndLine",
+                     "desc": "Line at which the code group ends (if available)"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":"ProductMetric",
-                     "field_name":"Column"
+                     "field_name":"Column",
+                     "desc": "Column at which the code group starts (if available)"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":"ProductMetric",
-                     "field_name":"EndColumn"
+                     "field_name":"EndColumn",
+                     "desc": "Column at which the code group ends (if available)"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaPackage"],
-                     "field_name":"AD"
+                     "field_name":"AD",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaPackage", "PythonPackage"],
-                     "field_name":"CD"
+                     "field_name":"CD",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaPackage", "PythonPackage"],
-                     "field_name":"CLOC"
+                     "field_name":"CLOC",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaPackage"],
-                     "field_name":"PDA"
+                     "field_name":"PDA",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaPackage"],
-                     "field_name":"PUA"
+                     "field_name":"PUA",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaComponent", "JavaPackage"],
-                     "field_name":"TAD"
+                     "field_name":"TAD",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaComponent", "JavaPackage", "PythonComponent", "PythonPackage"],
-                     "field_name":"TCD"
+                     "field_name":"TCD",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaComponent", "JavaPackage", "PythonComponent", "PythonPackage"],
-                     "field_name":"TCLOC"
+                     "field_name":"TCLOC",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaComponent", "JavaPackage"],
-                     "field_name":"TPDA"
+                     "field_name":"TPDA",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaComponent", "JavaPackage"],
-                     "field_name":"TPUA"
+                     "field_name":"TPUA",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaPackage", "PythonPackage"],
-                     "field_name":"LOC"
+                     "field_name":"LOC",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaPackage", "PythonPackage"],
-                     "field_name":"LLOC"
+                     "field_name":"LLOC",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaPackage", "PythonPackage"],
-                     "field_name":"NA"
+                     "field_name":"NA",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaPackage", "PythonPackage"],
-                     "field_name":"NCL"
+                     "field_name":"NCL",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaPackage"],
-                     "field_name":"NEN"
+                     "field_name":"NEN",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaPackage"],
-                     "field_name":"NG"
+                     "field_name":"NG",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaPackage"],
-                     "field_name":"NIN"
+                     "field_name":"NIN",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaPackage", "PythonPackage"],
-                     "field_name":"NM"
+                     "field_name":"NM",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaPackage"],
-                     "field_name":"NPA"
+                     "field_name":"NPA",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaPackage", "PythonPackage"],
-                     "field_name":"NPKG"
+                     "field_name":"NPKG",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaPackage"],
-                     "field_name":"NPM"
+                     "field_name":"NPM",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaPackage"],
-                     "field_name":"NS"
+                     "field_name":"NS",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaComponent", "JavaPackage", "PythonComponent", "PythonPackage"],
-                     "field_name":"TLOC"
+                     "field_name":"TLOC",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaComponent", "JavaPackage", "PythonComponent", "PythonPackage"],
-                     "field_name":"TLLOC"
+                     "field_name":"TLLOC",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaComponent", "JavaPackage", "PythonComponent", "PythonPackage"],
-                     "field_name":"TNA"
+                     "field_name":"TNA",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaComponent", "JavaPackage", "PythonComponent", "PythonPackage"],
-                     "field_name":"TNCL"
+                     "field_name":"TNCL",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaComponent", "JavaPackage", "PythonComponent", "PythonPackage"],
-                     "field_name":"TNDI"
+                     "field_name":"TNDI",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaComponent", "JavaPackage"],
-                     "field_name":"TNEN"
+                     "field_name":"TNEN",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaComponent", "JavaPackage", "PythonComponent", "PythonPackage"],
-                     "field_name":"TNFI"
+                     "field_name":"TNFI",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaComponent", "JavaPackage"],
-                     "field_name":"TNG"
+                     "field_name":"TNG",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaComponent", "JavaPackage"],
-                     "field_name":"TNIN"
+                     "field_name":"TNIN",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaComponent", "JavaPackage", "PythonComponent", "PythonPackage"],
-                     "field_name":"TNM"
+                     "field_name":"TNM",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaComponent", "JavaPackage", "PythonComponent", "PythonPackage"],
-                     "field_name":"TNOS"
+                     "field_name":"TNOS",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaComponent", "JavaPackage"],
-                     "field_name":"TNPA"
+                     "field_name":"TNPA",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaComponent", "JavaPackage"],
-                     "field_name":"TNPCL"
+                     "field_name":"TNPCL",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaComponent", "JavaPackage"],
-                     "field_name":"TNPEN"
+                     "field_name":"TNPEN",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaComponent", "JavaPackage"],
-                     "field_name":"TNPIN"
+                     "field_name":"TNPIN",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaComponent", "JavaPackage", "PythonComponent", "PythonPackage"],
-                     "field_name":"TNPKG"
+                     "field_name":"TNPKG",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaComponent", "JavaPackage"],
-                     "field_name":"TNPM"
+                     "field_name":"TNPM",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaComponent", "JavaPackage"],
-                     "field_name":"TNS"
+                     "field_name":"TNS",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaComponent", "JavaPackage", "PythonComponent", "PythonPackage"],
-                     "field_name":"CCL"
+                     "field_name":"CCL",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaComponent", "JavaPackage", "PythonComponent", "PythonPackage"],
-                     "field_name":"CCO"
+                     "field_name":"CCO",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaComponent", "JavaPackage", "PythonComponent", "PythonPackage"],
-                     "field_name":"CC"
+                     "field_name":"CC",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaComponent", "PythonComponent"],
-                     "field_name":"CEE"
+                     "field_name":"CEE",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaComponent", "PythonComponent"],
-                     "field_name":"CEG"
+                     "field_name":"CEG",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaComponent", "JavaPackage", "PythonComponent", "PythonPackage"],
-                     "field_name":"CI"
+                     "field_name":"CI",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaComponent", "JavaPackage", "PythonComponent", "PythonPackage"],
-                     "field_name":"CLC"
+                     "field_name":"CLC",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaComponent", "JavaPackage", "PythonComponent", "PythonPackage"],
-                     "field_name":"CLLC"
+                     "field_name":"CLLC",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaComponent", "PythonComponent"],
-                     "field_name":"CR"
+                     "field_name":"CR",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaComponent", "JavaPackage", "PythonComponent", "PythonPackage"],
-                     "field_name":"LDC"
+                     "field_name":"LDC",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaComponent", "JavaPackage", "PythonComponent", "PythonPackage"],
-                     "field_name":"LLDC"
+                     "field_name":"LLDC",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   },
                   {
                      "type":"DoubleType",
                      "logical_type":["ProductMetric", "JavaComponent", "PythonComponent"],
-                     "field_name":"NCR"
+                     "field_name":"NCR",
+                     "desc": "See user guides at: https://www.sourcemeter.com/resources/"
                   }
                ]
             }
          ],
+         "desc": "Collection that contains for each commit of the project all code group states (e.g., all packages of the project at each commit)",
          "collection_name":"code_group_state"
       }
    ]
