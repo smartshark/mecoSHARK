@@ -31,6 +31,8 @@ if [ ! -z ${12+x} ] && [ ${12} != "None" ]; then
 	COMMAND="$COMMAND --debug ${12}"
 fi
 
+export PATH=$PATH:$PLUGIN_PATH/external/sloccount2.26
+
 $COMMAND
 
 rm -rf "/dev/shm/$NEW_UUID"

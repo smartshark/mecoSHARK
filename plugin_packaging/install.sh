@@ -9,7 +9,5 @@ cd $PLUGIN_PATH/external/sourcemeter/Java
 
 cd $PLUGIN_PATH
 
-export PATH=$PATH:$PLUGIN_PATH/external/sloccount2.26
-
 # Install testimpshark
 python3.5 $PLUGIN_PATH/setup.py install --user
