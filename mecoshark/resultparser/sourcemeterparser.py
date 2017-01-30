@@ -7,7 +7,7 @@ import sys
 
 from mongoengine import DoesNotExist, NotUniqueError
 from pymongo.errors import DuplicateKeyError
-from mecoshark.resultparser.mongomodels import VCSSystem, Commit, File, CodeGroupState, CodeEntityState, CloneInstance
+from pycoshark.mongomodels import VCSSystem, Commit, File, CodeGroupState, CodeEntityState, CloneInstance
 
 logger = logging.getLogger("sourcemeter_parser")
 
