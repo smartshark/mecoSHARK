@@ -42,6 +42,8 @@ class JavaProcessor(BaseProcessor):
     def execute_sourcemeter(self):
         """
         Executes sourcemeter for the java language
+        Currently, we just do a directory-based analysis
+
         """
         # Clean output directory
         shutil.rmtree(os.path.join(self.output_path, self.projectname), True)
@@ -129,7 +131,9 @@ class JavaProcessor(BaseProcessor):
         See: :func:`~mecoshark.processor.baseprocessor.BaseProcessor.process`
 
         Processes the given revision.
-        First executes sourcemeter with given options, then it creates the parser to store the data.
+        1) executes sourcemeter
+        2) creates :class:`~mecoshark.resultparser.sourcemeterparser.SourcemeterParser` instance
+        3) calls :func:`~mecoshark.resultparser.sourcemeterparser.SourcemeterParser.store_data`
 
         :param revision: revision
         :param url: url of the project that is analyzed

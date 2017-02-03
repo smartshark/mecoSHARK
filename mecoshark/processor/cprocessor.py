@@ -91,7 +91,9 @@ class CProcessor(BaseProcessor):
         See: :func:`~mecoshark.processor.baseprocessor.BaseProcessor.process`
 
         Processes the given revision.
-        First executes sourcemeter with given options, then it creates the parser to store the data.
+        1) executes sourcemeter
+        2) creates :class:`~mecoshark.resultparser.sourcemeterparser.SourcemeterParser` instance
+        3) calls :func:`~mecoshark.resultparser.sourcemeterparser.SourcemeterParser.store_data`
 
         :param revision: revision
         :param url: url of the project that is analyzed

@@ -1,6 +1,6 @@
-==================
+=================
 API Documentation
-==================
+=================
 
 Main Module
 ===========
@@ -13,7 +13,7 @@ Application
    :members:
 
 Processor
-======================
+=========
 
 Base Processor
 --------------
@@ -38,12 +38,7 @@ Python Processor
 Resultparser
 ============
 
-Models
--------------
-.. automodule:: mecoshark.resultparser.mongomodels
-   :members:
-
-Parser
-----------
+SourceMeterParser
+-----------------
 .. autoclass:: mecoshark.resultparser.sourcemeterparser.SourcemeterParser
    :members:
