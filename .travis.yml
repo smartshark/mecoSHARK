@@ -11,7 +11,7 @@ before_install:
   - printenv | grep -E '^TRAVIS_' > .env
   - docker build -t testdocker .
   - docker network create -d bridge mongodb-net
-  - docker run -d --net=mongodb-net --name=mongo_db mongo:3.4
+  - docker run -d --net=mongodb-net --name=mongodb mongo:3.4
 
 install:
   - docker run --net=mongodb-net testdocker /bin/sh -c "cd /root/mecoshark; python3.5 setup.py install"

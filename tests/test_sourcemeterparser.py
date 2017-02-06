@@ -18,10 +18,10 @@ class SourceMeterParserTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         # Initialize mongoclient
-        cls.mongoClient = MongoClient("mongo_db", 27017)
+        cls.mongoClient = MongoClient("mongodb", 27017)
 
         # Setting up database with data that is normally put into it via vcs program
-        connect('meco_run', username=None, password=None, host='mongo_db', port=27017, authentication_source=None,
+        connect('meco_run', username=None, password=None, host='mongodb', port=27017, authentication_source=None,
                 connect=False)
 
     def setUp(self):
