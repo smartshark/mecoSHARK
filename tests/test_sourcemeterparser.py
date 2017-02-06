@@ -25,10 +25,10 @@ class SourceMeterParserTest(unittest.TestCase):
                 connect=False)
 
         # Clear database first (we need a small hack here, as mongomocks drop_database does not work)
-        Project.drop_collection()
-        VCSSystem.drop_collection()
-        File.drop_collection()
-        Commit.drop_collection()
+        #Project.drop_collection()
+        #VCSSystem.drop_collection()
+        #File.drop_collection()
+        #Commit.drop_collection()
 
         self.project_id = Project(name="zookeeper").save().id
         self.vcs_id = VCSSystem(url="http://test.de", project_id=self.project_id, repository_type="test").save().id
