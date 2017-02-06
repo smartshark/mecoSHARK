@@ -8,11 +8,20 @@ from mongoengine.connection import get_connection
 from pathlib import Path
 
 from mongoengine import connect
+from pymongo import MongoClient
+
 from mecoshark.resultparser.sourcemeterparser import SourcemeterParser
 from pycoshark.mongomodels import VCSSystem, Commit, Project, File
 
 
 class SourceMeterParserTest(unittest.TestCase):
+    def setUpClass(cls):
+        # Initialize mongoclient
+        cls.mongoClient = MongoClient("mongo_db", 27017)
+
+        # Setting up database with data that is normally put into it via vcs program
+        connect('meco_run', username=None, password=None, host='mongo_db', port=27017, authentication_source=None,
+                connect=False)
 
     def setUp(self):
         # Setup logging
@@ -20,11 +29,10 @@ class SourceMeterParserTest(unittest.TestCase):
         self.input_path_java = os.path.dirname(os.path.realpath(__file__)) + '/data/java_project2'
         self.out_java = os.path.dirname(os.path.realpath(__file__)) + '/data/out_java'
 
-        # Setting up database with data that is normally put into it via vcs program
-        connect('meco_run', username=None, password=None, host='mongo_db',port=27017, authentication_source=None,
-                connect=False)
+
 
         # Clear database first (we need a small hack here, as mongomocks drop_database does not work)
+        self.mongoClient.drop_database("meco_run")
         #Project.drop_collection()
         #VCSSystem.drop_collection()
         #File.drop_collection()
