@@ -7,6 +7,8 @@ from bson import ObjectId
 from pathlib import Path
 
 from mongoengine import connect
+from pymongo import MongoClient
+
 from mecoshark.resultparser.sourcemeterparser import SourcemeterParser
 from pycoshark.mongomodels import VCSSystem, Commit, Project, File
 
@@ -20,7 +22,9 @@ class SourceMeterParserTest(unittest.TestCase):
         self.out_java = os.path.dirname(os.path.realpath(__file__)) + '/data/out_java'
 
         # Setting up database with data that is normally put into it via vcs program
-        connect('test', host='mongodb', port=27017, connect=False)
+        connect('testdb', host='mongodb://mongodb/testdb', port=27017, connect=False)
+        mongoClient = MongoClient('mongodb', 27017)
+        mongoClient.get_database('testdb').create_collection('test')
 
         # Clear database first
         Project.drop_collection()
