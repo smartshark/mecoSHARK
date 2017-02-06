@@ -19,5 +19,8 @@ RUN git config --global user.name "Travis CI"
 # Clone repository
 RUN git clone --recursive https://github.com/smartshark/mecoSHARK /root/mecoshark
 
+# Set path that it includes sloccount
+ENV PATH "$PATH:/root/mecoshark/external/sloccount2.26"
+
 # Install mailingshark requirements
 RUN pip3 install -r /root/mecoshark/requirements.txt

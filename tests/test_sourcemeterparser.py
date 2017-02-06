@@ -29,14 +29,12 @@ class SourceMeterParserTest(unittest.TestCase):
         c = connect(db='test', host='mongomock://localhost')
 
         # Clear database first (we need a small hack here, as mongomocks drop_database does not work)
-        for collection in c.get_database('test')._collections.values():
-            collection.drop()
+        c.get_database('test')['project'].drop()
+        c.get_database('test')['vcs_system'].drop()
+        c.get_database('test')['file'].drop()
+        c.get_database('test')['commit'].drop()
 
-        try:
-            self.project_id = Project(name="zookeeper").save().id
-        except (DuplicateKeyError, NotUniqueError):
-            self.project_id = Project.objects(name="zookeeper").get().id
-
+        self.project_id = Project(name="zookeeper").save().id
         self.vcs_id = VCSSystem(url="http://test.de", project_id=self.project_id, repository_type="test").save().id
         self.commit_id = Commit(revision_hash="2342", vcs_system_id=self.vcs_id).save()
         self.file1 = File(path="contribs/CekiGulcu/AppenderTable.java", vcs_system_id=self.vcs_id).save()
