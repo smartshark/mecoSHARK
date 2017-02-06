@@ -4,7 +4,6 @@ import shutil
 import unittest
 
 from bson import ObjectId
-from mongoengine.connection import get_connection
 from pathlib import Path
 
 from mongoengine import connect
