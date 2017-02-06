@@ -27,10 +27,11 @@ def find_correct_processor(languages, output_path, input_path):
         processor = sc(output_path, input_path)
 
         language_list = list(languages.keys())
-        while language_list:
-            language = language_list.pop()
+        for language in language_list:
             if language in processor.supported_languages and languages[language] >= processor.threshold \
                     and processor.enabled:
                 correct_processors.append(processor)
 
-    return correct_processors
+    # Filter out not fitting references
+    filtered_processors = [processor for processor in correct_processors if processor.__module__.startswith('mecoshark')]
+    return filtered_processors

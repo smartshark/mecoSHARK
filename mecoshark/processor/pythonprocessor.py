@@ -3,10 +3,13 @@ import os
 import shutil
 import subprocess
 
+import sys
+
 from mecoshark.processor.baseprocessor import BaseProcessor
 from mecoshark.resultparser.sourcemeterparser import SourcemeterParser
 
 logger = logging.getLogger("processor")
+
 
 class PythonProcessor(BaseProcessor):
     """
@@ -42,7 +45,8 @@ class PythonProcessor(BaseProcessor):
         Executes sourcemeter for a python project
         """
         # Clean output directory
-        shutil.rmtree(os.path.join(self.output_path, self.projectname), True)
+        shutil.rmtree(self.output_path, True)
+        os.makedirs(self.output_path, exist_ok=True)
         template_path = os.path.dirname(os.path.realpath(__file__))+'/../../templates'
 
         logger.info("Trying out directory analysis for python...")
@@ -51,6 +55,7 @@ class PythonProcessor(BaseProcessor):
 
         if not self.is_output_produced():
             logger.error('Problem in using mecoshark! No output was produced!')
+            sys.exit(1)
 
     def is_output_produced(self):
         """
@@ -59,13 +64,12 @@ class PythonProcessor(BaseProcessor):
         :return: boolean
         """
 
-        output_path = os.path.join(self.output_path, self.projectname, 'python')
+        output_path = os.path.join(self.output_path, 'python')
 
         if not os.path.exists(output_path):
             return False
 
         output_path = os.path.join(output_path, os.listdir(output_path)[0])
-
         number_of_files = len([name for name in os.listdir(output_path) if name.endswith('.csv')])
 
         if number_of_files == 11:
@@ -89,14 +93,14 @@ class PythonProcessor(BaseProcessor):
         """
         logger.setLevel(debug_level)
         self.execute_sourcemeter()
-        meco_path = os.path.join(self.output_path, self.projectname, 'python')
+        meco_path = os.path.join(self.output_path, 'python')
 
         output_path = os.path.join(meco_path, os.listdir(meco_path)[0])
 
         parser = SourcemeterParser(output_path, self.input_path, url, revision, debug_level)
         parser.store_data()
 
-        shutil.rmtree(os.path.join(self.output_path, self.projectname), True)
+        shutil.rmtree(os.path.join(self.output_path), True)
 
 
 

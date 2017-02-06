@@ -14,7 +14,7 @@ setup(
     author='Fabian Trautsch',
     author_email='trautsch@cs.uni-goettingen.de',
     description='Calculates metrics and clones on revision level.',
-    install_requires=['mongoengine', 'pymongo', 'pycoshark>=1.0.0'],
+    install_requires=['mongoengine', 'pymongo', 'pycoshark>=1.0.0', 'mongomock'],
     dependency_links=['git+https://github.com/smartshark/pycoSHARK.git@1.0.0#egg=pycoshark-1.0.0'],
     url='https://github.com/smartshark/mecoSHARK',
     download_url='https://github.com/smartshark/mecoSHARK/zipball/master',

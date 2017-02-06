@@ -2,7 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
-external/
+external/sourcemeter
 
 # C extensions
 *.so
@@ -24,6 +24,9 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+
+tests/out_java
+tests/out_python
 
 # PyInstaller
 #  Usually these files are written by a python script from a template

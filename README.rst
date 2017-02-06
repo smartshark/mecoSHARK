@@ -87,8 +87,7 @@ via setup.py
 	Just change the "filename"-attribute to a location of your wish.
 
 
-Afterwards, you need to download sourcemeter_ and
-`sloccount <https://www.dwheeler.com/sloccount/>`_ and create the following structure:
+Afterwards, you need to download sourcemeter_ and create the following structure:
 
 Overall structure:
 

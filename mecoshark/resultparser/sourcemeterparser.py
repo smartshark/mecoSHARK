@@ -42,6 +42,7 @@ class SourcemeterParser(object):
         self.output_path = output_path
         self.input_path = input_path
         self.url = url
+        self.revision_hash = revision_hash
 
         # Default dictionaries and lists
         self.ordered_file_states = {}
@@ -53,30 +54,29 @@ class SourcemeterParser(object):
         logger.setLevel(debug_level)
 
         # Get project id and find all stored files in the current input path (needed for java projects)
-        self.vcs_system_id = self.get_vcs_system_id(url)
-        self.commit_id = self.get_commit_id(self.vcs_system_id, revision_hash)
+        self.vcs_system_id = self.get_vcs_system_id()
+        self.commit_id = self.get_commit_id(self.vcs_system_id)
 
         self.stored_files = self.find_stored_files()
 
         # Prepare csv files
         self.prepare_csv_files()
 
-    def get_commit_id(self, vcs_system_id, revision_hash):
+    def get_commit_id(self, vcs_system_id):
         """
         Gets the commit id for the corresponding projectid and revision
         :param vcs_system_id: id of the vcs system. :class:`bson.objectid.ObjectId`
-        :param revision_hash: revision hash that is analyzed
 
         :return: commit_id (:class:`bson.objectid.ObjectId`)
         """
         try:
-            return Commit.objects(vcs_system_id=vcs_system_id, revision_hash=revision_hash).get().id
+            return Commit.objects(vcs_system_id=vcs_system_id, revision_hash=self.revision_hash).get().id
         except DoesNotExist:
             logger.error("Commit with vcs_system_id %s and revision %s does not exist" %
-                              (vcs_system_id, revision_hash))
+                              (vcs_system_id, self.revision_hash))
             sys.exit(1)
 
-    def get_vcs_system_id(self, url):
+    def get_vcs_system_id(self):
         """
         Gets the project id for the given url
         :param url: url of the vcs_system
@@ -84,9 +84,9 @@ class SourcemeterParser(object):
         :return: vcs_system_id (:class:`bson.objectid.ObjectId`)
         """
         try:
-            return VCSSystem.objects(url=url).get().id
+            return VCSSystem.objects(url=self.url).get().id
         except DoesNotExist:
-            logger.error("VCSSystem with the url %s does not exist in the database! Execute vcsSHARK first!" % url)
+            logger.error("VCSSystem with the url %s does not exist in the database! Execute vcsSHARK first!" % self.url)
             sys.exit(1)
 
     def find_stored_files(self):
@@ -172,6 +172,8 @@ class SourcemeterParser(object):
                         else:
                             row['sortKey'] = '0'
                             file_states.append(row)
+
+
         file_states = sorted(file_states, key=lambda k: int(k['sortKey']))
         self.ordered_file_states = self.sort_for_parent(file_states)
 
