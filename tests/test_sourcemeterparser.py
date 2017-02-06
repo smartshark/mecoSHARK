@@ -21,8 +21,8 @@ class SourceMeterParserTest(unittest.TestCase):
         self.out_java = os.path.dirname(os.path.realpath(__file__)) + '/data/out_java'
 
         # Setting up database with data that is normally put into it via vcs program
-        connect('mecoshark_test', host='mongomock://localhost', alias='testdb')
-        conn = get_connection('testdb')
+        connect('meco_run', username=None, password=None, host='mongo_db',port=27017, authentication_source=None,
+                connect=False)
 
         # Clear database first (we need a small hack here, as mongomocks drop_database does not work)
         Project.drop_collection()
