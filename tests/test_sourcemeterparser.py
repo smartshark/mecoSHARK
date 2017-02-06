@@ -1,3 +1,4 @@
+import configparser
 import csv
 import os
 import shutil
@@ -7,7 +8,6 @@ from bson import ObjectId
 from pathlib import Path
 
 from mongoengine import connect
-from pymongo import MongoClient
 
 from mecoshark.resultparser.sourcemeterparser import SourcemeterParser
 from pycoshark.mongomodels import VCSSystem, Commit, Project, File
@@ -16,10 +16,15 @@ from pycoshark.mongomodels import VCSSystem, Commit, Project, File
 class SourceMeterParserTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
+        # Create testconfig
+        config = configparser.ConfigParser()
+        config.read(os.path.dirname(os.path.realpath(__file__)) + "/data/used_test_config.cfg")
+
         # Setting up database with data that is normally put into it via vcs program
-        c1 = connect('meco_run', username=None, password=None, host='mongodb', port=27017, authentication_source=None,
+        connect(config['Database']['db_database'], username=config['Database']['db_user'],
+                password=config['Database']['db_password'], host=config['Database']['db_hostname'],
+                port=int(config['Database']['db_port']), authentication_source=config['Database']['db_authentication'],
                 connect=False)
-        print(c1)
 
     def setUp(self):
         # Setup logging
@@ -73,7 +78,6 @@ class SourceMeterParserTest(unittest.TestCase):
         self.assertIsInstance(parser.vcs_system_id, ObjectId)
 
 
-    '''
     def test_initialization_fails_commit_id_wrong(self):
         # It should make a sys.exit call, as our vcs program was not executed
         with self.assertRaises(SystemExit) as cm:
@@ -310,9 +314,6 @@ class SourceMeterParserTest(unittest.TestCase):
                                      'TNA': 1370.0, 'TNPIN': 20.0, 'CLLC': 0.0, 'CCO': 660.0, 'TPDA': 2052.0,
                                      'TNFI': 326.0, 'TPUA': 744.0, 'LLDC': 0.0}
 
-
-
-
         output = []
         with open(self.package_csv) as csvfile:
             reader = csv.DictReader(csvfile)
@@ -405,5 +406,3 @@ class SourceMeterParserTest(unittest.TestCase):
         self.assertEqual(entry['type'], 'class')
         self.assertEqual(entry['ID'], 'L5123')
         self.assertEqual(entry['Parent'], 'L651')
-
-    '''
