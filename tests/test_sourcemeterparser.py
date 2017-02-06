@@ -15,6 +15,7 @@ from pycoshark.mongomodels import VCSSystem, Commit, Project, File
 
 
 class SourceMeterParserTest(unittest.TestCase):
+    @classmethod
     def setUpClass(cls):
         # Initialize mongoclient
         cls.mongoClient = MongoClient("mongo_db", 27017)
