@@ -1,17 +1,12 @@
 import csv
-import logging
 import os
 import shutil
 import unittest
 
 from bson import ObjectId
-from mongomock import MongoClient
 from pathlib import Path
 
 from mongoengine import connect, NotUniqueError
-from mongoengine.connection import _get_db
-from pymongo.errors import DuplicateKeyError
-
 from mecoshark.resultparser.sourcemeterparser import SourcemeterParser
 from pycoshark.mongomodels import VCSSystem, Commit, Project, File
 
@@ -20,7 +15,6 @@ class SourceMeterParserTest(unittest.TestCase):
 
     def setUp(self):
         # Setup logging
-        #logging.basicConfig(level=logging.DEBUG)
         self.input_path_python = os.path.dirname(os.path.realpath(__file__)) + '/data/python_project'
         self.input_path_java = os.path.dirname(os.path.realpath(__file__)) + '/data/java_project2'
         self.out_java = os.path.dirname(os.path.realpath(__file__)) + '/data/out_java'
