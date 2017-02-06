@@ -15,7 +15,7 @@ install:
   - docker run testdocker /bin/sh -c "cd /root/mecoshark; python3.5 setup.py install"
 
 script:
-  - docker run testdocker --net=host -p 27017:27017 /bin/sh -c "cd /root/mecoshark; python3.5 setup.py test"
+  - docker run testdocker -p 27017:27017 /bin/sh -c "cd /root/mecoshark; python3.5 setup.py test"
 
 after_success:
   - docker run --env-file .env testdocker /bin/sh -c "cd /root/mecoshark; make deploy > /dev/null"
