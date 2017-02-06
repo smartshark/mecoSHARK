@@ -20,7 +20,7 @@ class SourceMeterParserTest(unittest.TestCase):
         self.out_java = os.path.dirname(os.path.realpath(__file__)) + '/data/out_java'
 
         # Setting up database with data that is normally put into it via vcs program
-        c = connect(db='test', host='mongomock://localhost:27017')
+        c = connect(db='test', host='mongomock://testdocker:27017')
 
         # Clear database first (we need a small hack here, as mongomocks drop_database does not work)
         c.get_database('test')['project'].drop()
