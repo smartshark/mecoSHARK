@@ -12,7 +12,6 @@ class MecoSHARKTest(unittest.TestCase):
         self.input_path_java = os.path.dirname(os.path.realpath(__file__)) + '/data/java_project'
         self.out = os.path.dirname(os.path.realpath(__file__)) + '/data/out'
 
-    '''
     def test_language_detection_java(self):
         mecosharkapp = MecoSHARK(self.input_path_java, self.out, None, None, None, None, None, None, None,
                                  None, None, logging.DEBUG)
@@ -35,4 +34,3 @@ class MecoSHARKTest(unittest.TestCase):
             'python': 21.0/21.0
         }
         self.assertEqual(expected_languages, languages)
-    '''

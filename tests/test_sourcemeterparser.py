@@ -16,9 +16,6 @@ from pycoshark.mongomodels import VCSSystem, Commit, Project, File
 class SourceMeterParserTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        # Initialize mongoclient
-        cls.mongoClient = MongoClient("mongodb", 27017)
-
         # Setting up database with data that is normally put into it via vcs program
         c1 = connect('meco_run', username=None, password=None, host='mongodb', port=27017, authentication_source=None,
                 connect=False)
@@ -33,11 +30,11 @@ class SourceMeterParserTest(unittest.TestCase):
 
 
         # Clear database first (we need a small hack here, as mongomocks drop_database does not work)
-        self.mongoClient.drop_database("meco_run")
-        #Project.drop_collection()
-        #VCSSystem.drop_collection()
-        #File.drop_collection()
-        #Commit.drop_collection()
+        Project.drop_collection()
+        VCSSystem.drop_collection()
+        Commit.drop_collection()
+        File.drop_collection()
+
 
         self.project_id = Project(name="zookeeper").save().id
         self.vcs_id = VCSSystem(url="http://test.de", project_id=self.project_id, repository_type="test").save().id
