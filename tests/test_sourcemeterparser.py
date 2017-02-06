@@ -4,6 +4,7 @@ import shutil
 import unittest
 
 from bson import ObjectId
+from mongoengine.connection import get_connection
 from pathlib import Path
 
 from mongoengine import connect
@@ -20,7 +21,8 @@ class SourceMeterParserTest(unittest.TestCase):
         self.out_java = os.path.dirname(os.path.realpath(__file__)) + '/data/out_java'
 
         # Setting up database with data that is normally put into it via vcs program
-        connect("new_database", host="mongo_db")
+        connect('mecoshark_test', host='mongomock://localhost', alias='testdb')
+        conn = get_connection('testdb')
 
         # Clear database first (we need a small hack here, as mongomocks drop_database does not work)
         Project.drop_collection()
