@@ -32,6 +32,4 @@ def find_correct_processor(languages, output_path, input_path):
                     and processor.enabled:
                 correct_processors.append(processor)
 
-    # Filter out not fitting references
-    filtered_processors = [processor for processor in correct_processors if processor.__module__.startswith('mecoshark')]
-    return filtered_processors
+    return correct_processors

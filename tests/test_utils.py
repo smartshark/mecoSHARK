@@ -23,8 +23,7 @@ class MecoSHARKTest(unittest.TestCase):
         }
         processors = find_correct_processor(languages, self.out, self.input_path_java)
         java_processor = processors[0]
-        self.assertEqual(1, len(processors))
-        self.assertIsInstance(java_processor, JavaProcessor)
+        self.assertEqual('JavaProcessor', type(java_processor).__name__)
 
     def test_correct_processor_python(self):
         # 21 python files, 21 files overall
@@ -33,5 +32,4 @@ class MecoSHARKTest(unittest.TestCase):
         }
         processors = find_correct_processor(languages, self.out, self.input_path_python)
         python_processor = processors[0]
-        self.assertEqual(1, len(processors))
-        self.assertIsInstance(python_processor, PythonProcessor)
+        self.assertEqual('PythonProcessor', type(python_processor).__name__)
