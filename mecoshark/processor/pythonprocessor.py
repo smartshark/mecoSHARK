@@ -55,6 +55,7 @@ class PythonProcessor(BaseProcessor):
 
         if not self.is_output_produced():
             logger.error('Problem in using mecoshark! No output was produced!')
+            sys.stderr.write("fatal error\n")
             sys.exit(1)
 
     def is_output_produced(self):
