@@ -27,7 +27,7 @@ class MecoSHARKTest(unittest.TestCase):
 
     def test_language_detection_java(self):
         mecosharkapp = MecoSHARK(self.input_path_java, self.out, None, None, None, self.database, self.host, self.port,
-                                 self.username, self.password, self.authentication_db, logging.DEBUG)
+                                 self.username, self.password, self.authentication_db, logging.DEBUG, False)
         languages = mecosharkapp.detect_languages()
 
         # 6 ansic files, 22 java files, 28 files overall
@@ -39,7 +39,7 @@ class MecoSHARKTest(unittest.TestCase):
 
     def test_language_detection_python(self):
         mecosharkapp = MecoSHARK(self.input_path_python, self.out, None, None, None, self.database, self.host, self.port,
-                                 self.username, self.password, self.authentication_db, logging.DEBUG)
+                                 self.username, self.password, self.authentication_db, logging.DEBUG, False)
         languages = mecosharkapp.detect_languages()
 
         # 21 python files, 21 files overall

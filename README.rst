@@ -163,6 +163,8 @@ explained in detail.
 
 --db-authentication <DB_AUTHENTICATION> -a <DB_AUTHENTICATION>: name of the authentication database; Default: None
 
+--ssl: enables ssl for the connection to the mongodb; Default: False
+
 --debug <DEBUG_LEVEL>, -d <DEBUG_LEVEL>: Debug level (INFO, DEBUG, WARNING, ERROR); Default: DEBUG
 
 --url <URL>, -u <URL>: URL of the project (e.g., https://github.com/smartshark/mecoSHARK); Required

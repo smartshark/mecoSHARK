@@ -45,7 +45,7 @@ class PythonProcessor(BaseProcessor):
         Executes sourcemeter for a python project
         """
         # Clean output directory
-        shutil.rmtree(self.output_path, True)
+        shutil.rmtree(self.output_path, self.projectname, True)
         os.makedirs(self.output_path, exist_ok=True)
         template_path = os.path.dirname(os.path.realpath(__file__))+'/../../templates'
 
@@ -65,7 +65,7 @@ class PythonProcessor(BaseProcessor):
         :return: boolean
         """
 
-        output_path = os.path.join(self.output_path, 'python')
+        output_path = os.path.join(self.output_path, self.projectname, 'python')
 
         if not os.path.exists(output_path):
             return False
@@ -94,7 +94,7 @@ class PythonProcessor(BaseProcessor):
         """
         logger.setLevel(debug_level)
         self.execute_sourcemeter()
-        meco_path = os.path.join(self.output_path, 'python')
+        meco_path = os.path.join(self.output_path, self.projectname, 'python')
 
         output_path = os.path.join(meco_path, os.listdir(meco_path)[0])
 

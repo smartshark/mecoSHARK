@@ -5,6 +5,7 @@ import json
 import sys
 import argparse
 from mecoshark.mecosharkapp import MecoSHARK
+from pycoshark.utils import get_base_argparser
 
 
 def setup_logging(default_path=os.path.dirname(os.path.realpath(__file__))+"/mecoshark/loggerConfiguration.json",
@@ -63,21 +64,14 @@ def start():
     setup_logging()
     logger = logging.getLogger("mecoshark_main")
     logger.info("Starting mecoSHARK...")
-    parser = argparse.ArgumentParser(description='Calculates metrics & performs clone detection for the given version.')
-    parser.add_argument('-v', '--version', help='Shows the version', action='version', version='0.0.1')
+
+    parser = get_base_argparser('Calculates metrics & performs clone detection for the given version.', '1.0.0')
     parser.add_argument('-i', '--input', help='Path to the repository.',
                         required=True, type=readable_dir)
     parser.add_argument('-o', '--output', help='Directory, which can be used as output.',
                         required=True, type=writable_dir)
     parser.add_argument('-r', '--rev', help='Hash of the revision.', required=True)
     parser.add_argument('-u', '--url', help='URL of the project (e.g., GIT Url).', required=True)
-    parser.add_argument('-U', '--db-user', help='Database user name', default=None)
-    parser.add_argument('-P', '--db-password', help='Database user password', default=None)
-    parser.add_argument('-DB', '--db-database', help='Database name', default='smartshark')
-    parser.add_argument('-H', '--db-hostname', help='Name of the host, where the database server is running',
-                        default='localhost')
-    parser.add_argument('-p', '--db-port', help='Port, where the database server is listening', default=27017, type=int)
-    parser.add_argument('-a', '--db-authentication', help='Name of the authentication database')
     parser.add_argument('--debug', help='Specifies the debug level', choices=['INFO', 'DEBUG', 'WARNING', 'ERROR'],
                         default='DEBUG')
     parser.add_argument('--options', help='Optionstring in the form "option1=value1,option2=value2".')
@@ -102,7 +96,7 @@ def start():
 
     mecoshark = MecoSHARK(args.input, args.output, args.rev, args.url, parsed_options, args.db_database,
                           args.db_hostname, args.db_port, args.db_user, args.db_password, args.db_authentication,
-                          args.debug)
+                          args.debug, args.ssl)
     mecoshark.process_revision()
 
 if __name__ == "__main__":

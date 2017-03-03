@@ -47,7 +47,7 @@ class JavaProcessor(BaseProcessor):
 
         """
         # Clean output directory
-        shutil.rmtree(os.path.join(self.output_path), True)
+        shutil.rmtree(os.path.join(self.output_path, self.projectname), True)
         os.makedirs(self.output_path, exist_ok=True)
         template_path = os.path.dirname(os.path.realpath(__file__))+'/../../templates'
         failure_happened = False
@@ -55,7 +55,7 @@ class JavaProcessor(BaseProcessor):
         '''
         # try maven
         if os.path.exists(os.path.join(self.input_path, 'pom.xml')):
-            self.logger.info("Trying out maven...")
+            logger.info("Trying out maven...")
             self.prepare_template(os.path.join(template_path, 'build-maven.sh'))
             self.prepare_template(os.path.join(template_path, 'analyze-maven.sh'))
 
@@ -71,7 +71,7 @@ class JavaProcessor(BaseProcessor):
 
         # try ant
         if os.path.exists(os.path.join(self.input_path, 'build.xml')) and failure_happened:
-            self.logger.info("Trying out ant...")
+            logger.info("Trying out ant...")
             self.prepare_template(os.path.join(template_path, 'build-ant.sh'))
             self.prepare_template(os.path.join(template_path, 'analyze-ant.sh'))
 
@@ -115,7 +115,7 @@ class JavaProcessor(BaseProcessor):
         :return: boolean
         """
 
-        output_path = os.path.join(self.output_path, 'java')
+        output_path = os.path.join(self.output_path, self.projectname, 'java')
 
         if not os.path.exists(output_path):
             return False
@@ -146,14 +146,14 @@ class JavaProcessor(BaseProcessor):
 
         logger.setLevel(debug_level)
         self.execute_sourcemeter()
-        meco_path = os.path.join(self.output_path, 'java')
+        meco_path = os.path.join(self.output_path, self.projectname, 'java')
         output_path = os.path.join(meco_path, os.listdir(meco_path)[0])
 
         parser = SourcemeterParser(output_path, self.input_path, url, revision, debug_level)
         parser.store_data()
 
         # delete directory
-        shutil.rmtree(os.path.join(self.output_path), True)
+        shutil.rmtree(os.path.join(self.output_path, self.projectname), True)
 
 
 

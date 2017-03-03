@@ -31,6 +31,10 @@ if [ ! -z ${12+x} ] && [ ${12} != "None" ]; then
 	COMMAND="$COMMAND --debug ${12}"
 fi
 
+if [ ! -z ${13+x} ] && [ ${13} != "None" ]; then
+	COMMAND="$COMMAND --ssl"
+fi
+
 export PATH=$PATH:$PLUGIN_PATH/external/sloccount2.26
 
 $COMMAND

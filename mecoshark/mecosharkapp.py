@@ -8,6 +8,7 @@ import timeit
 from mongoengine import connect
 
 from mecoshark.utils import find_correct_processor
+from pycoshark.utils import create_mongodb_uri_string
 
 logger = logging.getLogger('mecoshark_main')
 
@@ -17,7 +18,7 @@ class MecoSHARK(object):
     """
 
     def __init__(self, input, output, revision, url, options, db_name, db_host, db_port, db_user, db_password,
-                 db_authentication, debug_level):
+                 db_authentication, debug_level, ssl_enabled):
         """
         Main runner of the mecoshark app
 
@@ -45,9 +46,9 @@ class MecoSHARK(object):
         self.revision = revision
         self.url = url
 
+        uri = create_mongodb_uri_string(db_user, db_password, db_host, db_port, db_authentication, ssl_enabled)
         # connect to mongodb
-        connect(db_name, host=db_host, port=db_port, authentication_source=db_authentication, username=db_user,
-                password=db_password, connect=False)
+        connect(db_name, host=uri)
 
     def process_revision(self):
         """

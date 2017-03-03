@@ -14,10 +14,11 @@ class PythonProcessorTest(unittest.TestCase):
     def setUp(self):
         self.input_path_python = os.path.dirname(os.path.realpath(__file__)) + '/data/python_project'
         self.out = os.path.dirname(os.path.realpath(__file__)) + '/data/out_python'
+        self.projectname = os.path.basename(os.path.normpath(self.input_path_python))
 
         # Create fake output
         shutil.rmtree(self.out, ignore_errors=True)
-        os.makedirs(self.out+'/python/timestamp')
+        os.makedirs(self.out + '/' + self.projectname + '/python/timestamp')
 
     def test_output_produced_fails(self):
         python_processor = PythonProcessor(self.out, self.input_path_python)
@@ -28,7 +29,7 @@ class PythonProcessorTest(unittest.TestCase):
 
         # Create 11 fake files
         for i in range(0, 11):
-            Path(self.out+'/python/timestamp/test'+str(i)+'.csv').touch()
+            Path(self.out + '/' + self.projectname + '/python/timestamp/test' + str(i) + '.csv').touch()
 
         self.assertTrue(python_processor.is_output_produced())
 
@@ -37,7 +38,7 @@ class PythonProcessorTest(unittest.TestCase):
 
         # Create 11 fake files
         for i in range(0, 10):
-            Path(self.out+'/python/timestamp/test'+str(i)+'.csv').touch()
+            Path(self.out + '/' + self.projectname + '/python/timestamp/test' + str(i) + '.csv').touch()
 
         self.assertFalse(python_processor.is_output_produced())
 
@@ -46,7 +47,7 @@ class PythonProcessorTest(unittest.TestCase):
 
         # Create 11 fake files
         for i in range(0, 12):
-            Path(self.out+'/python/timestamp/test'+str(i)+'.csv').touch()
+            Path(self.out + '/' + self.projectname + '/python/timestamp/test' + str(i) + '.csv').touch()
 
         self.assertFalse(python_processor.is_output_produced())
 

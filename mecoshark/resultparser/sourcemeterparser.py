@@ -5,9 +5,9 @@ import logging
 import os
 import sys
 
-from mongoengine import DoesNotExist, NotUniqueError
-from pymongo.errors import DuplicateKeyError
+from mongoengine import DoesNotExist
 from pycoshark.mongomodels import VCSSystem, Commit, File, CodeGroupState, CodeEntityState, CloneInstance
+from pycoshark.utils import get_code_entity_state_identifier, get_code_group_state_identifier
 
 logger = logging.getLogger("sourcemeter_parser")
 
@@ -251,23 +251,22 @@ class SourcemeterParser(object):
         long_name = self.sanitize_long_name(row['LongName'])
         metrics_dict = self.sanitize_metrics_dictionary(copy.deepcopy(row))
 
-        new_state = CodeGroupState(
+        cg_parent_ids = []
+        if 'Parent' in row and row['Parent'] in self.stored_meta_package_states:
+            cg_parent_ids.append(self.stored_meta_package_states[row['Parent']])
+
+        if 'Component' in row:
+            cg_parent_ids.extend(self.get_component_ids(row['Component']))
+
+        s_key = get_code_group_state_identifier(long_name, self.commit_id)
+        state_id = CodeGroupState.objects(s_key=s_key).upsert_one(
+            s_key=s_key,
             long_name=long_name,
             commit_id=self.commit_id,
             metrics=metrics_dict,
-            cg_type=row['type']
-        )
-
-        if 'Parent' in row and row['Parent'] in self.stored_meta_package_states:
-            new_state.cg_parent_ids.append(self.stored_meta_package_states[row['Parent']])
-
-        if 'Component' in row:
-            new_state.cg_parent_ids.extend(self.get_component_ids(row['Component']))
-
-        try:
-            state_id = new_state.save().id
-        except (DuplicateKeyError, NotUniqueError):
-            state_id = CodeGroupState.objects(commit_id=self.commit_id, long_name=long_name).get().id
+            cg_type=row['type'],
+            cg_parent_ids=cg_parent_ids
+        ).id
 
         self.stored_meta_package_states[row['ID']] = state_id
 
@@ -295,30 +294,43 @@ class SourcemeterParser(object):
             ce_type=row['type'],
         )
 
+        cg_ids = []
+        ce_parent_id = None
         if 'Parent' in row and row['Parent'] in self.stored_meta_package_states:
-            new_state.cg_ids.append(self.stored_meta_package_states[row['Parent']])
+            cg_ids.append(self.stored_meta_package_states[row['Parent']])
         elif 'Parent' in row and row['Parent'] in self.stored_file_states:
-            new_state.ce_parent_id = self.stored_file_states[row['Parent']]
+            ce_parent_id = self.stored_file_states[row['Parent']]
         elif 'Parent' in row and row['type'] != 'file':
             logger.warning("ERROR! Parent not found for %s!" % row)
 
         if 'Component' in row:
-            new_state.cg_ids.extend(self.get_component_ids(row['Component']))
+            cg_ids.extend(self.get_component_ids(row['Component']))
 
+        start_line = None
+        end_line = None
+        start_column = None
+        end_column = None
         if 'Line' in row and 'EndLine' in row and 'Column' in row and 'EndColumn' in row:
-            new_state.start_line = row['Line']
-            new_state.end_line = row['EndLine']
-            new_state.start_column = row['Column']
-            new_state.end_column = row['EndColumn']
+            start_line = row['Line']
+            end_line = row['EndLine']
+            start_column = row['Column']
+            end_column = row['EndColumn']
 
-        new_state.metrics = self.sanitize_metrics_dictionary(copy.deepcopy(row))
-
-        try:
-            state_id = new_state.save().id
-        except (DuplicateKeyError, NotUniqueError):
-            state_id = CodeEntityState.objects(file_id=self.stored_files[path_name], commit_id=self.commit_id,
-                                               long_name=long_name).get().id
-
+        s_key = get_code_entity_state_identifier(long_name, self.commit_id, self.stored_files[path_name])
+        state_id = CodeEntityState.objects(s_key=s_key).upsert_one(
+            s_key=s_key,
+            long_name=long_name,
+            commit_id=self.commit_id,
+            file_id=self.stored_files[path_name],
+            ce_type=row['type'],
+            cg_ids=cg_ids,
+            ce_parent_id=ce_parent_id,
+            start_line=start_line,
+            end_line=end_line,
+            start_column=start_column,
+            end_column=end_column,
+            metrics=self.sanitize_metrics_dictionary(copy.deepcopy(row))
+        ).id
         self.stored_file_states[row['ID']] = state_id
 
     def store_clone_data(self):
@@ -341,15 +353,18 @@ class SourcemeterParser(object):
                 metrics_dict = self.sanitize_metrics_dictionary(copy.deepcopy(row))
                 long_name = self.sanitize_long_name(row['Path'])
 
-                try:
-                    CloneInstance(
-                        commit_id=self.commit_id, name=row['ID'], file_id=self.stored_files[long_name],
-                        clone_class=row['Parent'], clone_class_metrics=clone_classes[row['Parent']],
-                        clone_instance_metrics=metrics_dict, start_line=row['Line'], start_column=row['Column'],
-                        end_line=row['EndLine'], end_column=row['EndColumn']
-                    ).save()
-                except (DuplicateKeyError, NotUniqueError):
-                    pass
+                CloneInstance.objects(name=row['ID'], commit_id=self.commit_id, file_id=self.stored_files[long_name]).upsert_one(
+                    commit_id=self.commit_id,
+                    name=row['ID'],
+                    file_id=self.stored_files[long_name],
+                    clone_class=row['Parent'],
+                    clone_class_metrics=clone_classes[row['Parent']],
+                    clone_instance_metrics=metrics_dict,
+                    start_line=row['Line'],
+                    start_column=row['Column'],
+                    end_line=row['EndLine'],
+                    end_column=row['EndColumn']
+                )
 
         logger.info("Finished parsing & storing clone data!")
 

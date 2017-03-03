@@ -8,18 +8,18 @@
     "created_collections": [
 		{
 			"name": "code_entity_state",
-			"shard_key": [{"long_name": 1}, {"commit_id": 1}, {"file_id": 1}],
+			"shard_key": [{"s_key": 1}],
             "unique": true
 		},
         {
 			"name": "code_group_state",
-			"shard_key": [{"long_name": 1}, {"commit_id": 1}],
-			"unique": true
+			"shard_key": [{"s_key": 1}],
+            "unique": true
 		},
         {
 			"name": "clone_instance",
 			"shard_key": [{"name": 1}, {"commit_id": 1}, {"file_id": 1}],
-			"unique": true
+            "unique": true
 		}
 	],
     "description": "Calculates metrics and clones on revision level.",
@@ -121,6 +121,14 @@
             "position": 12,
             "type": "execute",
             "description": "debug choices (INFO, DEBUG, WARNING, ERROR)"
+        },
+        {
+            "name": "ssl_enabled",
+            "required": false,
+            "position": 13,
+            "type": "execute",
+            "description": "needs to be set if database uses ssl connection"
         }
+
     ]
 }

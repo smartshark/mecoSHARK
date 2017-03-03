@@ -40,7 +40,6 @@ class SourceMeterParserTest(unittest.TestCase):
         Commit.drop_collection()
         File.drop_collection()
 
-
         self.project_id = Project(name="zookeeper").save().id
         self.vcs_id = VCSSystem(url="http://test.de", project_id=self.project_id, repository_type="test").save().id
         self.commit_id = Commit(revision_hash="2342", vcs_system_id=self.vcs_id).save()
@@ -76,7 +75,6 @@ class SourceMeterParserTest(unittest.TestCase):
 
         self.assertEqual(self.vcs_id, parser.vcs_system_id)
         self.assertIsInstance(parser.vcs_system_id, ObjectId)
-
 
     def test_initialization_fails_commit_id_wrong(self):
         # It should make a sys.exit call, as our vcs program was not executed
@@ -325,8 +323,6 @@ class SourceMeterParserTest(unittest.TestCase):
         self.assertEqual(output[2], expected_output_package_3)
         self.assertEqual(output[3], expected_output_package_4)
         self.assertEqual(output[4], expected_output_package_5)
-
-
 
     def test_prepare_csv_files(self):
         parser = SourcemeterParser(self.out_java, self.input_path_java, "http://test.de", "2342", 'DEBUG')

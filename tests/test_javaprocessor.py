@@ -14,32 +14,30 @@ class JavaProcessorTest(unittest.TestCase):
     def setUp(self):
         self.input_path_java = os.path.dirname(os.path.realpath(__file__)) + '/data/java_project'
         self.out = os.path.dirname(os.path.realpath(__file__)) + '/data/out_java'
-
+        self.projectname = os.path.basename(os.path.normpath(self.input_path_java))
         # Create fake output
         shutil.rmtree(self.out, ignore_errors=True)
-        os.makedirs(self.out+'/java/timestamp')
+        os.makedirs(self.out+'/'+self.projectname+'/java/timestamp')
 
     def test_output_produced_succeed(self):
         java_processor = JavaProcessor(self.out, self.input_path_java)
 
         # Create 12 fake files
         for i in range(0, 12):
-            Path(self.out+'/java/timestamp/test'+str(i)+'.csv').touch()
+            Path(self.out + '/' + self.projectname + '/java/timestamp/test' + str(i) + '.csv').touch()
 
         self.assertTrue(java_processor.is_output_produced())
-
 
     def test_output_produced_fails(self):
         java_processor = JavaProcessor(self.out, self.input_path_java)
         self.assertFalse(java_processor.is_output_produced())
-
 
     def test_output_produced_fails_too_less_csvs(self):
         java_processor = JavaProcessor(self.out, self.input_path_java)
 
         # Create 11 fake files
         for i in range(0, 11):
-            Path(self.out+'/java/timestamp/test'+str(i)+'.csv').touch()
+            Path(self.out + '/' + self.projectname + '/java/timestamp/test' + str(i) + '.csv').touch()
 
         self.assertFalse(java_processor.is_output_produced())
 
@@ -48,7 +46,7 @@ class JavaProcessorTest(unittest.TestCase):
 
         # Create 11 fake files
         for i in range(0, 13):
-            Path(self.out+'/java/timestamp/test'+str(i)+'.csv').touch()
+            Path(self.out + '/' + self.projectname + '/java/timestamp/test' + str(i) + '.csv').touch()
 
         self.assertFalse(java_processor.is_output_produced())
 
