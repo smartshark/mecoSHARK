@@ -82,9 +82,16 @@ class MecoSHARK(object):
         command = "%s --datadir %s --details %s | awk -F '\t' '{print $2}'" % (sloccount_path, sloccount_temp,
                                                                                self.input_path)
         logger.info('Calling command: %s' % command)
-        output = subprocess.check_output(command, shell=True)
 
-        languages = self.sanitize_sloccount_output(output)
+        # suppress output to stderr, because we just need the langauges
+        output = subprocess.check_output(command, shell=True, stderr=subprocess.DEVNULL)
+
+        try:
+            languages = self.sanitize_sloccount_output(output)
+        except Exception:
+            logger.error('Problem in parsing sloccount output')
+            sys.exit(1)
+
         logger.debug('Found the following languages: %s' % languages)
 
         all_files = sum(languages.values())
