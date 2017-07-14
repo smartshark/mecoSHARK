@@ -62,8 +62,15 @@ docs/build/
 # PyBuilder
 target/
 
+# plugin packaging
+plugin_packaging/*.tar
+
 #Ipython Notebook
 .ipynb_checkpoints
 
 # IDE
 .idea
+docs/source/_static/
+docs/source/_templates/
+tests/data/out_java/
+tests/data/out_python/
