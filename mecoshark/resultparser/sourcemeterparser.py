@@ -287,13 +287,6 @@ class SourcemeterParser(object):
         else:
             long_name = row['LongName']
 
-        new_state = CodeEntityState(
-            file_id=self.stored_files[path_name],
-            commit_id=self.commit_id,
-            long_name=long_name,
-            ce_type=row['type'],
-        )
-
         cg_ids = []
         ce_parent_id = None
         if 'Parent' in row and row['Parent'] in self.stored_meta_package_states:
@@ -316,22 +309,27 @@ class SourcemeterParser(object):
             start_column = row['Column']
             end_column = row['EndColumn']
 
-        s_key = get_code_entity_state_identifier(long_name, self.commit_id, self.stored_files[path_name])
-        state_id = CodeEntityState.objects(s_key=s_key).upsert_one(
-            s_key=s_key,
-            long_name=long_name,
-            commit_id=self.commit_id,
-            file_id=self.stored_files[path_name],
-            ce_type=row['type'],
-            cg_ids=cg_ids,
-            ce_parent_id=ce_parent_id,
-            start_line=start_line,
-            end_line=end_line,
-            start_column=start_column,
-            end_column=end_column,
-            metrics=self.sanitize_metrics_dictionary(copy.deepcopy(row))
-        ).id
-        self.stored_file_states[row['ID']] = state_id
+        try:
+            s_key = get_code_entity_state_identifier(long_name, self.commit_id, self.stored_files[path_name])
+            state_id = CodeEntityState.objects(s_key=s_key).upsert_one(
+                s_key=s_key,
+                long_name=long_name,
+                commit_id=self.commit_id,
+                file_id=self.stored_files[path_name],
+                ce_type=row['type'],
+                cg_ids=cg_ids,
+                ce_parent_id=ce_parent_id,
+                start_line=start_line,
+                end_line=end_line,
+                start_column=start_column,
+                end_column=end_column,
+                metrics=self.sanitize_metrics_dictionary(copy.deepcopy(row))
+            ).id
+            self.stored_file_states[row['ID']] = state_id
+        except KeyError:
+            # This should not happen, but it can happen, e.g., for the conftest.cpp file for C/c++ projects, which
+            # is just temporally created
+            logger.warning("Could not store results for file %s" % path_name)
 
     def store_clone_data(self):
         """

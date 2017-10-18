@@ -31,17 +31,17 @@ class CProcessor(BaseProcessor):
         """
         See: :func:`~mecoshark.processor.baseprocessor.BaseProcessor.threshold`
         """
-        return 0.4
+        return 0.1
 
     def __init__(self, output_path, input_path):
         super().__init__(output_path, input_path)
         return
 
-    def execute_sourcemeter(self, options):
+    def execute_sourcemeter(self, makefile_contents=None):
         """
-        Executes sourcemeter with the given options
+        Executes sourcemeter with the given makefile_contents
 
-        :param options: options for execution (dictionary)
+        :param makefile_contents: makefile_contents for execution
         """
         # Clean output directory
         shutil.rmtree(os.path.join(self.output_path, self.projectname), True)
@@ -50,8 +50,10 @@ class CProcessor(BaseProcessor):
         logger.info("Trying out directory analysis for cpp/c/cs...")
         self.prepare_template(os.path.join(template_path, 'analyze_c.sh'))
 
-        if 'makefile' in options:
-            build_string = options['makefile']
+        if makefile_contents is not None:
+            build_string = "#!/bin/sh\ncd $input\n"
+            print(makefile_contents)
+            build_string += makefile_contents.replace("\\n", "\n")
         else:
             build_string = "#!/bin/sh\ncd $input\nmake distclean\n./configure\nmake"
 
@@ -86,7 +88,7 @@ class CProcessor(BaseProcessor):
 
         return False
 
-    def process(self, revision, url, options, debug_level):
+    def process(self, revision, url, makefile_contents, debug_level):
         """
         See: :func:`~mecoshark.processor.baseprocessor.BaseProcessor.process`
 
@@ -97,11 +99,11 @@ class CProcessor(BaseProcessor):
 
         :param revision: revision
         :param url: url of the project that is analyzed
-        :param options: options for execution
+        :param makefile_contents: makefile_contents for execution
         :param debug_level: debugging_level
         """
         logger.setLevel(debug_level)
-        self.execute_sourcemeter(options)
+        self.execute_sourcemeter(makefile_contents)
         output_path = os.path.join(self.output_path, self.projectname, 'cpp')
         output_path = os.path.join(output_path, os.listdir(output_path)[0])
 

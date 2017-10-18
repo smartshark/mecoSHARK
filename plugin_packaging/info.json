@@ -109,11 +109,11 @@
             "description": "databse against which users are authenticated"
         },
         {
-            "name": "options",
+            "name": "makefile-contents",
             "required": false,
             "position": 11,
             "type": "execute",
-            "description": "possible options string"
+            "description": "contents of the makefile"
         },
         {
             "name": "debug",

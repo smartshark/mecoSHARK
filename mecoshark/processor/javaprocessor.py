@@ -34,7 +34,7 @@ class JavaProcessor(BaseProcessor):
         """
         See: :func:`~mecoshark.processor.baseprocessor.BaseProcessor.threshold`
         """
-        return 0.4
+        return 0.1
 
     def __init__(self, output_path, input_path):
         super().__init__(output_path, input_path)

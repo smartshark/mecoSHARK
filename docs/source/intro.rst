@@ -211,6 +211,13 @@ explained in detail.
 
 	Path to a folder that can  be used as output
 
+.. option:: --makefile-contents
+
+	Default: None
+
+	Contents of the makefile (only for c/c++/c#), e.g., "./configure\nmake".
+
+
 
 Tutorial
 ========

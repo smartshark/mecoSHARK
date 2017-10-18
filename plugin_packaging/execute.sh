@@ -24,7 +24,7 @@ if [ ! -z ${10+x} ] && [ ${10} != "None" ]; then
 fi
 
 if [ ! -z ${11+x} ] && [ ${11} != "None" ]; then
-	COMMAND="$COMMAND --options ${11}"
+	COMMAND="$COMMAND --makefile-contents ${11}"
 fi
 
 if [ ! -z ${12+x} ] && [ ${12} != "None" ]; then

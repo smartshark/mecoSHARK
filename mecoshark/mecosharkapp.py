@@ -17,7 +17,7 @@ class MecoSHARK(object):
     Main app for the mecoshark plugin
     """
 
-    def __init__(self, input, output, revision, url, options, db_name, db_host, db_port, db_user, db_password,
+    def __init__(self, input, output, revision, url, makefile_contents, db_name, db_host, db_port, db_user, db_password,
                  db_authentication, debug_level, ssl_enabled):
         """
         Main runner of the mecoshark app
@@ -26,7 +26,7 @@ class MecoSHARK(object):
         :param output: path to an output directory, where files can be stored
         :param revision: string of the revision hash
         :param url: url of the project that is analyzed
-        :param options: potential options (e.g., for the c processor)
+        :param makefile_contents: contents of the makefile (e.g., for the c processor)
         :param db_name: name of the database
         :param db_host: name of the host where the mongodb is running
         :param db_port: port on which the mongodb listens on
@@ -42,7 +42,7 @@ class MecoSHARK(object):
         self.debug_level = debug_level
         self.input_path = input.replace("~", home_folder)
         self.output_path = output.replace("~", home_folder)
-        self.options = options
+        self.makefile_contents = makefile_contents
         self.revision = revision
         self.url = url
 
@@ -64,7 +64,7 @@ class MecoSHARK(object):
 
         for processor in processors:
             logger.info("Executing: %s" % processor.__class__.__name__)
-            processor.process(self.revision, self.url, self.options, self.debug_level)
+            processor.process(self.revision, self.url, self.makefile_contents, self.debug_level)
 
         elapsed = timeit.default_timer() - start_time
         logger.info("Execution time: %0.5f s" % elapsed)

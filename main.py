@@ -74,7 +74,7 @@ def start():
     parser.add_argument('-u', '--url', help='URL of the project (e.g., GIT Url).', required=True)
     parser.add_argument('--debug', help='Specifies the debug level', choices=['INFO', 'DEBUG', 'WARNING', 'ERROR'],
                         default='DEBUG')
-    parser.add_argument('--options', help='Optionstring in the form "option1=value1,option2=value2".')
+    parser.add_argument('--makefile-contents', help='Makefile contents', default=None)
 
     try:
         args = parser.parse_args()
@@ -82,19 +82,10 @@ def start():
         logger.error(e)
         sys.exit(1)
 
-    parsed_options = {}
-    if args.options:
-        options = args.options.split(',')
-        for option in options:
-            option_parts = option.split('=')
-            option_value = '='.join(option_parts[1:])
-            option_value = option_value.replace("\\n", "\n")
-            parsed_options[option_parts[0]] = option_value
+    logger.debug("Got the following parameters. Input: %s, Output: %s, Revision: %s, URL: %s, Makefile-contents: %s" %
+                 (args.input, args.output, args.rev, args.url, args.makefile_contents))
 
-    logger.debug("Got the following parameters. Input: %s, Output: %s, Revision: %s, URL: %s, Options: %s" %
-                 (args.input, args.output, args.rev, args.url, parsed_options))
-
-    mecoshark = MecoSHARK(args.input, args.output, args.rev, args.url, parsed_options, args.db_database,
+    mecoshark = MecoSHARK(args.input, args.output, args.rev, args.url, args.makefile_contents, args.db_database,
                           args.db_hostname, args.db_port, args.db_user, args.db_password, args.db_authentication,
                           args.debug, args.ssl)
     mecoshark.process_revision()

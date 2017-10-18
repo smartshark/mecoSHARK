@@ -175,6 +175,8 @@ explained in detail.
 
 --output <PATH>, -o <PATH>: Path to a folder that can  be used as output; Required
 
+--makefile-contents: Contents of the makefile (only for c/c++/c#), e.g., "./configure\nmake".
+
 
 Tutorial
 ========
