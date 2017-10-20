@@ -34,7 +34,7 @@ class JavaProcessor(BaseProcessor):
         """
         See: :func:`~mecoshark.processor.baseprocessor.BaseProcessor.threshold`
         """
-        return 0.1
+        return 0.05
 
     def __init__(self, output_path, input_path):
         super().__init__(output_path, input_path)
@@ -104,9 +104,7 @@ class JavaProcessor(BaseProcessor):
                 pass
 
         if not self.is_output_produced():
-            logger.error('Problem in using mecoshark! No output was produced!')
-            sys.stderr.write("fatal error\n")
-            sys.exit(1)
+            raise FileNotFoundError('Problem in using mecoshark! No output was produced!')
 
     def is_output_produced(self):
         """

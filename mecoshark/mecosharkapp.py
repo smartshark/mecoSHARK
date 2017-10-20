@@ -61,10 +61,21 @@ class MecoSHARK(object):
         start_time = timeit.default_timer()
 
         processors = find_correct_processor(languages, self.output_path, self.input_path)
-
+        non_working_processors = 0
         for processor in processors:
             logger.info("Executing: %s" % processor.__class__.__name__)
-            processor.process(self.revision, self.url, self.makefile_contents, self.debug_level)
+            try:
+                processor.process(self.revision, self.url, self.makefile_contents, self.debug_level)
+            except FileNotFoundError as e:
+                logger.error(e)
+                non_working_processors += 1
+
+            # SmartSHARK needs an error in its std.err, but we say the whole execution failed only if all processors
+            # that were executed are failing
+            if len(processors) == non_working_processors:
+                sys.stderr.write("fatal error. All processors failed!\n")
+                sys.exit(1)
+
 
         elapsed = timeit.default_timer() - start_time
         logger.info("Execution time: %0.5f s" % elapsed)

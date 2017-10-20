@@ -31,7 +31,7 @@ class CProcessor(BaseProcessor):
         """
         See: :func:`~mecoshark.processor.baseprocessor.BaseProcessor.threshold`
         """
-        return 0.1
+        return 0.05
 
     def __init__(self, output_path, input_path):
         super().__init__(output_path, input_path)
@@ -65,7 +65,7 @@ class CProcessor(BaseProcessor):
         subprocess.run(os.path.join(self.output_path, 'analyze_c.sh'), shell=True, cwd=self.input_path)
 
         if not self.is_output_produced():
-            logger.error('Problem in using mecoshark! No output was produced!')
+            raise FileNotFoundError('Problem in using mecoshark! No output was produced!')
 
     def is_output_produced(self):
         """
@@ -109,6 +109,7 @@ class CProcessor(BaseProcessor):
 
         parser = SourcemeterParser(output_path, self.input_path, url, revision, debug_level)
         parser.store_data()
+
 
         shutil.rmtree(os.path.join(self.output_path, self.projectname), True)
 
