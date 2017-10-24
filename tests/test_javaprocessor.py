@@ -55,10 +55,8 @@ class JavaProcessorTest(unittest.TestCase):
         java_processor = JavaProcessor(self.out, self.input_path_java)
 
         # It should make a sys.exit call, as no ouput was produced
-        with self.assertRaises(SystemExit) as cm:
+        with self.assertRaises(FileNotFoundError) as cm:
             java_processor.execute_sourcemeter()
-
-        self.assertEqual(cm.exception.code, 1)
 
         path_to_processors = os.path.dirname(os.path.realpath(__file__))+'/../mecoshark/processor/'
         new_path = os.path.abspath(path_to_processors)+'/../../external/sourcemeter/Java/SourceMeterJava'

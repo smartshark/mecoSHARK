@@ -1,2 +1,2 @@
 #!/bin/sh
-$mavenpath -f $mavenpom clean package -DskipTests -Dadditionalparam=-Xdoclint:none -T1C
+$mavenpath -f $mavenpom clean package -DskipTests -Dmaven.javadoc.skip=true -Dadditionalparam=-Xdoclint:none -T1C
