@@ -52,7 +52,6 @@ class CProcessor(BaseProcessor):
 
         if makefile_contents is not None:
             build_string = "#!/bin/sh\ncd $input\n"
-            print(makefile_contents)
             build_string += makefile_contents.replace("\\n", "\n")
         else:
             build_string = "#!/bin/sh\ncd $input\nmake distclean\n./configure\nmake"
@@ -83,6 +82,7 @@ class CProcessor(BaseProcessor):
 
         number_of_files = len([name for name in os.listdir(output_path) if name.endswith('.csv')])
 
+        # Number of produced csv files must be 14.
         if number_of_files == 14:
             return True
 
@@ -110,8 +110,4 @@ class CProcessor(BaseProcessor):
         parser = SourcemeterParser(output_path, self.input_path, url, revision, debug_level)
         parser.store_data()
 
-
         shutil.rmtree(os.path.join(self.output_path, self.projectname), True)
-
-
-
