@@ -1,9 +1,9 @@
-import os
+import json
 import logging
 import logging.config
-import json
+import os
 import sys
-import argparse
+
 from mecoshark.mecosharkapp import MecoSHARK
 from pycoshark.utils import get_base_argparser
 
