@@ -23,8 +23,8 @@ if [ ! -z ${10+x} ] && [ ${10} != "None" ]; then
 	COMMAND="$COMMAND --db-authentication ${10}"
 fi
 
-if [ ! -z ${11+x} ] && [ ${11} != "None" ]; then
-	COMMAND="$COMMAND --makefile-contents ${11}"
+if [ ! -z "${11+x}" ] && [ "${11}" != "None" ]; then
+	COMMAND="$COMMAND --makefile-contents \"${11}\""
 fi
 
 if [ ! -z ${12+x} ] && [ ${12} != "None" ]; then
@@ -37,6 +37,6 @@ fi
 
 export PATH=$PATH:$PLUGIN_PATH/external/sloccount2.26
 
-$COMMAND
+eval $COMMAND
 
 rm -rf "/dev/shm/$NEW_UUID"
