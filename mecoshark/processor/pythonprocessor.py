@@ -3,8 +3,6 @@ import os
 import shutil
 import subprocess
 
-import sys
-
 from mecoshark.processor.baseprocessor import BaseProcessor
 from mecoshark.resultparser.sourcemeterparser import SourcemeterParser
 
@@ -51,6 +49,7 @@ class PythonProcessor(BaseProcessor):
 
         logger.info("Trying out directory analysis for python...")
         self.prepare_template(os.path.join(template_path, 'analyze_python.sh'))
+        self.prepare_template(os.path.join(template_path, 'external-filter-python.txt'))
         subprocess.run(os.path.join(self.output_path, 'analyze_python.sh'), shell=True)
 
         if not self.is_output_produced():

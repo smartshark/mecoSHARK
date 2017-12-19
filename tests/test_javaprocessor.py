@@ -1,11 +1,10 @@
-import filecmp
 import os
+import shutil
 import unittest
+from pathlib import Path
 
 import mock
-import shutil
 
-from pathlib import Path
 from mecoshark.processor.javaprocessor import JavaProcessor
 
 
@@ -44,14 +43,14 @@ class JavaProcessorTest(unittest.TestCase):
     def test_output_produced_fails_too_much_csvs(self):
         java_processor = JavaProcessor(self.out, self.input_path_java)
 
-        # Create 11 fake files
+        # Create 13 fake files
         for i in range(0, 13):
             Path(self.out + '/' + self.projectname + '/java/timestamp/test' + str(i) + '.csv').touch()
 
         self.assertFalse(java_processor.is_output_produced())
 
     @mock.patch('subprocess.run')
-    def test_language_detection_python(self, mock_subprocess):
+    def test_language_detection_java(self, mock_subprocess):
         java_processor = JavaProcessor(self.out, self.input_path_java)
 
         # It should make a sys.exit call, as no ouput was produced
@@ -63,7 +62,8 @@ class JavaProcessorTest(unittest.TestCase):
 
         self.maxDiff = None
         expected_string = '#!/bin/sh\n' \
-                          '%s -projectName=java_project ' \
+                          '%s -maximumThreads=4 ' \
+                          '-projectName=java_project ' \
                           '-projectBaseDir=%s ' \
                           '-resultsDir=%s ' \
                           '-runAndroidHunter=false ' \
@@ -72,7 +72,7 @@ class JavaProcessorTest(unittest.TestCase):
                           '-runFaultHunter=false ' \
                           '-runDCF=true ' \
                           '-runFB=false ' \
-                          '-runPMD=false' % (new_path, self.input_path_java, self.out)
+                          '-runPMD=true' % (new_path, self.input_path_java, self.out)
 
         # read out created analyze-dir
         with open(self.out+'/analyze-dir.sh', 'r') as file:

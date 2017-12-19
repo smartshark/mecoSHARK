@@ -211,6 +211,13 @@
                "field_name":"cg_ids",
                "desc": "List of ObjectIds of code group states that are related to the entity state (e.g., a class state has a package state)"
             },
+            {
+               "sub_type":"StructType",
+               "type":"ArrayType",
+               "logical_type":"Nested",
+               "field_name":"linter",
+               "desc": "List of linter warnings. Including ln (line number), message (msg), and type of warning (l_ty)"
+            },
             {  
                "type":"StringType",
                "logical_type":"AbstractionLevel",

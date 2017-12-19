@@ -1,0 +1,4 @@
+# include all tests
++test[^\.]*.py
++[^\.]*test.py
++*.py

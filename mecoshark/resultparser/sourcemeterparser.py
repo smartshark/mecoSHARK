@@ -6,6 +6,7 @@ import os
 import sys
 
 from mongoengine import DoesNotExist
+
 from pycoshark.mongomodels import VCSSystem, Commit, File, CodeGroupState, CodeEntityState, CloneInstance
 from pycoshark.utils import get_code_entity_state_identifier, get_code_group_state_identifier
 
@@ -173,7 +174,6 @@ class SourcemeterParser(object):
                             row['sortKey'] = '0'
                             file_states.append(row)
 
-
         file_states = sorted(file_states, key=lambda k: int(k['sortKey']))
         self.ordered_file_states = self.sort_for_parent(file_states)
 
@@ -224,6 +224,66 @@ class SourcemeterParser(object):
                 self.store_meta_package_data(row)
 
         self.store_clone_data()
+        self.store_extra_data()
+
+    def store_extra_data(self):
+        """
+        Call to store extra data. For java this would be the PMD file, for C/C++ the cppcheck file, and for
+        python the pylint file.
+        :return:
+        """
+
+        # Check which file is found
+        pmd_file_path = glob.glob(os.path.join(self.output_path, "*-PMD.txt"))
+        #pylint_file_path = glob.glob(os.path.join(self.output_path, "*-Pylint.txt"))
+
+        if pmd_file_path:
+            self.parse_pmd_file(pmd_file_path[0])
+        #elif pylint_file_path:
+        #    self.parse_pylint_file(pylint_file_path[0])
+
+    def parse_pmd_file(self, path):
+        logger.info("Parsing & storing pmd warnings...")
+        with open(path) as pmd_file:
+            data = pmd_file.readlines()
+
+        # Go through all warnings that pmd reported
+        file_warnings = {}
+        for line in data:
+            line = line.strip()
+            parts = line.split(":")
+            file_parts = parts[0].strip()
+            pmd_type = parts[1].strip()
+            message = parts[2].strip()
+
+            file_path = file_parts.split("(")[0]
+            file_path = file_path.replace(self.input_path.rstrip("/") + "/", "")
+            line_number = file_parts.split("(")[1].strip(")")
+
+            warnings = file_warnings.get(file_path, list())
+            warnings.append({"ln": int(line_number), "l_ty": pmd_type, "msg": message})
+            file_warnings[file_path] = warnings
+
+        logger.debug("Found the following pmd warnings: %s" % file_warnings)
+
+        for file_path, data in file_warnings.items():
+
+            try:
+                # Get file id
+                m_file = File.objects(path=file_path, vcs_system_id=self.vcs_system_id).get()
+
+                # Get code entity state
+                identifier = get_code_entity_state_identifier(file_path, self.commit_id, m_file.id)
+                m_ces = CodeEntityState.objects(s_key=identifier).get()
+                m_ces.linter.clear()
+
+                for warnings in data:
+                    m_ces.linter.append(warnings)
+
+                # Save code entity state
+                m_ces.save()
+            except DoesNotExist:
+                logger.warning("Code Entity State for file %s does not exist!" % file_path)
 
     def get_component_ids(self, row_component_ids):
         """

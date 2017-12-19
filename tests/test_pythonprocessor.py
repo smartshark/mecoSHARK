@@ -1,11 +1,10 @@
-import filecmp
 import os
+import shutil
 import unittest
+from pathlib import Path
 
 import mock
-import shutil
 
-from pathlib import Path
 from mecoshark.processor.pythonprocessor import PythonProcessor
 
 
@@ -64,12 +63,15 @@ class PythonProcessorTest(unittest.TestCase):
 
         expected_string = '#!/bin/sh\n' \
                           'cd %s\n' \
-                          '%s -projectBaseDir:%s ' \
+                          '%s ' \
+                          '-maximumThreads:4 ' \
+                          '-externalHardFilter:external-filter-python.txt ' \
+                          '-projectBaseDir:%s ' \
                           '-projectName:python_project ' \
                           '-resultsDir:%s ' \
                           '-runMetricHunter=false ' \
                           '-runFaultHunter=false ' \
-                          '-runPylint=false ' \
+                          '-runPylint=true ' \
                           '-runDCF=true\n' % (self.out, new_path, self.input_path_python, self.out)
 
         # Read out created analyzes script for sourcemeter
