@@ -319,14 +319,14 @@ class SourcemeterParser(object):
             cg_parent_ids.extend(self.get_component_ids(row['Component']))
 
         s_key = get_code_group_state_identifier(long_name, self.commit_id)
-        state_id = CodeGroupState.objects(s_key=s_key).upsert_one(
-            s_key=s_key,
-            long_name=long_name,
-            commit_id=self.commit_id,
-            metrics=metrics_dict,
-            cg_type=row['type'],
-            cg_parent_ids=cg_parent_ids
-        ).id
+        tmp = {'set__metrics__{}'.format(k): v for k, v in metrics_dict.items()}
+        tmp['s_key'] = s_key
+        tmp['long_name'] = long_name
+        tmp['commit_id'] = self.commit_id
+        tmp['cg_type'] = row['type']
+        tmp['cg_parent_ids'] = cg_parent_ids
+
+        state_id = CodeGroupState.objects(s_key=s_key).upsert_one(**tmp).id
 
         self.stored_meta_package_states[row['ID']] = state_id
 
@@ -371,20 +371,20 @@ class SourcemeterParser(object):
 
         try:
             s_key = get_code_entity_state_identifier(long_name, self.commit_id, self.stored_files[path_name])
-            state_id = CodeEntityState.objects(s_key=s_key).upsert_one(
-                s_key=s_key,
-                long_name=long_name,
-                commit_id=self.commit_id,
-                file_id=self.stored_files[path_name],
-                ce_type=row['type'],
-                cg_ids=cg_ids,
-                ce_parent_id=ce_parent_id,
-                start_line=start_line,
-                end_line=end_line,
-                start_column=start_column,
-                end_column=end_column,
-                metrics=self.sanitize_metrics_dictionary(copy.deepcopy(row))
-            ).id
+            tmp = {'set__metrics__{}'.format(k): v for k, v in self.sanitize_metrics_dictionary(copy.deepcopy(row)).items()}
+            tmp['s_key'] = s_key
+            tmp['long_name'] = long_name
+            tmp['commit_id'] = self.commit_id
+            tmp['file_id'] = self.stored_files[path_name]
+            tmp['ce_type'] = row['type']
+            tmp['cg_ids'] = cg_ids
+            tmp['ce_parent_id'] = ce_parent_id
+            tmp['start_line'] = start_line
+            tmp['end_line'] = end_line
+            tmp['start_column'] = start_column
+            tmp['end_column'] = end_column
+
+            state_id = CodeEntityState.objects(s_key=s_key).upsert_one(**tmp).id
             self.stored_file_states[row['ID']] = state_id
         except KeyError:
             # This should not happen, but it can happen, e.g., for the conftest.cpp file for C/c++ projects, which
@@ -411,18 +411,21 @@ class SourcemeterParser(object):
                 metrics_dict = self.sanitize_metrics_dictionary(copy.deepcopy(row))
                 long_name = self.sanitize_long_name(row['Path'])
 
-                CloneInstance.objects(name=row['ID'], commit_id=self.commit_id, file_id=self.stored_files[long_name]).upsert_one(
-                    commit_id=self.commit_id,
-                    name=row['ID'],
-                    file_id=self.stored_files[long_name],
-                    clone_class=row['Parent'],
-                    clone_class_metrics=clone_classes[row['Parent']],
-                    clone_instance_metrics=metrics_dict,
-                    start_line=row['Line'],
-                    start_column=row['Column'],
-                    end_line=row['EndLine'],
-                    end_column=row['EndColumn']
-                )
+                tmp = {
+                    'commit_id': self.commit_id,
+                    'name': row['ID'],
+                    'file_id': self.stored_files[long_name],
+                    'clone_class': row['Parent'],
+                    'clone_class_metrics': clone_classes[row['Parent']],
+                    'clone_instance_metrics': metrics_dict,
+                    'start_line': row['Line'],
+                    'end_line': row['EndLine'],
+                    'start_column': row['Column'],
+                    'end_column': row['EndColumn']
+                }
+
+                CloneInstance.objects(name=row['ID'], commit_id=self.commit_id,
+                                      file_id=self.stored_files[long_name]).upsert_one(**tmp)
 
         logger.info("Finished parsing & storing clone data!")
 
