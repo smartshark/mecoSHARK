@@ -1,6 +1,7 @@
 #!/bin/bash
 
 current=`pwd`
+rm -rf /tmp/mecoSHARK
 mkdir -p /tmp/mecoSHARK/
 cp -R ../mecoshark /tmp/mecoSHARK/
 cp -R ../external /tmp/mecoSHARK
