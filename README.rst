@@ -91,11 +91,11 @@ Afterwards, you need to download sourcemeter_ and create the following structure
 
 Overall structure:
 
-.. image:: images/folder_structure.png
+.. image:: docs/source/images/folder_structure.png
 
 Sloccount structure:
 
-.. image:: images/sloccount.png
+.. image:: docs/source/images/sloccount.png
 
 .. WARNING:: Make sure, that your $JAVA_HOME is set correctly!
 
