@@ -4,10 +4,10 @@ PLUGIN_PATH=$1
 REPOSITORY_PATH=$2
 NEW_UUID=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
 
-cp -R $REPOSITORY_PATH "/dev/shm/$NEW_UUID"
+cp -R $REPOSITORY_PATH "/dev/shm/$NEW_UUID" || exit 1
 
-cd "/dev/shm/$NEW_UUID"
-git checkout -f --quiet $3
+cd "/dev/shm/$NEW_UUID" || exit 1
+git checkout -f --quiet $3 || exit 1
 
 COMMAND="python3.5 $PLUGIN_PATH/main.py --input /dev/shm/$NEW_UUID --output /dev/shm/$NEW_UUID --rev $3 --url $4 --db-hostname $5 --db-port $6 --db-database $7"
 
