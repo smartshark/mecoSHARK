@@ -30,4 +30,4 @@ deploy:
   skip_cleanup: true
   on:
     repo: smartshark/mecoSHARK
-tags: true
+    tags: true
