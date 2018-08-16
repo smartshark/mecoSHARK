@@ -49,20 +49,35 @@ class CProcessor(BaseProcessor):
         template_path = path_sanitize(os.path.dirname(os.path.realpath(__file__))+'/../../templates')
 
         logger.info("Trying out directory analysis for cpp/c/cs...")
-        self.prepare_template(path_join(template_path, 'analyze_c.sh'))
 
+        if os.name == 'nt':
+            template_filename = 'analyze_c.ps1'
+            buildscript_name = 'build.bat'
+        else:
+            template_filename = 'analyze_c.sh'
+            buildscript_name = 'build.sh'
+
+        self.prepare_template(path_join(template_path, template_filename))
+
+        if os.name != 'nt':
+            build_string = '#!/bin/sh\n'
+        else:
+            build_string = ""
         if makefile_contents is not None:
-            build_string = "#!/bin/sh\ncd $input\n"
+            build_string += "cd $input\n"
             build_string += makefile_contents.replace("\\n", "\n")
         else:
-            build_string = "#!/bin/sh\ncd $input\nmake distclean\n./configure\nmake"
+            if os.name != 'nt':
+                build_string += "cd $input\nmake distclean\n./configure\nmake"
+            else:
+                build_string += '& "msbuild" @("/t:Rebuild", "/p:Configuration=Release", "/p:Platform=Win32", "$projectname.sln")'
 
-        with open(path_join(template_path, 'build.sh'), 'w') as build_file:
+        with open(path_join(template_path, buildscript_name), 'w') as build_file:
             build_file.write(build_string)
 
-        self.prepare_template(path_join(template_path, 'build.sh'))
+        self.prepare_template(path_join(template_path, buildscript_name))
         self.prepare_template(path_join(template_path, 'external-filter.txt'))
-        subprocess.run(path_join(self.output_path, 'analyze_c.sh'), shell=True, cwd=self.input_path)
+        subprocess.run(path_join(self.output_path, template_filename), shell=True, cwd=self.input_path)
 
         if not self.is_output_produced():
             raise FileNotFoundError('Problem in using mecoshark! No output was produced!')

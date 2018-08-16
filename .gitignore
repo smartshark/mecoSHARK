@@ -79,3 +79,6 @@ tests/data/out_java/
 tests/data/out_python/
 Debug/
 Release/
+
+# Template files
+templates/build.bat
