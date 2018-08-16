@@ -1,4 +1,5 @@
 import logging
+import re
 import subprocess
 import shutil
 import sys
@@ -120,8 +121,7 @@ class MecoSHARK(object):
         sloccount_temp = path_join(self.input_path, '.sloccount')
         os.makedirs(sloccount_temp, mode=0o777, exist_ok=True)
 
-        command = "%s --datadir %s --details %s | awk -F '\t' '{print $2}'" % (sloccount_path, sloccount_temp,
-                                                                               self.input_path)
+        command = "%s --datadir %s --details %s" % (sloccount_path, sloccount_temp, self.input_path)
         logger.info('Calling command: %s' % command)
 
         # suppress output to stderr, because we just need the langauges
@@ -153,10 +153,8 @@ class MecoSHARK(object):
 
         :param output: ouput that must be sanitized
         """
-        languages = str(output).split('\\n')
-        languages = {x:languages.count(x) for x in languages}
-        languages.pop('', None)
-        languages.pop('', None)
-        languages.pop('\'', None)
-        languages.pop('b\'', None)
-        return languages
+        lines = str(output).split("\\n")
+        matches = map(lambda line: re.search(r'^[0-9]+\\t(?P<lang>[a-z]+)', line), lines)
+        matches = filter(lambda match: match is not None, matches)
+        languages = list(map(lambda match: match.group('lang'), matches))
+        return {x:languages.count(x) for x in languages}
