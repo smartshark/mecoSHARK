@@ -183,7 +183,7 @@ char *read_a_line(FILE *file) {
  if (returnval) {
    newlinepos = buffer + strlen(buffer) - 1;
    if (*newlinepos == '\n') {*newlinepos = '\0';};
-   return strdup(buffer);
+   return _strdup(buffer);
  } else {
    return NULL;
  }

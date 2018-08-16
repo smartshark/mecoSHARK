@@ -70,7 +70,12 @@ plugin_packaging/*.tar
 
 # IDE
 .idea
+.vs
+*.VC.db
+*.VC.opendb
 docs/source/_static/
 docs/source/_templates/
 tests/data/out_java/
 tests/data/out_python/
+Debug/
+Release/
