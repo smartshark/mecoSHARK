@@ -161,6 +161,15 @@ void count_file(char *filename) {
   long sloc;
   FILE *stream;
 
+#ifdef _WIN32
+  // Convert git bash path
+  //     /<driver letter>/<path>
+  // to windows compatible path
+  //     <drive letter>:/path
+  filename[0] = toupper(filename[1]);
+  filename[1] = ':';
+#endif
+
   stream = fopen(filename, "r");
   line_number = 1;
   sloc = sloc_count(filename, stream);
