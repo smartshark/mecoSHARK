@@ -7,7 +7,7 @@ import timeit
 
 from mongoengine import connect
 
-from mecoshark.utils import expand_home
+from mecoshark.utils import expand_home, path_join
 from mecoshark.processor.baseprocessor import BaseProcessor
 from pycoshark.utils import create_mongodb_uri_string
 
@@ -114,10 +114,10 @@ class MecoSHARK(object):
         """
         Detects programming languages used in the input path
         """
-        external_path = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'external')
-        sloccount_path = os.path.join(external_path, 'sloccount2.26', 'sloccount')
+        external_path = path_join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'external')
+        sloccount_path = path_join(external_path, 'sloccount2.26', 'sloccount')
 
-        sloccount_temp = os.path.join(self.input_path, '.sloccount')
+        sloccount_temp = path_join(self.input_path, '.sloccount')
         os.makedirs(sloccount_temp, mode=0o777, exist_ok=True)
 
         command = "%s --datadir %s --details %s | awk -F '\t' '{print $2}'" % (sloccount_path, sloccount_temp,

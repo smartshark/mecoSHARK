@@ -2,6 +2,7 @@ import abc
 import os
 import string
 import stat
+from mecoshark.utils import path_join
 
 class BaseProcessor(metaclass=abc.ABCMeta):
     """ Main app for the mecoshark plugin
@@ -70,18 +71,17 @@ class BaseProcessor(metaclass=abc.ABCMeta):
         :return:
         """
         sourcemeter_path = os.path.dirname(os.path.realpath(__file__))+'/../../external/sourcemeter/'
-        java_sourcemeter = os.path.join(sourcemeter_path, 'Java/SourceMeterJava')
-        python_sourcemeter = os.path.join(sourcemeter_path, 'Python/SourceMeterPython')
-        c_sourcemeter = os.path.join(sourcemeter_path, 'CPP/SourceMeterCPP')
-        maven_path = os.path.join(sourcemeter_path, 'maven3.2.5/bin/mvn')
-        ant = os.path.join(sourcemeter_path, 'ant1.9.7/bin/ant')
+        java_sourcemeter = path_join(sourcemeter_path, 'Java/SourceMeterJava')
+        python_sourcemeter = path_join(sourcemeter_path, 'Python/SourceMeterPython')
+        c_sourcemeter = path_join(sourcemeter_path, 'CPP/SourceMeterCPP')
+        maven_path = path_join(sourcemeter_path, 'maven3.2.5/bin/mvn')
+        ant = path_join(sourcemeter_path, 'ant1.9.7/bin/ant')
 
-        maven_pom = os.path.join(self.input_path, 'pom.xml')
-        ant_build = os.path.join(self.input_path, 'build.xml')
+        maven_pom = path_join(self.input_path, 'pom.xml')
+        ant_build = path_join(self.input_path, 'build.xml')
 
         with open(template, 'r') as myTemplate:
             data = myTemplate.read()
-
         data_template = string.Template(data)
         out = data_template.safe_substitute(mavenpath=maven_path, mavenpom=maven_pom, antbuild=ant_build,
                                             javaSourcemeter=java_sourcemeter,
@@ -89,7 +89,7 @@ class BaseProcessor(metaclass=abc.ABCMeta):
                                             pythonSourcemeter=python_sourcemeter,
                                             cSourcemeter=c_sourcemeter, ant=ant)
 
-        output_path = os.path.join(self.output_path, os.path.basename(os.path.normpath(template)))
+        output_path = path_join(self.output_path, os.path.basename(os.path.normpath(template)))
         with open(output_path, 'w') as myTemplate:
             myTemplate.write(out)
 
