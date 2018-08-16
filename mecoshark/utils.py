@@ -3,6 +3,12 @@ import os
 
 from mecoshark.processor.baseprocessor import BaseProcessor
 
+def path_sanitize(path):
+    return path.replace('\\', '/')
+def expand_home(path):
+    home_folder = os.path.expanduser('~') + "/"
+    path = path.replace("~", home_folder) if path.startswith("~") else path
+    return path_sanitize(path)
 
 def find_plugins(pluginDir):
     """Finds all python files in the specified path and imports them. This is needed, if we want to

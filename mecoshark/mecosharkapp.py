@@ -7,7 +7,7 @@ import timeit
 
 from mongoengine import connect
 
-from mecoshark.utils import find_correct_processor
+from mecoshark.utils import expand_home, find_correct_processor
 from pycoshark.utils import create_mongodb_uri_string
 
 logger = logging.getLogger('mecoshark_main')
@@ -39,12 +39,11 @@ class MecoSHARK(object):
 
         .. WARNING:: URL must be the same as the url that was stored in the mongodb by vcsSHARK!
         """
-        home_folder = os.path.expanduser('~') + "/"
         logger.setLevel(debug_level)
         self.project_name = project_name
         self.debug_level = debug_level
-        self.input_path = input_path.replace("~", home_folder)
-        self.output_path = output.replace("~", home_folder)
+        self.input_path = expand_home(input_path)
+        self.output_path = expand_home(output)
         self.makefile_contents = makefile_contents
         self.revision = revision
         self.url = url
