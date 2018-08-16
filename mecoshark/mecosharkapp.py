@@ -122,6 +122,8 @@ class MecoSHARK(object):
         os.makedirs(sloccount_temp, mode=0o777, exist_ok=True)
 
         command = "%s --datadir %s --details %s" % (sloccount_path, sloccount_temp, self.input_path)
+        if os.name == 'nt':
+            command = ['bash', '-l', '-c', command]
         logger.info('Calling command: %s' % command)
 
         # suppress output to stderr, because we just need the langauges
