@@ -39,4 +39,15 @@ export PATH=$PATH:$PLUGIN_PATH/external/sloccount2.26
 
 eval $COMMAND
 
+# return value of eval
+EXISTVAL=$?
+
+# if folder does not exist exit with 1
+if [ ! -d "/dev/shm/$NEW_UUID/.git" ]; then
+    EXISTVAL=1
+fi
+
+# we still want cleanup
 rm -rf "/dev/shm/$NEW_UUID"
+
+exit EXISTVAL
