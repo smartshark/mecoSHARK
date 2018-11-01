@@ -115,6 +115,8 @@ class MecoSHARK(object):
         """
         Detects programming languages used in the input path
         """
+        return {'cpp':1.0}
+
         external_path = path_join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'external')
         sloccount_path = path_join(external_path, 'sloccount2.26', 'sloccount')
 
@@ -127,13 +129,19 @@ class MecoSHARK(object):
         logger.info('Calling command: %s' % command)
 
         # suppress output to stderr, because we just need the langauges
-        output = subprocess.check_output(command, shell=True, stderr=subprocess.DEVNULL)
-
-        try:
-            languages = self.sanitize_sloccount_output(output)
-        except Exception:
-            logger.error('Problem in parsing sloccount output')
-            sys.exit(1)
+        process = subprocess.Popen(command, shell=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL)
+        languages = {}
+        for line in process.stdout:
+            line = str(line, 'utf-8')
+            match = re.search(r'^[0-9]+\t(?P<lang>[a-z]+)', line)
+            if match is None:
+                logger.info('[sloccount] ' + line.replace('\n', ''))
+            else:
+                language = match.group('lang')
+                languages.setdefault(language, 0)
+                languages[language] += 1
 
         logger.debug('Found the following languages: %s' % languages)
 
@@ -147,16 +155,3 @@ class MecoSHARK(object):
         shutil.rmtree(sloccount_temp)
 
         return languages
-
-    @staticmethod
-    def sanitize_sloccount_output(output):
-        """
-        Method that sanitizes the sloccount output (because we read it directly from the command line)
-
-        :param output: ouput that must be sanitized
-        """
-        lines = str(output).split("\\n")
-        matches = map(lambda line: re.search(r'^[0-9]+\\t(?P<lang>[a-z]+)', line), lines)
-        matches = filter(lambda match: match is not None, matches)
-        languages = list(map(lambda match: match.group('lang'), matches))
-        return {x:languages.count(x) for x in languages}
