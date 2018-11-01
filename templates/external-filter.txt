@@ -1,1 +1,2 @@
 -/usr/*
+-C:\\Program\sFiles\s\(x86\)\\*
