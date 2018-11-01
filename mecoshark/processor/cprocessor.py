@@ -77,7 +77,13 @@ class CProcessor(BaseProcessor):
 
         self.prepare_template(path_join(template_path, buildscript_name))
         self.prepare_template(path_join(template_path, 'external-filter.txt'))
-        subprocess.run(path_join(self.output_path, template_filename), shell=True, cwd=self.input_path)
+        command = path_join(self.output_path, template_filename)
+        if os.name == 'nt':
+            command = ['powershell', command]
+        process = subprocess.Popen(command, shell=True, cwd=self.input_path, stdout=subprocess.PIPE)
+        for line in process.stdout:
+            line = str(line, 'utf-8')
+            logger.info('[sourcemeter] ' + line.replace('\n', ''))
 
         if not self.is_output_produced():
             raise FileNotFoundError('Problem in using mecoshark! No output was produced!')
