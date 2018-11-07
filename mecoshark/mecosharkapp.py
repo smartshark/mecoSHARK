@@ -31,7 +31,7 @@ def find_correct_processor(languages, output_path, input_path):
     """
     # import processor plugins
     find_plugins(os.path.dirname(os.path.realpath(__file__))+"/processor")
-    correct_processors = []
+    correct_processors = set()
     for sc in BaseProcessor.__subclasses__():
         processor = sc(output_path, input_path)
 
@@ -39,9 +39,9 @@ def find_correct_processor(languages, output_path, input_path):
         for language in language_list:
             if language in processor.supported_languages and languages[language] >= processor.threshold \
                     and processor.enabled:
-                correct_processors.append(processor)
+                correct_processors.add(processor)
 
-    return correct_processors
+    return list(correct_processors)
 
 class MecoSHARK(object):
     """
