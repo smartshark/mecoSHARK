@@ -48,7 +48,7 @@ class MecoSHARK(object):
     Main app for the mecoshark plugin
     """
 
-    def __init__(self, input_path, output, project_name, revision, url, makefile_contents, db_name, db_host, db_port, db_user, db_password,
+    def __init__(self, input_path, output, project_name, revision, url, makefile_contents, languages, db_name, db_host, db_port, db_user, db_password,
                  db_authentication, debug_level, ssl_enabled):
         """
         Main runner of the mecoshark app
@@ -59,6 +59,7 @@ class MecoSHARK(object):
         :param revision: string of the revision hash
         :param url: url of the project that is analyzed
         :param makefile_contents: contents of the makefile (e.g., for the c processor)
+        :param languages: languages to process or None to detect languages automatically
         :param db_name: name of the database
         :param db_host: name of the host where the mongodb is running
         :param db_port: port on which the mongodb listens on
@@ -75,6 +76,7 @@ class MecoSHARK(object):
         self.input_path = expand_home(input_path)
         self.output_path = expand_home(output)
         self.makefile_contents = makefile_contents
+        self.languages = languages
         self.revision = revision
         self.url = url
 
@@ -115,7 +117,11 @@ class MecoSHARK(object):
         """
         Detects programming languages used in the input path
         """
-        return {'cpp':1.0}
+        if self.languages is not None:
+            result = {}
+            for language in self.languages.split(','):
+                result[language] = 1.0
+            return result
 
         external_path = path_join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'external')
         sloccount_path = path_join(external_path, 'sloccount2.26', 'sloccount')

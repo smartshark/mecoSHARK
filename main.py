@@ -76,6 +76,9 @@ def start():
     parser.add_argument('--debug', help='Specifies the debug level', choices=['INFO', 'DEBUG', 'WARNING', 'ERROR'],
                         default='DEBUG')
     parser.add_argument('--makefile-contents', help='Makefile contents', default=None)
+    parser.add_argument('--languages', help='Comma-separated list of '
+        'languages to parse. Languages are detected automatically if this '
+        'option is not present', default=None)
 
     try:
         args = parser.parse_args()
@@ -83,10 +86,10 @@ def start():
         logger.error(e)
         sys.exit(1)
 
-    logger.debug("Got the following parameters. Input: %s, Output: %s, Project name: %s, Revision: %s, URL: %s, Makefile-contents: %s" %
-                 (args.input, args.output, args.project_name, args.revision, args.repository_url, args.makefile_contents))
+    logger.debug("Got the following parameters. Input: %s, Output: %s, Project name: %s, Revision: %s, URL: %s, Makefile-contents: %s, Languages: %s" %
+                 (args.input, args.output, args.project_name, args.revision, args.repository_url, args.makefile_contents, args.languages))
 
-    mecoshark = MecoSHARK(args.input, args.output, args.project_name, args.revision, args.repository_url, args.makefile_contents, args.db_database,
+    mecoshark = MecoSHARK(args.input, args.output, args.project_name, args.revision, args.repository_url, args.makefile_contents, args.languages, args.db_database,
                           args.db_hostname, args.db_port, args.db_user, args.db_password, args.db_authentication,
                           args.debug, args.ssl)
     mecoshark.process_revision()
