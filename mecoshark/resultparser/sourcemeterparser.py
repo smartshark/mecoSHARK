@@ -102,7 +102,7 @@ class SourcemeterParser(object):
         self.input_files = []
         for root, dirs, files in os.walk(self.input_path, topdown=True):
             for name in files:
-                full_file_path = os.path.join(root, name).replace(self.input_path, "")
+                full_file_path = path_join(root, name).replace(self.input_path, "")
 
                 # Filter out git directory
                 if not full_file_path.startswith("/.git/"):

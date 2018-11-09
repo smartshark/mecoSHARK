@@ -2,6 +2,11 @@ import sys
 import os
 
 def path_sanitize(path):
+    # The Windows filesystem is case-insensitive. Convert all paths to
+    # lower-case to prevent data inconsistencies
+    if os.name == 'nt':
+        path = path.lower()
+
     return path.replace('\\', '/')
 def expand_home(path):
     home_folder = os.path.expanduser('~') + "/"
