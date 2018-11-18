@@ -1,7 +1,7 @@
 {
     "name": "mecoSHARK",
     "author": "Fabian Trautsch",
-    "version": "1.01",
+    "version": "2.0.1",
     "plugin_type": "rev",
     "linux_libraries": [
     ],
