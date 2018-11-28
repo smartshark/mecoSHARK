@@ -27,7 +27,7 @@
         {
             "name": "vcsSHARK",
             "operator": ">=",
-            "version": "0.10"
+            "version": "2.0.1"
         }
     ],
     "arguments": [
