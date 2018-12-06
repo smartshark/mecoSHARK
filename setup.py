@@ -10,7 +10,7 @@ if not sys.version_info[0] == 3:
 
 setup(
     name='mecoSHARK',
-    version='1.0.0',
+    version='2.0.1',
     author='Fabian Trautsch',
     author_email='trautsch@cs.uni-goettingen.de',
     description='Calculates metrics and clones on revision level.',

@@ -9,29 +9,29 @@ cp -R $REPOSITORY_PATH "/dev/shm/$NEW_UUID" || exit 1
 cd "/dev/shm/$NEW_UUID" || exit 1
 git checkout -f --quiet $3 || exit 1
 
-COMMAND="python3.5 $PLUGIN_PATH/main.py --input /dev/shm/$NEW_UUID --output /dev/shm/$NEW_UUID --rev $3 --url $4 --db-hostname $5 --db-port $6 --db-database $7"
-
-if [ ! -z ${8+x} ] && [ ${8} != "None" ]; then
-	COMMAND="$COMMAND --db-user ${8}"
-fi
+COMMAND="python3.5 $PLUGIN_PATH/main.py --input /dev/shm/$NEW_UUID --output /dev/shm/$NEW_UUID --rev $3 --url $4 --project_name $5 --db-hostname $6 --db-port $7 --db-database $8"
 
 if [ ! -z ${9+x} ] && [ ${9} != "None" ]; then
-	COMMAND="$COMMAND --db-password ${9}"
+	COMMAND="$COMMAND --db-user ${9}"
 fi
 
 if [ ! -z ${10+x} ] && [ ${10} != "None" ]; then
-	COMMAND="$COMMAND --db-authentication ${10}"
+	COMMAND="$COMMAND --db-password ${10}"
 fi
 
-if [ ! -z "${11+x}" ] && [ "${11}" != "None" ]; then
-	COMMAND="$COMMAND --makefile-contents \"${11}\""
+if [ ! -z ${11+x} ] && [ ${11} != "None" ]; then
+	COMMAND="$COMMAND --db-authentication ${11}"
 fi
 
-if [ ! -z ${12+x} ] && [ ${12} != "None" ]; then
-	COMMAND="$COMMAND --debug ${12}"
+if [ ! -z "${12+x}" ] && [ "${12}" != "None" ]; then
+	COMMAND="$COMMAND --makefile-contents \"${12}\""
 fi
 
 if [ ! -z ${13+x} ] && [ ${13} != "None" ]; then
+	COMMAND="$COMMAND --debug ${12}"
+fi
+
+if [ ! -z ${14+x} ] && [ ${14} != "None" ]; then
 	COMMAND="$COMMAND --ssl"
 fi
 
