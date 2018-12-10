@@ -3,10 +3,12 @@ import csv
 import glob
 import logging
 import os
+import re
 import sys
 
 from mongoengine import DoesNotExist
 
+from mecoshark.utils import path_sanitize, path_join
 from pycoshark.mongomodels import Project, VCSSystem, VCSSubmodule, Commit, File, CodeGroupState, CodeEntityState, CloneInstance
 
 logger = logging.getLogger("sourcemeter_parser")
@@ -521,11 +523,12 @@ class SourcemeterParser(object):
 
         .. NOTE:: This is necessary, as the output of sourcemeter can be different based on which processor is used.
         """
+        orig_long_name = path_sanitize(orig_long_name)
         if self.input_path in orig_long_name:
             long_name = orig_long_name.replace(self.input_path + "/", "")
         elif self.output_path in orig_long_name:
             long_name = orig_long_name.replace(self.output_path + "/", "")
-        else:
+        elif not re.match(r'[A-Z]:/', orig_long_name): # check for Windows-style path '<drive letter>:/'
             long_name = "/".join(orig_long_name.strip("/").split('/')[1:])
 
             # if long_name is not an empty string
@@ -533,6 +536,8 @@ class SourcemeterParser(object):
                 long_name = self.get_fullpath(long_name)
             else:
                 long_name = orig_long_name
+        else:
+            long_name = orig_long_name
 
         if long_name is not None and long_name.startswith("/"):
             long_name = long_name.strip("/")
