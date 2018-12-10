@@ -8,7 +8,6 @@ import sys
 from mongoengine import DoesNotExist
 
 from pycoshark.mongomodels import Project, VCSSystem, VCSSubmodule, Commit, File, CodeGroupState, CodeEntityState, CloneInstance
-from pycoshark.utils import get_code_entity_state_identifier, get_code_group_state_identifier
 
 logger = logging.getLogger("sourcemeter_parser")
 
@@ -286,7 +285,7 @@ class SourcemeterParser(object):
                 m_file = File.objects(path=file_path, vcs_system_id=self.vcs_system_id).get()
 
                 # Get code entity state
-                identifier = get_code_entity_state_identifier(file_path, self.commit_id, m_file.id)
+                identifier = CodeEntityState.calculate_identifier(file_path, self.commit_id, m_file.id)
                 m_ces = CodeEntityState.objects(s_key=identifier).get()
                 m_ces.linter.clear()
 
@@ -331,7 +330,7 @@ class SourcemeterParser(object):
         if 'Component' in row:
             cg_parent_ids.extend(self.get_component_ids(row['Component']))
 
-        s_key = get_code_group_state_identifier(long_name, self.commit_id)
+        s_key = CodeGroupState.calculate_identifier(long_name, self.commit_id)
         tmp = {'set__metrics__{}'.format(k): v for k, v in metrics_dict.items()}
         tmp['s_key'] = s_key
         tmp['long_name'] = long_name
@@ -383,7 +382,7 @@ class SourcemeterParser(object):
             end_column = row['EndColumn']
 
         try:
-            s_key = get_code_entity_state_identifier(long_name, self.commit_id, self.stored_files[path_name])
+            s_key = CodeEntityState.calculate_identifier(long_name, self.commit_id, self.stored_files[path_name])
             tmp = {'set__metrics__{}'.format(k): v for k, v in self.sanitize_metrics_dictionary(copy.deepcopy(row)).items()}
             tmp['s_key'] = s_key
             tmp['long_name'] = long_name
