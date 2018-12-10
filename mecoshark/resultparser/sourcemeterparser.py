@@ -7,7 +7,7 @@ import sys
 
 from mongoengine import DoesNotExist
 
-from pycoshark.mongomodels import Project, VCSSystem, Commit, File, CodeGroupState, CodeEntityState, CloneInstance
+from pycoshark.mongomodels import Project, VCSSystem, VCSSubmodule, Commit, File, CodeGroupState, CodeEntityState, CloneInstance
 from pycoshark.utils import get_code_entity_state_identifier, get_code_group_state_identifier
 
 logger = logging.getLogger("sourcemeter_parser")
@@ -112,6 +112,16 @@ class SourcemeterParser(object):
         stored_files = {}
         for file in File.objects(vcs_system_id=self.vcs_system_id):
             stored_files[file.path] = file.id
+
+        # get all stored files from submodules
+        submodules = VCSSystem \
+            .objects(id=self.vcs_system_id) \
+            .get() \
+            .submodules
+        submodules = [VCSSubmodule.objects(id=id).get() for id in submodules]
+        for submodule in submodules:
+            for file in File.objects(vcs_system_id=submodule.vcs_system_id):
+                stored_files[path_join(submodule.path, file.path)] = file.id
 
         return stored_files
 
