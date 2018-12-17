@@ -49,7 +49,7 @@ class JavaProcessor(BaseProcessor):
         # Clean output directory
         shutil.rmtree(os.path.join(self.output_path, self.projectname), True)
         os.makedirs(self.output_path, exist_ok=True)
-        template_path = os.path.dirname(os.path.realpath(__file__))+'/../../templates'
+        template_path = os.path.dirname(os.path.realpath(__file__)) + '/../../templates'
         failure_happened = False
 
         '''
@@ -127,7 +127,7 @@ class JavaProcessor(BaseProcessor):
 
         return False
 
-    def process(self, revision, url, options, debug_level):
+    def process(self, project_name, revision, url, options, debug_level):
         """
         See: :func:`~mecoshark.processor.baseprocessor.BaseProcessor.process`
 
@@ -136,6 +136,7 @@ class JavaProcessor(BaseProcessor):
         2) creates :class:`~mecoshark.resultparser.sourcemeterparser.SourcemeterParser` instance
         3) calls :func:`~mecoshark.resultparser.sourcemeterparser.SourcemeterParser.store_data`
 
+        :param project_name: name of the project
         :param revision: revision
         :param url: url of the project that is analyzed
         :param options: options for execution
@@ -147,12 +148,8 @@ class JavaProcessor(BaseProcessor):
         meco_path = os.path.join(self.output_path, self.projectname, 'java')
         output_path = os.path.join(meco_path, os.listdir(meco_path)[0])
 
-        parser = SourcemeterParser(output_path, self.input_path, url, revision, debug_level)
+        parser = SourcemeterParser(output_path, self.input_path, project_name, url, revision, debug_level)
         parser.store_data()
 
         # delete directory
         shutil.rmtree(os.path.join(self.output_path, self.projectname), True)
-
-
-
-

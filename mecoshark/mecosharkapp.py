@@ -12,12 +12,13 @@ from pycoshark.utils import create_mongodb_uri_string
 
 logger = logging.getLogger('mecoshark_main')
 
+
 class MecoSHARK(object):
     """
     Main app for the mecoshark plugin
     """
 
-    def __init__(self, input, output, revision, url, makefile_contents, db_name, db_host, db_port, db_user, db_password,
+    def __init__(self, input, output, project_name, revision, url, makefile_contents, db_name, db_host, db_port, db_user, db_password,
                  db_authentication, debug_level, ssl_enabled):
         """
         Main runner of the mecoshark app
@@ -39,6 +40,7 @@ class MecoSHARK(object):
         """
         home_folder = os.path.expanduser('~')+"/"
         logger.setLevel(debug_level)
+        self.project_name = project_name
         self.debug_level = debug_level
         self.input_path = input.replace("~", home_folder)
         self.output_path = output.replace("~", home_folder)
@@ -65,7 +67,7 @@ class MecoSHARK(object):
         for processor in processors:
             logger.info("Executing: %s" % processor.__class__.__name__)
             try:
-                processor.process(self.revision, self.url, self.makefile_contents, self.debug_level)
+                processor.process(self.project_name, self.revision, self.url, self.makefile_contents, self.debug_level)
             except FileNotFoundError as e:
                 logger.error(e)
                 non_working_processors += 1
@@ -75,7 +77,6 @@ class MecoSHARK(object):
             if len(processors) == non_working_processors:
                 sys.stderr.write("fatal error. All processors failed!\n")
                 sys.exit(1)
-
 
         elapsed = timeit.default_timer() - start_time
         logger.info("Execution time: %0.5f s" % elapsed)

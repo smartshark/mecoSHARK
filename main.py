@@ -86,7 +86,7 @@ def start():
     logger.debug("Got the following parameters. Input: %s, Output: %s, Revision: %s, URL: %s, Makefile-contents: %s" %
                  (args.input, args.output, args.revision, args.repository_url, args.makefile_contents))
 
-    mecoshark = MecoSHARK(args.input, args.output, args.revision, args.repository_url, args.makefile_contents, args.db_database,
+    mecoshark = MecoSHARK(args.input, args.output, args.project_name, args.revision, args.repository_url, args.makefile_contents, args.db_database,
                           args.db_hostname, args.db_port, args.db_user, args.db_password, args.db_authentication,
                           args.debug, args.ssl)
     mecoshark.process_revision()
