@@ -47,7 +47,7 @@ def readable_dir(prospective_dir):
     returns true if all these three are the case
 
     :param prospective_dir: path to the directory"""
-    if not prospective_dir:
+    if prospective_dir != None:
         if not os.path.isdir(prospective_dir):
             raise Exception("input:{0} is not a valid path".format(prospective_dir))
         if os.access(prospective_dir, os.R_OK):
@@ -83,8 +83,8 @@ def start():
         logger.error(e)
         sys.exit(1)
 
-    logger.debug("Got the following parameters. Input: %s, Output: %s, Revision: %s, URL: %s, Makefile-contents: %s" %
-                 (args.input, args.output, args.revision, args.repository_url, args.makefile_contents))
+    logger.debug("Got the following parameters. Input: %s, Output: %s, Project name: %s, Revision: %s, URL: %s, Makefile-contents: %s" %
+                 (args.input, args.output, args.project_name, args.revision, args.repository_url, args.makefile_contents))
 
     mecoshark = MecoSHARK(args.input, args.output, args.project_name, args.revision, args.repository_url, args.makefile_contents, args.db_database,
                           args.db_hostname, args.db_port, args.db_user, args.db_password, args.db_authentication,

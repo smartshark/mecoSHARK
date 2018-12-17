@@ -18,13 +18,14 @@ class MecoSHARK(object):
     Main app for the mecoshark plugin
     """
 
-    def __init__(self, input, output, project_name, revision, url, makefile_contents, db_name, db_host, db_port, db_user, db_password,
+    def __init__(self, input_path, output, project_name, revision, url, makefile_contents, db_name, db_host, db_port, db_user, db_password,
                  db_authentication, debug_level, ssl_enabled):
         """
         Main runner of the mecoshark app
 
         :param input: path to the revision that is used as input
         :param output: path to an output directory, where files can be stored
+        :param project_name:
         :param revision: string of the revision hash
         :param url: url of the project that is analyzed
         :param makefile_contents: contents of the makefile (e.g., for the c processor)
@@ -38,11 +39,11 @@ class MecoSHARK(object):
 
         .. WARNING:: URL must be the same as the url that was stored in the mongodb by vcsSHARK!
         """
-        home_folder = os.path.expanduser('~')+"/"
+        home_folder = os.path.expanduser('~') + "/"
         logger.setLevel(debug_level)
         self.project_name = project_name
         self.debug_level = debug_level
-        self.input_path = input.replace("~", home_folder)
+        self.input_path = input_path.replace("~", home_folder)
         self.output_path = output.replace("~", home_folder)
         self.makefile_contents = makefile_contents
         self.revision = revision
