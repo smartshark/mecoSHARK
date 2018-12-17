@@ -9,7 +9,7 @@ cp -R $REPOSITORY_PATH "/dev/shm/$NEW_UUID" || exit 1
 cd "/dev/shm/$NEW_UUID" || exit 1
 git checkout -f --quiet $3 || exit 1
 
-COMMAND="python3.5 $PLUGIN_PATH/main.py --input /dev/shm/$NEW_UUID --output /dev/shm/$NEW_UUID --rev $3 --url $4 --project_name $5 --db-hostname $6 --db-port $7 --db-database $8"
+COMMAND="python3.5 $PLUGIN_PATH/main.py --input /dev/shm/$NEW_UUID --output /dev/shm/$NEW_UUID --revision $3 --repository_url $4 --project_name $5 --db-hostname $6 --db-port $7 --db-database $8"
 
 if [ ! -z ${9+x} ] && [ ${9} != "None" ]; then
 	COMMAND="$COMMAND --db-user ${9}"
