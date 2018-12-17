@@ -7,7 +7,7 @@ import sys
 
 from mongoengine import DoesNotExist
 
-from pycoshark.mongomodels import VCSSystem, Commit, File, CodeGroupState, CodeEntityState, CloneInstance
+from pycoshark.mongomodels import Project, VCSSystem, Commit, File, CodeGroupState, CodeEntityState, CloneInstance
 from pycoshark.utils import get_code_entity_state_identifier, get_code_group_state_identifier
 
 logger = logging.getLogger("sourcemeter_parser")
@@ -28,7 +28,7 @@ class SourcemeterParser(object):
     :property input_files: list of input files
     :property commit_id: id of the commit for which the data should be stored. :class:`bson.objectid.ObjectId`
     """
-    def __init__(self, output_path, input_path, url, revision_hash, debug_level):
+    def __init__(self, output_path, input_path, project_name, url, revision_hash, debug_level):
         """
         Initialization
 
@@ -42,6 +42,7 @@ class SourcemeterParser(object):
         # Set variables
         self.output_path = output_path
         self.input_path = input_path
+        self.project_name = project_name
         self.url = url
         self.revision_hash = revision_hash
 
@@ -85,7 +86,8 @@ class SourcemeterParser(object):
         :return: vcs_system_id (:class:`bson.objectid.ObjectId`)
         """
         try:
-            return VCSSystem.objects(url=self.url).get().id
+            project = Project.objects.get(name=self.project_name)
+            return VCSSystem.objects(url=self.url, project_id=project.id).get().id
         except DoesNotExist:
             logger.error("VCSSystem with the url %s does not exist in the database! Execute vcsSHARK first!" % self.url)
             sys.exit(1)
@@ -116,7 +118,8 @@ class SourcemeterParser(object):
     @staticmethod
     def get_csv_file(path):
         """
-        Returns a filepath or none if nothing is found
+        Return a filepath or none if nothing is found.
+
         :param path: path to file (regex)
 
         :return: filepath or none

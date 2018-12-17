@@ -8,7 +8,7 @@ from mecoshark.mecosharkapp import MecoSHARK
 from pycoshark.utils import get_base_argparser
 
 
-def setup_logging(default_path=os.path.dirname(os.path.realpath(__file__))+"/mecoshark/loggerConfiguration.json",
+def setup_logging(default_path=os.path.dirname(os.path.realpath(__file__)) + "/mecoshark/loggerConfiguration.json",
                   default_level=logging.INFO):
         """
         Setup logging configuration
@@ -47,7 +47,7 @@ def readable_dir(prospective_dir):
     returns true if all these three are the case
 
     :param prospective_dir: path to the directory"""
-    if prospective_dir != None:
+    if not prospective_dir:
         if not os.path.isdir(prospective_dir):
             raise Exception("input:{0} is not a valid path".format(prospective_dir))
         if os.access(prospective_dir, os.R_OK):
@@ -70,8 +70,9 @@ def start():
                         required=True, type=readable_dir)
     parser.add_argument('-o', '--output', help='Directory, which can be used as output.',
                         required=True, type=writable_dir)
-    parser.add_argument('-r', '--rev', help='Hash of the revision.', required=True)
-    parser.add_argument('-u', '--url', help='URL of the project (e.g., GIT Url).', required=True)
+    parser.add_argument('-pn', '--project_name', help='Name of the Project.')
+    parser.add_argument('-r', '--revision', help='Hash of the revision.', required=True)
+    parser.add_argument('-u', '--repository_url', help='URL of the project (e.g., GIT Url).', required=True)
     parser.add_argument('--debug', help='Specifies the debug level', choices=['INFO', 'DEBUG', 'WARNING', 'ERROR'],
                         default='DEBUG')
     parser.add_argument('--makefile-contents', help='Makefile contents', default=None)
@@ -83,9 +84,9 @@ def start():
         sys.exit(1)
 
     logger.debug("Got the following parameters. Input: %s, Output: %s, Revision: %s, URL: %s, Makefile-contents: %s" %
-                 (args.input, args.output, args.rev, args.url, args.makefile_contents))
+                 (args.input, args.output, args.revision, args.repository_url, args.makefile_contents))
 
-    mecoshark = MecoSHARK(args.input, args.output, args.rev, args.url, args.makefile_contents, args.db_database,
+    mecoshark = MecoSHARK(args.input, args.output, args.revision, args.repository_url, args.makefile_contents, args.db_database,
                           args.db_hostname, args.db_port, args.db_user, args.db_password, args.db_authentication,
                           args.debug, args.ssl)
     mecoshark.process_revision()

@@ -1027,5 +1027,6 @@
          "desc": "Collection that contains for each commit of the project all code group states (e.g., all packages of the project at each commit)",
          "collection_name":"code_group_state"
       }
-   ]
+   ],
+   "plugin": "mecoSHARK_2.0.1"
 }
