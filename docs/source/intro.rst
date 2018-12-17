@@ -187,13 +187,13 @@ explained in detail.
 
 	Debug level (INFO, DEBUG, WARNING, ERROR)
 
-.. option:: --url <URL>, -u <URL>
+.. option:: --repository_url <URL>, -u <URL>
 
 	Required
 
 	URL of the project (e.g., https://github.com/smartshark/mecoSHARK)
 
-.. option:: --rev <REVISION_HASH>, -r <REVISION_HASH>
+.. option:: --revision <REVISION_HASH>, -r <REVISION_HASH>
 
 	Required
 

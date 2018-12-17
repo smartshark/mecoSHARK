@@ -167,9 +167,9 @@ explained in detail.
 
 --debug <DEBUG_LEVEL>, -d <DEBUG_LEVEL>: Debug level (INFO, DEBUG, WARNING, ERROR); Default: DEBUG
 
---url <URL>, -u <URL>: URL of the project (e.g., https://github.com/smartshark/mecoSHARK); Required
+--repository_url <URL>, -u <URL>: URL of the project (e.g., https://github.com/smartshark/mecoSHARK); Required
 
---rev <REVISION_HASH>, -r <REVISION_HASH>: Hash of the revision that is analyzed; Required
+--revision <REVISION_HASH>, -r <REVISION_HASH>: Hash of the revision that is analyzed; Required
 
 --input <PATH>, -i <PATH>: Path to the repository that should be analyzed; Required
 
