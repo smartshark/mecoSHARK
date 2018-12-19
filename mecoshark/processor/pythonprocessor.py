@@ -25,7 +25,7 @@ class PythonProcessor(BaseProcessor):
         """
         See: :func:`~mecoshark.processor.baseprocessor.BaseProcessor.enabled`
         """
-        return True
+        return False
 
     @property
     def threshold(self):
@@ -45,7 +45,7 @@ class PythonProcessor(BaseProcessor):
         # Clean output directory
         shutil.rmtree(self.output_path, self.projectname, True)
         os.makedirs(self.output_path, exist_ok=True)
-        template_path = os.path.dirname(os.path.realpath(__file__))+'/../../templates'
+        template_path = os.path.dirname(os.path.realpath(__file__)) + '/../../templates'
 
         logger.info("Trying out directory analysis for python...")
         self.prepare_template(os.path.join(template_path, 'analyze_python.sh'))
@@ -75,7 +75,7 @@ class PythonProcessor(BaseProcessor):
 
         return False
 
-    def process(self, revision, url, options, debug_level):
+    def process(self, project_name, revision, url, options, debug_level):
         """
         See: :func:`~mecoshark.processor.baseprocessor.BaseProcessor.process`
 
@@ -95,11 +95,7 @@ class PythonProcessor(BaseProcessor):
 
         output_path = os.path.join(meco_path, os.listdir(meco_path)[0])
 
-        parser = SourcemeterParser(output_path, self.input_path, url, revision, debug_level)
+        parser = SourcemeterParser(output_path, self.input_path, project_name, url, revision, debug_level)
         parser.store_data()
 
         shutil.rmtree(os.path.join(self.output_path), True)
-
-
-
-
