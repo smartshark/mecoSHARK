@@ -69,7 +69,7 @@ class SourceMeterParserTest(unittest.TestCase):
         Path(self.input_path_java + '/src/main/java/org/apache/log4j/AsyncAppender.java').touch()
 
     def test_initialization(self):
-        parser = SourcemeterParser(self.out_java, self.input_path_java, "http://test.de", "2342", 'DEBUG')
+        parser = SourcemeterParser(self.out_java, self.input_path_java, "zookeeper", "http://test.de", "2342", 'DEBUG')
         self.assertEqual(self.commit_id.id, parser.commit_id)
         self.assertIsInstance(parser.commit_id, ObjectId)
 
@@ -79,19 +79,19 @@ class SourceMeterParserTest(unittest.TestCase):
     def test_initialization_fails_commit_id_wrong(self):
         # It should make a sys.exit call, as our vcs program was not executed
         with self.assertRaises(SystemExit) as cm:
-            parser = SourcemeterParser(self.out_java, self.input_path_java, "http://test.de", "42", 'DEBUG')
+            parser = SourcemeterParser(self.out_java, self.input_path_java, "zookeeper", "http://test.de", "42", 'DEBUG')
 
         self.assertEqual(cm.exception.code, 1)
 
     def test_initialization_fails_vcs_system_url_wrong(self):
         # It should make a sys.exit call, as our vcs program was not executed
         with self.assertRaises(SystemExit) as cm:
-            parser = SourcemeterParser(self.out_java, self.input_path_java, "http://test.de", "42", 'DEBUG')
+            parser = SourcemeterParser(self.out_java, self.input_path_java, "zookeeper", "http://test.de", "42", 'DEBUG')
 
         self.assertEqual(cm.exception.code, 1)
 
     def test_find_stored_files(self):
-        parser = SourcemeterParser(self.out_java, self.input_path_java, "http://test.de", "2342", 'DEBUG')
+        parser = SourcemeterParser(self.out_java, self.input_path_java, "zookeeper", "http://test.de", "2342", 'DEBUG')
         expected_output = {
             'contribs/CekiGulcu/AppenderTable.java': self.file1.id,
             'contribs/LeosLiterak/TempFileAppender.java': self.file2.id,
@@ -101,7 +101,7 @@ class SourceMeterParserTest(unittest.TestCase):
         self.assertDictEqual(expected_output, parser.find_stored_files())
 
     def test_get_csv_file(self):
-        parser = SourcemeterParser(self.out_java, self.input_path_java, "http://test.de", "2342", 'DEBUG')
+        parser = SourcemeterParser(self.out_java, self.input_path_java, "zookeeper", "http://test.de", "2342", 'DEBUG')
         class_file = os.path.join(self.out_java, "*-Class.csv")
         package_file = os.path.join(self.out_java, "*-Package.csv")
         component_file = os.path.join(self.out_java, "*-Component.csv")
@@ -111,13 +111,13 @@ class SourceMeterParserTest(unittest.TestCase):
         self.assertEqual(self.out_java+'/zookeeper-Component.csv', parser.get_csv_file(component_file))
 
     def test_get_csv_file_fails(self):
-        parser = SourcemeterParser(self.out_java, self.input_path_java, "http://test.de", "2342", 'DEBUG')
+        parser = SourcemeterParser(self.out_java, self.input_path_java, "zookeeper", "http://test.de", "2342", 'DEBUG')
         class_file = os.path.join(self.out_java, "*-NotExisting.csv")
 
         self.assertEqual(None, parser.get_csv_file(class_file))
 
     def test_sort_for_parent(self):
-        parser = SourcemeterParser(self.out_java, self.input_path_java, "http://test.de", "2342", 'DEBUG')
+        parser = SourcemeterParser(self.out_java, self.input_path_java, "zookeeper", "http://test.de", "2342", 'DEBUG')
 
         file1_metrics = {
             'sortKey': '2',
@@ -165,29 +165,29 @@ class SourceMeterParserTest(unittest.TestCase):
         parser.sort_for_parent(all_files)
 
     def test_sanitize_long_name_file(self):
-        parser = SourcemeterParser(self.out_java, self.input_path_java, "http://test.de", "2342", 'DEBUG')
+        parser = SourcemeterParser(self.out_java, self.input_path_java, "zookeeper", "http://test.de", "2342", 'DEBUG')
         self.assertEqual('contribs/CekiGulcu/AppenderTable.java',
                          parser.sanitize_long_name(self.input_path_java + '/contribs/CekiGulcu/AppenderTable.java'))
 
     def test_sanitize_long_name_meta_package1(self):
-        parser = SourcemeterParser(self.out_java, self.input_path_java, "http://test.de", "2342", 'DEBUG')
+        parser = SourcemeterParser(self.out_java, self.input_path_java, "zookeeper", "http://test.de", "2342", 'DEBUG')
         self.assertEqual('org.apache', parser.sanitize_long_name('org.apache'))
 
     def test_sanitize_long_name_meta_package2(self):
-        parser = SourcemeterParser(self.out_java, self.input_path_java, "http://test.de", "2342", 'DEBUG')
+        parser = SourcemeterParser(self.out_java, self.input_path_java, "zookeeper", "http://test.de", "2342", 'DEBUG')
         self.assertEqual('unnamed package', parser.sanitize_long_name('unnamed package'))
 
     def test_sanitize_long_name_meta_package3(self):
-        parser = SourcemeterParser(self.out_java, self.input_path_java, "http://test.de", "2342", 'DEBUG')
+        parser = SourcemeterParser(self.out_java, self.input_path_java, "zookeeper", "http://test.de", "2342", 'DEBUG')
         self.assertEqual('<System>', parser.sanitize_long_name('<System>'))
 
     def test_sanitize_long_name_class(self):
-        parser = SourcemeterParser(self.out_java, self.input_path_java, "http://test.de", "2342", 'DEBUG')
+        parser = SourcemeterParser(self.out_java, self.input_path_java, "zookeeper", "http://test.de", "2342", 'DEBUG')
         self.assertEqual('org.apache.log4j.TempFileAppender',
                          parser.sanitize_long_name('org.apache.log4j.TempFileAppender'))
 
     def test_sanitize_metrics_dictionary_components(self):
-        parser = SourcemeterParser(self.out_java, self.input_path_java, "http://test.de", "2342", 'DEBUG')
+        parser = SourcemeterParser(self.out_java, self.input_path_java, "zookeeper", "http://test.de", "2342", 'DEBUG')
         expected_output_component_1 = {'TNA': 1517.0, 'TNFI': 363.0, 'TLOC': 70281.0, 'CEG': 0.0, 'TNDI': 99.0,
                                        'TNPEN': 0.0, 'CLC': 0.0587641, 'TNIN': 27.0, 'TAD': 0.73795, 'CCO': 718.0,
                                        'CCL': 144.0, 'TNPKG': 52.0, 'TCLOC': 25645.0, 'TNM': 3553.0, 'CC': 0.108906,
@@ -214,7 +214,7 @@ class SourceMeterParserTest(unittest.TestCase):
         self.assertEqual(output[1], expected_output_component_2)
 
     def test_sanitize_metrics_dictionary_classes(self):
-        parser = SourcemeterParser(self.out_java, self.input_path_java, "http://test.de", "2342", 'DEBUG')
+        parser = SourcemeterParser(self.out_java, self.input_path_java, "zookeeper", "http://test.de", "2342", 'DEBUG')
         expected_output_class_1 = {'CI': 1.0, 'TNLPM': 5.0, 'CCL': 1.0, 'CLOC': 28.0, 'TNLS': 0.0, 'NOD': 0.0,
                                    'NOS': 30.0, 'NL': 1.0, 'WMC': 5.0, 'LCOM5': 1.0, 'CLC': 0.0973451, 'TNM': 5.0,
                                    'TNLM': 5.0, 'TNPM': 5.0, 'TNLA': 2.0, 'DLOC': 26.0, 'PUA': 2.0, 'TLLOC': 72.0,
@@ -260,7 +260,7 @@ class SourceMeterParserTest(unittest.TestCase):
         self.assertEqual(output[2], expected_output_class_3)
 
     def test_sanitize_metrics_dictionary_packages(self):
-        parser = SourcemeterParser(self.out_java, self.input_path_java, "http://test.de", "2342", 'DEBUG')
+        parser = SourcemeterParser(self.out_java, self.input_path_java, "zookeeper", "http://test.de", "2342", 'DEBUG')
         expected_output_package_1 = {'NIN': 0.0, 'TAD': 0.73795, 'CLC': 0.0587641, 'TNS': 327.0, 'TNM': 3553.0,
                                      'TNPM': 2910.0, 'TNG': 505.0, 'NCL': 0.0, 'TLOC': 70281.0, 'TNCL': 516.0,
                                      'TNDI': 99.0, 'TLLOC': 35217.0, 'PDA': 0.0, 'NPM': 0.0, 'TNPEN': 0.0, 'NG': 0.0,
@@ -325,7 +325,7 @@ class SourceMeterParserTest(unittest.TestCase):
         self.assertEqual(output[4], expected_output_package_5)
 
     def test_prepare_csv_files(self):
-        parser = SourcemeterParser(self.out_java, self.input_path_java, "http://test.de", "2342", 'DEBUG')
+        parser = SourcemeterParser(self.out_java, self.input_path_java, "zookeeper", "http://test.de", "2342", 'DEBUG')
         parser.prepare_csv_files()
 
         #test for correct sorting

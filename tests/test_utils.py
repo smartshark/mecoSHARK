@@ -2,7 +2,7 @@ import logging
 import os
 import unittest
 
-from mecoshark.utils import find_correct_processor
+from mecoshark.mecosharkapp import find_correct_processor
 from mecoshark.processor.javaprocessor import JavaProcessor
 from mecoshark.processor.pythonprocessor import PythonProcessor
 
@@ -25,7 +25,8 @@ class MecoSHARKTest(unittest.TestCase):
         java_processor = processors[0]
         self.assertEqual('JavaProcessor', type(java_processor).__name__)
 
-    def test_correct_processor_python(self):
+    # python processor deactivated!
+    def __test_correct_processor_python(self):
         # 21 python files, 21 files overall
         languages = {
             'python': 21.0 / 21.0

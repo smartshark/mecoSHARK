@@ -26,7 +26,7 @@ class MecoSHARKTest(unittest.TestCase):
         self.out = os.path.dirname(os.path.realpath(__file__)) + '/data/out'
 
     def test_language_detection_java(self):
-        mecosharkapp = MecoSHARK(self.input_path_java, self.out, None, None, None, self.database, self.host, self.port,
+        mecosharkapp = MecoSHARK(self.input_path_java, self.out, "test", None, None, None, None, self.database, self.host, self.port,
                                  self.username, self.password, self.authentication_db, logging.DEBUG, False)
         languages = mecosharkapp.detect_languages()
 
@@ -38,7 +38,7 @@ class MecoSHARKTest(unittest.TestCase):
         self.assertEqual(expected_languages, languages)
 
     def test_language_detection_python(self):
-        mecosharkapp = MecoSHARK(self.input_path_python, self.out, None, None, None, self.database, self.host, self.port,
+        mecosharkapp = MecoSHARK(self.input_path_python, self.out, "test", None, None, None, None, self.database, self.host, self.port,
                                  self.username, self.password, self.authentication_db, logging.DEBUG, False)
         languages = mecosharkapp.detect_languages()
 
