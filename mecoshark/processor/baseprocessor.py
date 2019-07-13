@@ -69,9 +69,9 @@ class BaseProcessor(metaclass=abc.ABCMeta):
         :param template: path to the template
         :return:
         """
-        sourcemeter_path = os.path.dirname(os.path.realpath(__file__))+'/../../external/sourcemeter/'
-        java_sourcemeter = os.path.join(sourcemeter_path, 'Java/SourceMeterJava')
-        python_sourcemeter = os.path.join(sourcemeter_path, 'Python/SourceMeterPython')
+        sourcemeter_path = os.path.dirname(os.path.realpath(__file__))+'/../../external/openStaticAnalyzer/'
+        java_sourcemeter = os.path.join(sourcemeter_path, 'Java/OpenStaticAnalyzerJava')
+        python_sourcemeter = os.path.join(sourcemeter_path, 'Python/OpenStaticAnalyzerPython')
         c_sourcemeter = os.path.join(sourcemeter_path, 'CPP/SourceMeterCPP')
         maven_path = os.path.join(sourcemeter_path, 'maven3.2.5/bin/mvn')
         ant = os.path.join(sourcemeter_path, 'ant1.9.7/bin/ant')
