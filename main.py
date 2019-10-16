@@ -65,7 +65,7 @@ def start():
     logger = logging.getLogger("mecoshark_main")
     logger.info("Starting mecoSHARK...")
 
-    parser = get_base_argparser('Calculates metrics & performs clone detection for the given version.', '1.0.0')
+    parser = get_base_argparser('Calculates metrics & performs clone detection for the given version.', '2.0.2')
     parser.add_argument('-i', '--input', help='Path to the repository.',
                         required=True, type=readable_dir)
     parser.add_argument('-o', '--output', help='Directory, which can be used as output.',
