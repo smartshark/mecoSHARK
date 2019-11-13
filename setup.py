@@ -10,11 +10,11 @@ if not sys.version_info[0] == 3:
 
 setup(
     name='mecoSHARK',
-    version='2.0.2',
+    version='2.0.3',
     author='Fabian Trautsch',
     author_email='trautsch@cs.uni-goettingen.de',
     description='Calculates metrics and clones on revision level.',
-    install_requires=['mongoengine', 'pymongo', 'pycoshark>=1.0.14', 'mock'],
+    install_requires=['mongoengine', 'pymongo', 'pycoshark>=1.2.6', 'mock'],
     url='https://github.com/smartshark/mecoSHARK',
     download_url='https://github.com/smartshark/mecoSHARK/zipball/master',
     packages=find_packages(),
