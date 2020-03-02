@@ -16,7 +16,7 @@ The documentation for the used database models can be found here: https://smarts
 Introduction
 ============
 
-.. _sourcemeter: https://www.sourcemeter.com/download/
+.. _OpenStaticAnalyzer: https://github.com/sed-inf-u-szeged/OpenStaticAnalyzer
 
 This introduction will show how to use **mecoSHARK**. Furthermore, we list all requirements for this tool here, so that an
 easy installation is possible.
@@ -33,7 +33,7 @@ certain programming language), we execute the metrics calculator and clone parse
 Currently, we support Java and Python.
 Second, the results are parsed and stored in the MongoDB using the mongoengine ORM library.
 
-For the metrics calculation and clone detection we use sourcemeter_.
+For the metrics calculation and clone detection we use OpenStaticAnalyzer_.
 Additionally, SourceMeter provides the option to build the project via Ant or Maven and calculate the metrics afterwards.
 We have implemented, but currently disabled, this feature in **mecoSHARK**, as it is not tested in-depth.
 
@@ -54,7 +54,7 @@ The documentation for the used database models can be found here: https://smarts
 
 Installation
 ============
-The installation process needs a little bit more effort, as sourcemeter_ can not be publicly distributed. For a vanilla
+The installation process needs a little bit more effort, as OpenStaticAnalyzer_ cannot be bundled due to licene issues. For a vanilla
 Ubuntu 16.04, we need to install the following packages:
 
 .. code-block:: bash
@@ -86,16 +86,12 @@ via setup.py
 	They can be changed in the **~/mecoSHARK/mecoshark/loggerConfiguration.json**. There are different file handlers defined.
 	Just change the "filename"-attribute to a location of your wish.
 
+Afterwards, you need to download OpenStaticAnalyzer_ into the folder openStaticAnalyzer, e.g., 
+.. code-block:: bash
 
-Afterwards, you need to download sourcemeter_ and create the following structure:
-
-Overall structure:
-
-.. image:: docs/source/images/folder_structure.png
-
-Sloccount structure:
-
-.. image:: docs/source/images/sloccount.png
+	$ wget --quiet https://github.com/smartshark/OpenStaticAnalyzer/releases/download/v4.0.0-smartshark/OpenStaticAnalyzer-4.0.0-x64-Linux.tgz
+	$ tar -xvf OpenStaticAnalyzer-4.0.0-x64-Linux.tgz
+	$ mv OpenStaticAnalyzer-4.0.0-x64-Linux openStaticAnalyzer
 
 .. WARNING:: Make sure, that your $JAVA_HOME is set correctly!
 
